@@ -1,0 +1,18 @@
+# Secrets — never commit
+.env
+
+# .NET build output
+bin/
+obj/
+
+# VS files
+.vs/
+*.user
+*.suo
+
+# Rider
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

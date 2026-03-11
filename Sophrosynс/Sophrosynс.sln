@@ -1,0 +1,169 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{10000000-0000-0000-0000-000000000001}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{10000000-0000-0000-0000-000000000002}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{10000000-0000-0000-0000-000000000003}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{10000000-0000-0000-0000-000000000004}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NotificationService", "NotificationService", "{10000000-0000-0000-0000-000000000005}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ConsentService", "ConsentService", "{10000000-0000-0000-0000-000000000006}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReportingService", "ReportingService", "{10000000-0000-0000-0000-000000000007}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClientService", "ClientService", "{10000000-0000-0000-0000-000000000008}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ScheduleService", "ScheduleService", "{10000000-0000-0000-0000-000000000009}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NotesService", "NotesService", "{10000000-0000-0000-0000-000000000010}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.SharedKernel", "src\Shared\Sophrosync.SharedKernel\Sophrosync.SharedKernel.csproj", "{A1A1A1A1-A1A1-A1A1-A1A1-A1A1A1A1A1A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.Gateway", "src\Gateway\Sophrosync.Gateway\Sophrosync.Gateway.csproj", "{A2A2A2A2-A2A2-A2A2-A2A2-A2A2A2A2A2A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.Notifications.Domain", "src\Services\NotificationService\Sophrosync.Notifications.Domain\Sophrosync.Notifications.Domain.csproj", "{B1B1B1B1-B1B1-B1B1-B1B1-B1B1B1B1B1B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.Notifications.Application", "src\Services\NotificationService\Sophrosync.Notifications.Application\Sophrosync.Notifications.Application.csproj", "{B2B2B2B2-B2B2-B2B2-B2B2-B2B2B2B2B2B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.Notifications.Infrastructure", "src\Services\NotificationService\Sophrosync.Notifications.Infrastructure\Sophrosync.Notifications.Infrastructure.csproj", "{B3B3B3B3-B3B3-B3B3-B3B3-B3B3B3B3B3B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.Notifications.API", "src\Services\NotificationService\Sophrosync.Notifications.API\Sophrosync.Notifications.API.csproj", "{B4B4B4B4-B4B4-B4B4-B4B4-B4B4B4B4B4B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.Consent.Domain", "src\Services\ConsentService\Sophrosync.Consent.Domain\Sophrosync.Consent.Domain.csproj", "{C1C1C1C1-C1C1-C1C1-C1C1-C1C1C1C1C1C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.Consent.Application", "src\Services\ConsentService\Sophrosync.Consent.Application\Sophrosync.Consent.Application.csproj", "{C2C2C2C2-C2C2-C2C2-C2C2-C2C2C2C2C2C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.Consent.Infrastructure", "src\Services\ConsentService\Sophrosync.Consent.Infrastructure\Sophrosync.Consent.Infrastructure.csproj", "{C3C3C3C3-C3C3-C3C3-C3C3-C3C3C3C3C3C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.Consent.API", "src\Services\ConsentService\Sophrosync.Consent.API\Sophrosync.Consent.API.csproj", "{C4C4C4C4-C4C4-C4C4-C4C4-C4C4C4C4C4C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.Reporting.Domain", "src\Services\ReportingService\Sophrosync.Reporting.Domain\Sophrosync.Reporting.Domain.csproj", "{D1D1D1D1-D1D1-D1D1-D1D1-D1D1D1D1D1D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.Reporting.Application", "src\Services\ReportingService\Sophrosync.Reporting.Application\Sophrosync.Reporting.Application.csproj", "{D2D2D2D2-D2D2-D2D2-D2D2-D2D2D2D2D2D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.Reporting.Infrastructure", "src\Services\ReportingService\Sophrosync.Reporting.Infrastructure\Sophrosync.Reporting.Infrastructure.csproj", "{D3D3D3D3-D3D3-D3D3-D3D3-D3D3D3D3D3D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.Reporting.API", "src\Services\ReportingService\Sophrosync.Reporting.API\Sophrosync.Reporting.API.csproj", "{D4D4D4D4-D4D4-D4D4-D4D4-D4D4D4D4D4D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.Clients.API", "src\Services\ClientService\Sophrosync.Clients.API\Sophrosync.Clients.API.csproj", "{E1E1E1E1-E1E1-E1E1-E1E1-E1E1E1E1E1E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.Schedule.API", "src\Services\ScheduleService\Sophrosync.Schedule.API\Sophrosync.Schedule.API.csproj", "{E2E2E2E2-E2E2-E2E2-E2E2-E2E2E2E2E2E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.Notes.API", "src\Services\NotesService\Sophrosync.Notes.API\Sophrosync.Notes.API.csproj", "{E3E3E3E3-E3E3-E3E3-E3E3-E3E3E3E3E3E3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1A1A1A1-A1A1-A1A1-A1A1-A1A1A1A1A1A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1A1A1A1-A1A1-A1A1-A1A1-A1A1A1A1A1A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1A1A1A1-A1A1-A1A1-A1A1-A1A1A1A1A1A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1A1A1A1-A1A1-A1A1-A1A1-A1A1A1A1A1A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2A2A2A2-A2A2-A2A2-A2A2-A2A2A2A2A2A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2A2A2A2-A2A2-A2A2-A2A2-A2A2A2A2A2A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2A2A2A2-A2A2-A2A2-A2A2-A2A2A2A2A2A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2A2A2A2-A2A2-A2A2-A2A2-A2A2A2A2A2A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1B1B1B1-B1B1-B1B1-B1B1-B1B1B1B1B1B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1B1B1B1-B1B1-B1B1-B1B1-B1B1B1B1B1B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1B1B1B1-B1B1-B1B1-B1B1-B1B1B1B1B1B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1B1B1B1-B1B1-B1B1-B1B1-B1B1B1B1B1B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2B2B2B2-B2B2-B2B2-B2B2-B2B2B2B2B2B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2B2B2B2-B2B2-B2B2-B2B2-B2B2B2B2B2B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2B2B2B2-B2B2-B2B2-B2B2-B2B2B2B2B2B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2B2B2B2-B2B2-B2B2-B2B2-B2B2B2B2B2B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3B3B3B3-B3B3-B3B3-B3B3-B3B3B3B3B3B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3B3B3B3-B3B3-B3B3-B3B3-B3B3B3B3B3B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3B3B3B3-B3B3-B3B3-B3B3-B3B3B3B3B3B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3B3B3B3-B3B3-B3B3-B3B3-B3B3B3B3B3B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4B4B4B4-B4B4-B4B4-B4B4-B4B4B4B4B4B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4B4B4B4-B4B4-B4B4-B4B4-B4B4B4B4B4B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4B4B4B4-B4B4-B4B4-B4B4-B4B4B4B4B4B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4B4B4B4-B4B4-B4B4-B4B4-B4B4B4B4B4B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1C1C1C1-C1C1-C1C1-C1C1-C1C1C1C1C1C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1C1C1C1-C1C1-C1C1-C1C1-C1C1C1C1C1C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1C1C1C1-C1C1-C1C1-C1C1-C1C1C1C1C1C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1C1C1C1-C1C1-C1C1-C1C1-C1C1C1C1C1C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2C2C2C2-C2C2-C2C2-C2C2-C2C2C2C2C2C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2C2C2C2-C2C2-C2C2-C2C2-C2C2C2C2C2C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2C2C2C2-C2C2-C2C2-C2C2-C2C2C2C2C2C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2C2C2C2-C2C2-C2C2-C2C2-C2C2C2C2C2C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3C3C3C3-C3C3-C3C3-C3C3-C3C3C3C3C3C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3C3C3C3-C3C3-C3C3-C3C3-C3C3C3C3C3C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3C3C3C3-C3C3-C3C3-C3C3-C3C3C3C3C3C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3C3C3C3-C3C3-C3C3-C3C3-C3C3C3C3C3C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4C4C4C4-C4C4-C4C4-C4C4-C4C4C4C4C4C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4C4C4C4-C4C4-C4C4-C4C4-C4C4C4C4C4C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4C4C4C4-C4C4-C4C4-C4C4-C4C4C4C4C4C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4C4C4C4-C4C4-C4C4-C4C4-C4C4C4C4C4C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1D1D1D1-D1D1-D1D1-D1D1-D1D1D1D1D1D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1D1D1D1-D1D1-D1D1-D1D1-D1D1D1D1D1D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1D1D1D1-D1D1-D1D1-D1D1-D1D1D1D1D1D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1D1D1D1-D1D1-D1D1-D1D1-D1D1D1D1D1D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2D2D2D2-D2D2-D2D2-D2D2-D2D2D2D2D2D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2D2D2D2-D2D2-D2D2-D2D2-D2D2D2D2D2D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2D2D2D2-D2D2-D2D2-D2D2-D2D2D2D2D2D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2D2D2D2-D2D2-D2D2-D2D2-D2D2D2D2D2D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3D3D3D3-D3D3-D3D3-D3D3-D3D3D3D3D3D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3D3D3D3-D3D3-D3D3-D3D3-D3D3D3D3D3D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3D3D3D3-D3D3-D3D3-D3D3-D3D3D3D3D3D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3D3D3D3-D3D3-D3D3-D3D3-D3D3D3D3D3D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4D4D4D4-D4D4-D4D4-D4D4-D4D4D4D4D4D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4D4D4D4-D4D4-D4D4-D4D4-D4D4D4D4D4D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4D4D4D4-D4D4-D4D4-D4D4-D4D4D4D4D4D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4D4D4D4-D4D4-D4D4-D4D4-D4D4D4D4D4D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1E1E1E1-E1E1-E1E1-E1E1-E1E1E1E1E1E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1E1E1E1-E1E1-E1E1-E1E1-E1E1E1E1E1E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1E1E1E1-E1E1-E1E1-E1E1-E1E1E1E1E1E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1E1E1E1-E1E1-E1E1-E1E1-E1E1E1E1E1E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2E2E2E2-E2E2-E2E2-E2E2-E2E2E2E2E2E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2E2E2E2-E2E2-E2E2-E2E2-E2E2E2E2-E2E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2E2E2E2-E2E2-E2E2-E2E2-E2E2E2E2E2E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2E2E2E2-E2E2-E2E2-E2E2-E2E2E2E2E2E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3E3E3E3-E3E3-E3E3-E3E3-E3E3E3E3E3E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3E3E3E3-E3E3-E3E3-E3E3-E3E3E3E3E3E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3E3E3E3-E3E3-E3E3-E3E3-E3E3E3E3E3E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3E3E3E3-E3E3-E3E3-E3E3-E3E3E3E3E3E3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{10000000-0000-0000-0000-000000000002} = {10000000-0000-0000-0000-000000000001}
+		{10000000-0000-0000-0000-000000000003} = {10000000-0000-0000-0000-000000000001}
+		{10000000-0000-0000-0000-000000000004} = {10000000-0000-0000-0000-000000000001}
+		{10000000-0000-0000-0000-000000000005} = {10000000-0000-0000-0000-000000000004}
+		{10000000-0000-0000-0000-000000000006} = {10000000-0000-0000-0000-000000000004}
+		{10000000-0000-0000-0000-000000000007} = {10000000-0000-0000-0000-000000000004}
+		{10000000-0000-0000-0000-000000000008} = {10000000-0000-0000-0000-000000000004}
+		{10000000-0000-0000-0000-000000000009} = {10000000-0000-0000-0000-000000000004}
+		{10000000-0000-0000-0000-000000000010} = {10000000-0000-0000-0000-000000000004}
+		{A1A1A1A1-A1A1-A1A1-A1A1-A1A1A1A1A1A1} = {10000000-0000-0000-0000-000000000002}
+		{A2A2A2A2-A2A2-A2A2-A2A2-A2A2A2A2A2A2} = {10000000-0000-0000-0000-000000000003}
+		{B1B1B1B1-B1B1-B1B1-B1B1-B1B1B1B1B1B1} = {10000000-0000-0000-0000-000000000005}
+		{B2B2B2B2-B2B2-B2B2-B2B2-B2B2B2B2B2B2} = {10000000-0000-0000-0000-000000000005}
+		{B3B3B3B3-B3B3-B3B3-B3B3-B3B3B3B3B3B3} = {10000000-0000-0000-0000-000000000005}
+		{B4B4B4B4-B4B4-B4B4-B4B4-B4B4B4B4B4B4} = {10000000-0000-0000-0000-000000000005}
+		{C1C1C1C1-C1C1-C1C1-C1C1-C1C1C1C1C1C1} = {10000000-0000-0000-0000-000000000006}
+		{C2C2C2C2-C2C2-C2C2-C2C2-C2C2C2C2C2C2} = {10000000-0000-0000-0000-000000000006}
+		{C3C3C3C3-C3C3-C3C3-C3C3-C3C3C3C3C3C3} = {10000000-0000-0000-0000-000000000006}
+		{C4C4C4C4-C4C4-C4C4-C4C4-C4C4C4C4C4C4} = {10000000-0000-0000-0000-000000000006}
+		{D1D1D1D1-D1D1-D1D1-D1D1-D1D1D1D1D1D1} = {10000000-0000-0000-0000-000000000007}
+		{D2D2D2D2-D2D2-D2D2-D2D2-D2D2D2D2D2D2} = {10000000-0000-0000-0000-000000000007}
+		{D3D3D3D3-D3D3-D3D3-D3D3-D3D3D3D3D3D3} = {10000000-0000-0000-0000-000000000007}
+		{D4D4D4D4-D4D4-D4D4-D4D4-D4D4D4D4D4D4} = {10000000-0000-0000-0000-000000000007}
+		{E1E1E1E1-E1E1-E1E1-E1E1-E1E1E1E1E1E1} = {10000000-0000-0000-0000-000000000008}
+		{E2E2E2E2-E2E2-E2E2-E2E2-E2E2E2E2E2E2} = {10000000-0000-0000-0000-000000000009}
+		{E3E3E3E3-E3E3-E3E3-E3E3-E3E3E3E3E3E3} = {10000000-0000-0000-0000-000000000010}
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8B9886C5-AF76-44E8-AD3E-547C0B15CC13}
+	EndGlobalSection
+EndGlobal

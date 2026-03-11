@@ -1,0 +1,89 @@
+{
+  "realm": "sophrosync",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "loginTheme": "sophrosync",
+  "requiredActions": [
+    { "alias": "VERIFY_PROFILE",    "providerId": "VERIFY_PROFILE",    "enabled": true,  "defaultAction": false, "priority": 90,   "config": {} },
+    { "alias": "CONFIGURE_TOTP",    "providerId": "CONFIGURE_TOTP",    "enabled": true,  "defaultAction": false, "priority": 10,   "config": {} },
+    { "alias": "VERIFY_EMAIL",      "providerId": "VERIFY_EMAIL",      "enabled": true,  "defaultAction": false, "priority": 50,   "config": {} },
+    { "alias": "UPDATE_PASSWORD",   "providerId": "UPDATE_PASSWORD",   "enabled": true,  "defaultAction": false, "priority": 30,   "config": {} },
+    { "alias": "UPDATE_PROFILE",    "providerId": "UPDATE_PROFILE",    "enabled": true,  "defaultAction": false, "priority": 40,   "config": {} }
+  ],
+  "roles": {
+    "realm": [
+      { "name": "admin",      "description": "Full platform access" },
+      { "name": "supervisor", "description": "Supervisor access" },
+      { "name": "therapist",  "description": "Therapist access" },
+      { "name": "client",     "description": "End-client access" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "sophrosync-spa",
+      "name": "Sophrosync SPA / Dev",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": [ "*" ],
+      "webOrigins": [ "*" ],
+      "protocolMappers": [
+        {
+          "name": "audience-sophrosync-gateway",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "sophrosync-gateway",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        },
+        {
+          "name": "realm-roles-claim",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "dev-admin",
+      "email": "admin@sophrosync.dev",
+      "firstName": "Dev",
+      "lastName": "Admin",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": [],
+      "credentials": [
+        { "type": "password", "value": "admin", "temporary": false }
+      ],
+      "realmRoles": [ "admin" ]
+    },
+    {
+      "username": "dev-therapist",
+      "email": "therapist@sophrosync.dev",
+      "firstName": "Dev",
+      "lastName": "Therapist",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": [],
+      "credentials": [
+        { "type": "password", "value": "therapist", "temporary": false }
+      ],
+      "realmRoles": [ "therapist" ]
+    }
+  ]
+}

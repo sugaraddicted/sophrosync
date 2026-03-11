@@ -1,0 +1,26 @@
+# Secrets — never commit
+.env
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+.idea/
+*.nupkg
+*.snupkg
+TestResults/
+
+# Angular / Node
+node_modules/
+dist/
+.angular/
+*.js.map
+
+# Claude Code local settings
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
