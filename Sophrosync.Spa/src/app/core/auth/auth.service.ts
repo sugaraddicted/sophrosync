@@ -1,124 +1,79 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { Injectable, inject, signal, effect } from '@angular/core';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 
+// Spec ref: Architecture Spec Section 1 (OIDC Authorization Code + PKCE)
+// Section 2.2 (JWT payload: sub, tenant_id, roles, email, preferred_username, given_name, family_name)
+// Section 2.3 (.NET Integration: Keycloak RS256 JWT, realm sophrosync)
+//
+// Replaced: ROPC grant_type=password flow (insecure, deprecated, violates spec Section 1).
+// Now delegates all auth to OidcSecurityService (angular-auth-oidc-client) which handles:
+//   - Authorization Code + PKCE code_verifier/code_challenge generation
+//   - Token storage (library-managed, not manual sessionStorage)
+//   - Silent renew via refresh token
 export interface UserProfile {
   username: string;
   email: string;
   firstName: string;
   lastName: string;
-}
-
-interface TokenResponse {
-  access_token: string;
-  refresh_token: string;
-  expires_in: number;
-}
-
-interface JwtPayload {
-  preferred_username: string;
-  email: string;
-  given_name: string;
-  family_name: string;
-  roles?: string[];
-  realm_access?: { roles: string[] };
+  tenantId: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly http = inject(HttpClient);
-  private readonly router = inject(Router);
-
-  private readonly tokenUrl = `${environment.keycloak.url}/realms/${environment.keycloak.realm}/protocol/openid-connect/token`;
-
-  private accessToken: string | null = null;
-  private tokenExpiry = 0;
+  private readonly oidc = inject(OidcSecurityService);
 
   readonly isAuthenticated = signal(false);
   readonly userProfile = signal<UserProfile | null>(null);
   readonly userRoles = signal<string[]>([]);
 
-  async login(username: string, password: string): Promise<void> {
-    const body = new HttpParams()
-      .set('grant_type', 'password')
-      .set('client_id', environment.keycloak.clientId)
-      .set('username', username)
-      .set('password', password);
-
-    const tokens = await firstValueFrom(
-      this.http.post<TokenResponse>(this.tokenUrl, body.toString(), {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      })
-    );
-
-    this.applyTokens(tokens);
-  }
-
-  async logout(): Promise<void> {
-    sessionStorage.removeItem('sophrosync_rt');
-    this.accessToken = null;
-    this.isAuthenticated.set(false);
-    this.userProfile.set(null);
-    this.userRoles.set([]);
-    await this.router.navigate(['/login']);
-  }
-
-  async getToken(): Promise<string | null> {
-    if (this.accessToken && Date.now() < this.tokenExpiry) {
-      return this.accessToken;
-    }
-    return this.tryRefresh();
-  }
-
-  /** Called on app init — restores session from stored refresh token. */
-  async restoreSession(): Promise<void> {
-    await this.tryRefresh();
-  }
-
-  private async tryRefresh(): Promise<string | null> {
-    const rt = sessionStorage.getItem('sophrosync_rt');
-    if (!rt) return null;
-
-    try {
-      const body = new HttpParams()
-        .set('grant_type', 'refresh_token')
-        .set('client_id', environment.keycloak.clientId)
-        .set('refresh_token', rt);
-
-      const tokens = await firstValueFrom(
-        this.http.post<TokenResponse>(this.tokenUrl, body.toString(), {
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        })
-      );
-
-      this.applyTokens(tokens);
-      return this.accessToken;
-    } catch {
-      sessionStorage.removeItem('sophrosync_rt');
-      return null;
-    }
-  }
-
-  private applyTokens(tokens: TokenResponse): void {
-    this.accessToken = tokens.access_token;
-    this.tokenExpiry = Date.now() + (tokens.expires_in - 30) * 1000;
-    sessionStorage.setItem('sophrosync_rt', tokens.refresh_token);
-
-    const payload = this.decodeJwt(tokens.access_token);
-    this.userProfile.set({
-      username: payload.preferred_username,
-      email: payload.email ?? '',
-      firstName: payload.given_name ?? '',
-      lastName: payload.family_name ?? '',
+  constructor() {
+    // Subscribe to OIDC state changes and propagate to Angular signals
+    this.oidc.isAuthenticated$.subscribe(({ isAuthenticated }) => {
+      this.isAuthenticated.set(isAuthenticated);
     });
-    this.userRoles.set(payload.roles ?? payload.realm_access?.roles ?? []);
-    this.isAuthenticated.set(true);
+
+    this.oidc.userData$.subscribe(({ userData }) => {
+      if (!userData) {
+        this.userProfile.set(null);
+        this.userRoles.set([]);
+        return;
+      }
+
+      this.userProfile.set({
+        username: userData['preferred_username'] ?? '',
+        email: userData['email'] ?? '',
+        firstName: userData['given_name'] ?? '',
+        lastName: userData['family_name'] ?? '',
+        // Spec Section 2.2: tenant_id is a custom claim injected by Keycloak Protocol Mapper
+        tenantId: userData['tenant_id'] ?? '',
+      });
+
+      // Spec Section 2.2: roles array in JWT payload (also available via realm_access.roles)
+      const roles: string[] =
+        userData['roles'] ?? userData['realm_access']?.roles ?? [];
+      this.userRoles.set(roles);
+    });
   }
 
-  private decodeJwt(token: string): JwtPayload {
-    const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-    return JSON.parse(atob(base64));
+  /** Initiates Authorization Code + PKCE flow — redirects to Keycloak login page. */
+  login(): void {
+    this.oidc.authorize();
+  }
+
+  /** Logs out and redirects to Keycloak logout endpoint, then to /login. */
+  logout(): void {
+    this.oidc.logoff().subscribe();
+  }
+
+  /** Returns the current access token for use in HTTP interceptor. */
+  getToken(): string {
+    return this.oidc.getAccessToken();
+  }
+
+  /** Called on app init to check and restore any existing OIDC session. */
+  restoreSession(): Promise<void> {
+    return new Promise((resolve) => {
+      this.oidc.checkAuth().subscribe(() => resolve());
+    });
   }
 }
