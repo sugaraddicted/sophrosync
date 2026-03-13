@@ -78,4 +78,14 @@ public sealed class KeycloakClaimsExtensionsTests
         act.Should().Throw<InvalidOperationException>()
             .WithMessage("*tenant_id*");
     }
+
+    [Fact]
+    public void GetTenantId_WhenClaimMalformed_ThrowsFormatException()
+    {
+        var principal = PrincipalWithClaim(TenantIdClaimType, "not-a-guid");
+
+        var act = () => principal.GetTenantId();
+
+        act.Should().Throw<FormatException>();
+    }
 }

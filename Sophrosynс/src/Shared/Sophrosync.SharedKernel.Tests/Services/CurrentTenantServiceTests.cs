@@ -122,4 +122,45 @@ public sealed class CurrentTenantServiceTests
 
         service.HasTenant.Should().BeFalse();
     }
+
+    [Fact]
+    public void Id_WhenMalformedTenantIdClaim_ReturnsGuidEmpty()
+    {
+        var identity = new ClaimsIdentity(
+            [new Claim(TenantIdClaimType, "not-a-guid")],
+            authenticationType: "TestAuth");
+        var context = new DefaultHttpContext { User = new ClaimsPrincipal(identity) };
+        var accessor = Substitute.For<IHttpContextAccessor>();
+        accessor.HttpContext.Returns(context);
+
+        var service = CreateService(accessor);
+
+        service.Id.Should().Be(Guid.Empty);
+    }
+
+    [Fact]
+    public void HasTenant_WhenNoHttpContext_ReturnsFalse()
+    {
+        var accessor = Substitute.For<IHttpContextAccessor>();
+        accessor.HttpContext.Returns((HttpContext?)null);
+
+        var service = CreateService(accessor);
+
+        service.HasTenant.Should().BeFalse();
+    }
+
+    [Fact]
+    public void HasTenant_WhenMalformedTenantClaim_ReturnsFalse()
+    {
+        var identity = new ClaimsIdentity(
+            [new Claim(TenantIdClaimType, "not-a-guid")],
+            authenticationType: "TestAuth");
+        var context = new DefaultHttpContext { User = new ClaimsPrincipal(identity) };
+        var accessor = Substitute.For<IHttpContextAccessor>();
+        accessor.HttpContext.Returns(context);
+
+        var service = CreateService(accessor);
+
+        service.HasTenant.Should().BeFalse();
+    }
 }
