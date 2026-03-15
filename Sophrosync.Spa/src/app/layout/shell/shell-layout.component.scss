@@ -1,0 +1,29 @@
+.shell {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "nav    main"
+    "footer footer";
+  grid-template-rows: 56px 1fr 40px;
+  grid-template-columns: 220px 1fr;
+  height: 100vh;
+  overflow: hidden;
+  transition: grid-template-columns 0.25s ease;
+
+  &--collapsed {
+    grid-template-columns: 0 1fr;
+  }
+
+  &__header { grid-area: header; }
+  &__nav    {
+    grid-area: nav;
+    overflow: hidden;
+  }
+  &__main   {
+    grid-area: main;
+    overflow-y: auto;
+    padding: var(--space-xl);
+    background: var(--color-surface);
+  }
+  &__footer { grid-area: footer; }
+}

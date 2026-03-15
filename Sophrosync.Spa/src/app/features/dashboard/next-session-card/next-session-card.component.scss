@@ -1,0 +1,37 @@
+@use 'styles/mixins' as *;
+
+.next-session {
+  @include card-base;
+
+  &__heading {
+    @include card-heading;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  &__client {
+    margin: 0;
+    font-size: var(--font-size-md);
+    font-weight: 600;
+  }
+
+  &__time {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+  }
+
+  &__notes-link {
+    font-size: var(--font-size-sm);
+    color: var(--color-link);
+    text-decoration: underline;
+
+    &:hover {
+      color: var(--color-text-primary);
+    }
+  }
+}

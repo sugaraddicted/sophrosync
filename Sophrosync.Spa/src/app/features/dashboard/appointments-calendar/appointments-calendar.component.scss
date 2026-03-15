@@ -1,0 +1,56 @@
+.cal-widget {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.cal-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+
+  &__label {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-right: var(--space-sm);
+  }
+
+  &__btn {
+    appearance: none;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 0;
+    cursor: pointer;
+    transition: background-color 150ms ease;
+
+    &:hover {
+      background-color: color-mix(in srgb, var(--color-calendar-border) 8%, transparent);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-calendar-border);
+      outline-offset: 2px;
+    }
+
+    &::before {
+      content: '';
+      display: block;
+      width: 8px;
+      height: 8px;
+      border-top: 2px solid var(--color-calendar-border);
+      border-right: 2px solid var(--color-calendar-border);
+      border-radius: 0;
+    }
+
+    &--prev::before { transform: rotate(-135deg) translateX(-1px); }
+    &--next::before { transform: rotate(45deg)   translateX(-1px); }
+  }
+}

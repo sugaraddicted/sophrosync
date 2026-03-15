@@ -1,0 +1,7 @@
+<div class="dashboard">
+  <h2 class="dashboard__greeting">Welcome, {{ profile()?.firstName ?? 'User' }}</h2>
+  <div class="dashboard__widgets">
+    <app-next-session-card class="dashboard__next-session" />
+    <app-appointments-calendar class="dashboard__calendar" />
+  </div>
+</div>

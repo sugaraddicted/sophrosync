@@ -1,0 +1,13 @@
+<nav class="side-menu">
+  <ul class="side-menu__list">
+    @for (item of navItems; track item.path) {
+      <li>
+        <a
+          class="side-menu__item"
+          [routerLink]="item.path"
+          routerLinkActive="side-menu__item--active"
+        >{{ item.label }}</a>
+      </li>
+    }
+  </ul>
+</nav>

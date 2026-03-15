@@ -1,0 +1,32 @@
+.side-menu {
+  background: var(--color-menu);
+  color: var(--color-chrome-text);
+  height: 100%;
+  overflow-y: auto;
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: var(--space-md) 0;
+  }
+
+  &__item {
+    display: block;
+    padding: 12px var(--space-xl);
+    color: var(--color-chrome-text);
+    text-decoration: none;
+    font-size: var(--font-size-lg);
+    border-left: 3px solid transparent;
+    transition: background 0.15s, border-color 0.15s;
+
+    &:hover {
+      background: var(--color-chrome-hover);
+    }
+
+    &--active {
+      border-left-color: var(--color-chrome-active-border);
+      background: var(--color-chrome-active);
+      font-weight: 600;
+    }
+  }
+}

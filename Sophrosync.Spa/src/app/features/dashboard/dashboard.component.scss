@@ -1,0 +1,16 @@
+.dashboard {
+  &__greeting {
+    margin: 0 0 var(--space-xl);
+    font-size: var(--font-size-2xl);
+  }
+
+  &__widgets {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  &__next-session {
+    align-self: flex-start;
+  }
+}

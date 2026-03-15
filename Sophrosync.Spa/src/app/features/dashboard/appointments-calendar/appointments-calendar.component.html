@@ -1,0 +1,12 @@
+<div class="cal-widget">
+  <div class="cal-nav">
+    <span class="cal-nav__label">{{ currentMonth().label }}</span>
+    <button class="cal-nav__btn cal-nav__btn--prev" (click)="prev()" aria-label="Previous month"></button>
+    <button class="cal-nav__btn cal-nav__btn--next" (click)="next()" aria-label="Next month"></button>
+  </div>
+  <app-month-grid
+    [month]="currentMonth().month"
+    [year]="currentMonth().year"
+    [appointments]="currentMonth().appointments"
+  />
+</div>
