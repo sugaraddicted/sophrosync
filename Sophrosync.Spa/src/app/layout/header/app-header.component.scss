@@ -1,0 +1,38 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: var(--color-chrome);
+  color: var(--color-chrome-text);
+  height: 100%;
+
+  &__brand {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #6b6969;
+    color: var(--color-chrome-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  &__username {
+    font-size: 0.9rem;
+  }
+}

@@ -1,0 +1,32 @@
+.side-menu {
+  background: var(--color-chrome);
+  color: var(--color-chrome-text);
+  height: 100%;
+  overflow-y: auto;
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 16px 0;
+  }
+
+  &__item {
+    display: block;
+    padding: 12px 24px;
+    color: var(--color-chrome-text);
+    text-decoration: none;
+    font-size: 0.95rem;
+    border-left: 3px solid transparent;
+    transition: background 0.15s, border-color 0.15s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    &--active {
+      border-left-color: #a8a5a5;
+      background: rgba(255, 255, 255, 0.12);
+      font-weight: 600;
+    }
+  }
+}

@@ -1,7 +1,14 @@
 *, *::before, *::after { box-sizing: border-box; }
 
+:root {
+  --color-surface: #DDDCD6;
+  --color-chrome: #464444;
+  --color-chrome-text: #F5F5F4;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
+  background: var(--color-surface);
 }

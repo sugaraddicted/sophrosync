@@ -1,0 +1,22 @@
+.dashboard {
+  &__greeting {
+    margin: 0 0 24px;
+    font-size: 1.4rem;
+    color: #2c2c2c;
+  }
+
+  &__widgets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  &__calendar {
+    flex: 2 1 420px;
+  }
+
+  &__next-session {
+    flex: 1 1 260px;
+  }
+}

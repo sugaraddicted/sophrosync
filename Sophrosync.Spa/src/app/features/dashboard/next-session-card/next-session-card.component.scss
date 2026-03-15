@@ -1,0 +1,42 @@
+.next-session {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+
+  &__heading {
+    margin: 0 0 16px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__client {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #222;
+  }
+
+  &__time {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #555;
+  }
+
+  &__notes-link {
+    font-size: 0.875rem;
+    color: #464444;
+    text-decoration: underline;
+
+    &:hover {
+      color: #222;
+    }
+  }
+}

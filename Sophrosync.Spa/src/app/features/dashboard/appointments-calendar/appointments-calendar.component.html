@@ -1,0 +1,19 @@
+<div class="calendar">
+  <h3 class="calendar__month">{{ monthLabel }}</h3>
+  <div class="calendar__grid">
+    @for (label of dayLabels; track label) {
+      <div class="calendar__day-label">{{ label }}</div>
+    }
+    @for (blank of leadingBlanks; track $index) {
+      <div class="calendar__cell calendar__cell--blank"></div>
+    }
+    @for (day of days; track day) {
+      <div class="calendar__cell" [ngClass]="{ 'calendar__cell--has-appt': appointmentDays.has(day) }">
+        <span class="calendar__day-num">{{ day }}</span>
+        @if (appointmentDays.has(day)) {
+          <span class="calendar__dot"></span>
+        }
+      </div>
+    }
+  </div>
+</div>

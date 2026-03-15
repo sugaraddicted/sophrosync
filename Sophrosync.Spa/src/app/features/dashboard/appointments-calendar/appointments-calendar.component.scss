@@ -1,0 +1,59 @@
+.calendar {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+
+  &__month {
+    margin: 0 0 16px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+
+  &__day-label {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #888;
+    padding: 4px 0;
+  }
+
+  &__cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px 4px 4px;
+    border-radius: 6px;
+    min-height: 40px;
+    font-size: 0.85rem;
+    color: #333;
+
+    &--blank {
+      background: transparent;
+    }
+
+    &--has-appt {
+      background: rgba(70, 68, 68, 0.06);
+    }
+  }
+
+  &__day-num {
+    line-height: 1;
+  }
+
+  &__dot {
+    display: block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #464444;
+    margin-top: 4px;
+  }
+}
