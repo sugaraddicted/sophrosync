@@ -1,22 +1,16 @@
 .dashboard {
   &__greeting {
-    margin: 0 0 24px;
-    font-size: 1.4rem;
-    color: #2c2c2c;
+    margin: 0 0 var(--space-xl);
+    font-size: var(--font-size-2xl);
   }
 
   &__widgets {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    align-items: flex-start;
-  }
-
-  &__calendar {
-    flex: 2 1 420px;
+    flex-direction: column;
+    gap: var(--space-lg);
   }
 
   &__next-session {
-    flex: 1 1 260px;
+    align-self: flex-start;
   }
 }

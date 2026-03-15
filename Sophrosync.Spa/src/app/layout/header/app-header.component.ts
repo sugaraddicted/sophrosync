@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, output } from '@angular/core';
 
 @Component({
   selector: 'app-header',
-  standalone: true,
   imports: [],
   templateUrl: './app-header.component.html',
   styleUrl: './app-header.component.scss',
 })
-export class AppHeaderComponent {}
+export class AppHeaderComponent {
+  readonly menuToggle = output<void>();
+}

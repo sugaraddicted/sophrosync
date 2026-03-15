@@ -3,7 +3,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-side-menu',
-  standalone: true,
   imports: [RouterLink, RouterLinkActive],
   templateUrl: './app-side-menu.component.html',
   styleUrl: './app-side-menu.component.scss',

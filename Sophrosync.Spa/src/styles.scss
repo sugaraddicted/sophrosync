@@ -1,14 +1,56 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 :root {
-  --color-surface: #DDDCD6;
-  --color-chrome: #464444;
-  --color-chrome-text: #F5F5F4;
+  /* Brand / chrome */
+  --color-surface:                #DDDCD6;
+  --color-chrome:                 #464444;
+  --color-menu:                   #373737;
+  --color-chrome-text:            #F5F5F4;
+  --color-chrome-hover:           rgba(255, 255, 255, 0.08);
+  --color-chrome-active:          rgba(255, 255, 255, 0.12);
+  --color-chrome-active-border:   #a8a5a5;
+  --color-chrome-avatar-bg:       #6b6969;
+
+  /* Content / card */
+  --color-card-bg:                #ffffff;
+  --color-text-primary:           #2c2c2c;
+  --color-text-secondary:         #555555;
+  --color-text-muted:             #888888;
+  --color-link:                   var(--color-chrome);
+
+  /* Calendar accent */
+  --color-calendar-border:        #26392D;
+  --color-calendar-dot:           #26392D;
+
+  /* Elevation */
+  --shadow-card:                  0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-month-card:            0 2px 12px rgba(38, 57, 45, 0.10);
+
+  /* Shape */
+  --radius-card:                  0px;
+  --radius-cell:                  0px;
+
+  /* Spacing */
+  --space-xs:                     4px;
+  --space-sm:                     8px;
+  --space-md:                     16px;
+  --space-lg:                     20px;
+  --space-xl:                     24px;
+
+  /* Typography */
+  --font-size-xs:                 0.75rem;
+  --font-size-sm:                 0.85rem;
+  --font-size-base:               0.95rem;
+  --font-size-md:                 1rem;
+  --font-size-lg:                 1.1rem;
+  --font-size-xl:                 1.25rem;
+  --font-size-2xl:                1.4rem;
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Times New Roman', Times, serif;
   -webkit-font-smoothing: antialiased;
   background: var(--color-surface);
+  color: var(--color-text-primary);
 }

@@ -1,0 +1,21 @@
+<div class="month-card">
+  <div class="month-card__grid">
+    @for (lbl of dayLabels; track lbl) {
+      <div class="month-card__day-label">{{ lbl }}</div>
+    }
+    @for (blank of leadingBlanks(); track $index) {
+      <div class="month-card__cell month-card__cell--blank"></div>
+    }
+    @for (day of days(); track day) {
+      <div class="month-card__cell" [class.month-card__cell--has-appt]="dayMap().has(day)">
+        <span class="month-card__day-num">{{ day }}</span>
+        @for (appt of dayMap().get(day) ?? []; track $index) {
+          <div class="month-card__bar">
+            <span class="month-card__bar-time">{{ appt.time }}</span>
+            <span class="month-card__bar-client">{{ appt.client }}</span>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

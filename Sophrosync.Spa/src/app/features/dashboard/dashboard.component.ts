@@ -5,7 +5,6 @@ import { NextSessionCardComponent } from './next-session-card/next-session-card.
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
   imports: [AppointmentsCalendarComponent, NextSessionCardComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
