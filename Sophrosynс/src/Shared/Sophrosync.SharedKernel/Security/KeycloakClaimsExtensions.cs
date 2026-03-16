@@ -13,6 +13,24 @@ public static class KeycloakClaimsExtensions
         return Guid.Parse(claim.Value);
     }
 
+    /// <summary>
+    /// Attempts to parse the tenant_id claim from the principal.
+    /// Returns false and sets tenantId to Guid.Empty when the claim is absent or malformed.
+    /// Never throws.
+    /// </summary>
+    public static bool TryGetTenantId(this ClaimsPrincipal principal, out Guid tenantId)
+    {
+        var claim = principal.FindFirst(TenantIdClaimType);
+        if (claim is not null && Guid.TryParse(claim.Value, out var parsed))
+        {
+            tenantId = parsed;
+            return true;
+        }
+
+        tenantId = Guid.Empty;
+        return false;
+    }
+
     public static Guid GetUserId(this ClaimsPrincipal principal)
     {
         var claim = principal.FindFirst(ClaimTypes.NameIdentifier)
