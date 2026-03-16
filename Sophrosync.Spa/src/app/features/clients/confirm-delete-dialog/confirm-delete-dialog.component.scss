@@ -1,0 +1,70 @@
+@use 'styles/mixins' as *;
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 200;
+}
+
+.dialog {
+  @include card-base;
+
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 201;
+  width: min(400px, calc(100vw - 2 * var(--space-xl)));
+
+  &__title {
+    @include card-heading;
+  }
+
+  &__message {
+    margin: 0 0 var(--space-xl);
+    font-size: var(--font-size-base);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+  }
+
+  &__btn {
+    padding: var(--space-sm) var(--space-xl);
+    font-size: var(--font-size-base);
+    font-family: inherit;
+    font-weight: 600;
+    border-radius: 2px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s, opacity 0.15s;
+
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    &--secondary {
+      background: var(--color-surface);
+      color: var(--color-text-primary);
+
+      &:hover:not(:disabled) {
+        background: #c9c8c2;
+      }
+    }
+
+    &--danger {
+      background: #b91c1c;
+      color: #ffffff;
+
+      &:hover:not(:disabled) {
+        background: #991b1b;
+      }
+    }
+  }
+}

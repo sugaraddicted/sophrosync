@@ -11,9 +11,9 @@ public sealed class CurrentTenantService(IHttpContextAccessor httpContextAccesso
         get
         {
             var user = httpContextAccessor.HttpContext?.User;
-            //if (user is null) throw new InvalidOperationException("No HTTP context available.");
-            //return user.GetTenantId();
-            return new Guid();
+            if (user is null || user.Identity?.IsAuthenticated != true)
+                return Guid.Empty; // unauthenticated (local dev / design-time)
+            return user.GetTenantId();
         }
     }
 

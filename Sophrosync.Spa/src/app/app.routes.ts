@@ -25,7 +25,10 @@ export const routes: Routes = [
       },
       {
         path: 'clients',
-        redirectTo: 'dashboard',
+        loadComponent: () =>
+          import('./features/clients/clients-page/clients-page.component').then(
+            (m) => m.ClientsPageComponent
+          ),
       },
       {
         path: 'schedule',

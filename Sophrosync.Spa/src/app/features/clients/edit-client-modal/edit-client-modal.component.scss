@@ -1,0 +1,124 @@
+@use 'styles/mixins' as *;
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 200;
+}
+
+.modal {
+  @include card-base;
+
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 201;
+  width: min(480px, calc(100vw - 2 * var(--space-xl)));
+
+  &__title {
+    @include card-heading;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  &__label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  &__input,
+  &__select {
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-base);
+    font-family: inherit;
+    color: var(--color-text-primary);
+    background: var(--color-card-bg);
+    border: 1px solid #d1d5db;
+    border-radius: 2px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    width: 100%;
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-chrome);
+      box-shadow: 0 0 0 2px rgba(70, 68, 68, 0.2);
+    }
+
+    &--error {
+      border-color: #b91c1c;
+
+      &:focus {
+        box-shadow: 0 0 0 2px rgba(185, 28, 28, 0.2);
+      }
+    }
+  }
+
+  &__select {
+    appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23555' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--space-md) center;
+    padding-right: calc(var(--space-md) + 20px);
+  }
+
+  &__error {
+    margin: 0;
+    font-size: var(--font-size-xs);
+    color: #b91c1c;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+    margin-top: var(--space-xs);
+  }
+
+  &__btn {
+    padding: var(--space-sm) var(--space-xl);
+    font-size: var(--font-size-base);
+    font-family: inherit;
+    font-weight: 600;
+    border-radius: 2px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s, opacity 0.15s;
+
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    &--primary {
+      background: var(--color-chrome);
+      color: var(--color-chrome-text);
+
+      &:hover:not(:disabled) {
+        background: var(--color-menu);
+      }
+    }
+
+    &--secondary {
+      background: var(--color-surface);
+      color: var(--color-text-primary);
+
+      &:hover:not(:disabled) {
+        background: #c9c8c2;
+      }
+    }
+  }
+}

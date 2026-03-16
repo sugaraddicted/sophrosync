@@ -1,9 +1,17 @@
 {
-  "/api": {
-    "target": "http://localhost:5000",
+  "/api/clients": {
+    "target": "http://localhost:5001",
     "secure": false,
     "changeOrigin": true,
-    "pathRewrite": { "^/api": "" },
+    "pathRewrite": {
+      "^/api/clients": "/api/clients"
+    },
+    "logLevel": "debug"
+  },
+  "/api": {
+    "target": "http://localhost:60228",
+    "secure": false,
+    "changeOrigin": true,
     "logLevel": "info"
   }
 }
