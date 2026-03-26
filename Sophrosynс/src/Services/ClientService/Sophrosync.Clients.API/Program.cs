@@ -1,6 +1,7 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 using Scalar.AspNetCore;
 using Serilog;
 using Sophrosync.Clients.Application.Commands.CreateClient;
@@ -46,7 +47,6 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(CreateClientCommand).Assembly);
     cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
     cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-    cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ExceptionBehavior<,>));
 });
 
 builder.Services.AddValidatorsFromAssembly(typeof(CreateClientCommand).Assembly);
@@ -58,6 +58,49 @@ builder.Services.AddScoped<ICurrentUser, CurrentUserService>();
 builder.Services.AddClientsInfrastructure(builder.Configuration);
 
 var app = builder.Build();
+
+app.UseExceptionHandler(exceptionApp => exceptionApp.Run(async context =>
+{
+    var error = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+    if (error is ValidationException ve)
+    {
+        context.Response.StatusCode = StatusCodes.Status400BadRequest;
+        await context.Response.WriteAsJsonAsync(new
+        {
+            title = "Validation failed",
+            status = 400,
+            errors = ve.Errors.Select(e => e.ErrorMessage),
+        });
+    }
+    else if (error is UnauthorizedAccessException)
+    {
+        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(new { error = error.Message });
+    }
+    else if (error is InvalidOperationException)
+    {
+        context.Response.StatusCode = StatusCodes.Status409Conflict;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(new { error = error.Message });
+    }
+    else if (app.Environment.IsDevelopment())
+    {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(new
+        {
+            title = error?.GetType().FullName ?? "UnknownError",
+            detail = error?.Message,
+            innerException = error?.InnerException?.Message,
+            stackTrace = error?.StackTrace,
+        });
+    }
+    else
+    {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+    }
+}));
 
 app.UseSerilogRequestLogging();
 app.UseAuthentication();
