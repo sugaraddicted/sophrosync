@@ -3,9 +3,12 @@
     "target": "http://localhost:5001",
     "secure": false,
     "changeOrigin": true,
-    "pathRewrite": {
-      "^/api/clients": "/api/clients"
-    },
+    "logLevel": "debug"
+  },
+  "/api/notes": {
+    "target": "http://localhost:5003",
+    "secure": false,
+    "changeOrigin": true,
     "logLevel": "debug"
   },
   "/api": {
