@@ -1,0 +1,96 @@
+<div class="modal-backdrop" (click)="onClose()" aria-hidden="true"></div>
+
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="note-detail-title">
+  <div class="modal__header">
+    <div class="modal__header-left">
+      <h2 class="modal__title" id="note-detail-title">{{ note().title }}</h2>
+      <div class="modal__meta">
+        <span class="modal__badge modal__badge--{{ note().status | lowercase }}">{{ note().status }}</span>
+        <span class="modal__type">{{ note().type }}</span>
+        <span class="modal__dot" aria-hidden="true">·</span>
+        <span class="modal__date">{{ formatDate(note().sessionDate) }}</span>
+      </div>
+    </div>
+    <button class="modal__close" type="button" (click)="onClose()" aria-label="Close">
+      <span class="material-symbols-outlined" aria-hidden="true">close</span>
+    </button>
+  </div>
+
+  <div class="modal__info-row">
+    <div class="modal__info-item">
+      <span class="modal__info-label">Author</span>
+      <span class="modal__info-value">{{ note().authorFullName }}</span>
+    </div>
+    <div class="modal__info-item">
+      <span class="modal__info-label">Created</span>
+      <span class="modal__info-value">{{ formatDate(note().createdAt) }}</span>
+    </div>
+    @if (note().signedAt) {
+      <div class="modal__info-item">
+        <span class="modal__info-label">Signed by</span>
+        <span class="modal__info-value">{{ note().signedByFullName }} · {{ formatDate(note().signedAt) }}</span>
+      </div>
+    }
+    @if (note().lockedAt) {
+      <div class="modal__info-item">
+        <span class="modal__info-label">Locked by</span>
+        <span class="modal__info-value">{{ note().lockedByFullName }} · {{ formatDate(note().lockedAt) }}</span>
+      </div>
+    }
+    @if (note().amendedFromId) {
+      <div class="modal__info-item">
+        <span class="modal__info-label">Amends note</span>
+        <span class="modal__info-value modal__info-value--mono">{{ note().amendedFromId }}</span>
+      </div>
+    }
+  </div>
+
+  <div class="modal__content">{{ note().content }}</div>
+
+  @if (tags.length > 0) {
+    <div class="modal__tags">
+      @for (tag of tags; track tag) {
+        <span class="modal__tag">{{ tag }}</span>
+      }
+    </div>
+  }
+
+  @if (confirmingAction(); as action) {
+    <div class="modal__confirm" role="alert">
+      <p class="modal__confirm-text">{{ confirmLabel(action) }}? This cannot be undone.</p>
+      <div class="modal__confirm-actions">
+        <button class="modal__btn modal__btn--secondary" type="button" (click)="cancelConfirm()">Cancel</button>
+        <button
+          class="modal__btn"
+          [class.modal__btn--danger]="action === 'delete'"
+          [class.modal__btn--primary]="action !== 'delete'"
+          type="button"
+          (click)="confirmAction()"
+        >Confirm</button>
+      </div>
+    </div>
+  } @else {
+    <div class="modal__actions">
+      @switch (note().status) {
+        @case ('Draft') {
+          <button class="modal__btn modal__btn--secondary" type="button" (click)="requestAction('edit')">Edit</button>
+          <button class="modal__btn modal__btn--primary" type="button" (click)="requestAction('sign')">Sign</button>
+          <button class="modal__btn modal__btn--danger" type="button" (click)="requestAction('delete')">Delete</button>
+        }
+        @case ('Signed') {
+          <button class="modal__btn modal__btn--secondary" type="button" (click)="requestAction('request-cosign')">Request Co-Sign</button>
+          <button class="modal__btn modal__btn--primary" type="button" (click)="requestAction('lock')">Lock</button>
+        }
+        @case ('PendingCoSign') {
+          <button class="modal__btn modal__btn--primary" type="button" (click)="requestAction('sign')">Co-Sign</button>
+        }
+        @case ('Locked') {
+          <button class="modal__btn modal__btn--secondary" type="button" (click)="requestAction('amend')">Amend</button>
+        }
+        @case ('Amended') {
+          <span class="modal__read-only-hint">This note has been superseded by an amendment.</span>
+        }
+      }
+    </div>
+  }
+</div>

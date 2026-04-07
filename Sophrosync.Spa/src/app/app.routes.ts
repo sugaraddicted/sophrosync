@@ -31,12 +31,25 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'schedule',
-        redirectTo: 'dashboard',
+        path: 'calendar',
+        loadComponent: () =>
+          import('./features/calendar/calendar.component').then(
+            (m) => m.CalendarComponent
+          ),
       },
       {
         path: 'notes',
-        redirectTo: 'dashboard',
+        loadComponent: () =>
+          import('./features/notes/notes.component').then(
+            (m) => m.NotesComponent
+          ),
+      },
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import('./features/settings/settings.component').then(
+            (m) => m.SettingsComponent
+          ),
       },
     ],
   },

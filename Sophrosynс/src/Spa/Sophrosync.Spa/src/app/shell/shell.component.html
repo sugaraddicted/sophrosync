@@ -1,0 +1,66 @@
+<div class="shell">
+
+  <!-- ─── Sidebar ──────────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <span class="sidebar__brand-name">Sophrosync</span>
+      <span class="sidebar__brand-sub">Clinical Suite</span>
+    </div>
+
+    <nav class="sidebar__nav">
+      @for (item of navItems; track item.route) {
+        <a
+          class="sidebar__nav-item"
+          [routerLink]="item.route"
+          routerLinkActive="sidebar__nav-item--active"
+        >
+          <span class="material-symbols-outlined">{{ item.icon }}</span>
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar__bottom">
+      <a class="sidebar__nav-item" href="#">
+        <span class="material-symbols-outlined">contact_support</span>
+        <span>Support</span>
+      </a>
+      <a class="sidebar__nav-item" href="#">
+        <span class="material-symbols-outlined">logout</span>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ─── Main canvas ───────────────────────────────────────────── -->
+  <div class="main-canvas">
+
+    <!-- Top header -->
+    <header class="topbar">
+      <div class="topbar__left">
+        <span class="topbar__brand">Sophrosync</span>
+        <div class="topbar__search">
+          <span class="material-symbols-outlined topbar__search-icon">search</span>
+          <input class="topbar__search-input" type="text" placeholder="Search archive…">
+        </div>
+      </div>
+      <div class="topbar__right">
+        <button class="topbar__icon-btn" aria-label="Notifications">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <button class="topbar__icon-btn" aria-label="Help">
+          <span class="material-symbols-outlined">help_outline</span>
+        </button>
+        <div class="topbar__avatar" aria-label="Profile">
+          <span class="topbar__avatar-initials">Dr</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page content -->
+    <main class="page-content">
+      <router-outlet />
+    </main>
+
+  </div>
+</div>

@@ -22,7 +22,7 @@ public sealed class ClientsDbContextFactory : IDesignTimeDbContextFactory<Client
         optionsBuilder.UseNpgsql(connectionString);
 
         var encKey = Environment.GetEnvironmentVariable("Encryption__ClientsKey")
-            ?? "ZGV2LWtleS1mb3ItbG9jYWwtZGV2ZWxvcG1lbnQtb25seQ==";
+            ?? "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
 
         return new ClientsDbContext(
             optionsBuilder.Options,
@@ -37,6 +37,6 @@ public sealed class ClientsDbContextFactory : IDesignTimeDbContextFactory<Client
     private sealed class DesignTimeTenant : ICurrentTenant
     {
         public Guid Id { get; } = Guid.Parse("00000000-0000-0000-0000-000000000001");
-        public bool IsAvailable => false;
+        public bool HasTenant => false;
     }
 }

@@ -1,32 +1,37 @@
 .clients-page {
   &__header {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     justify-content: space-between;
-    margin-bottom: var(--space-xl);
-    gap: var(--space-md);
+    margin-bottom: 2.5rem;
+    gap: 1rem;
   }
 
   &__heading {
     margin: 0;
-    font-size: var(--font-size-2xl);
+    font-family: var(--font-headline);
+    font-style: italic;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--color-on-surface);
   }
 
   &__add-btn {
-    padding: var(--space-sm) var(--space-xl);
-    background: var(--color-chrome);
-    color: var(--color-chrome-text);
+    padding: 0.5rem 1.25rem;
+    background: var(--color-primary);
+    color: var(--color-on-primary);
     border: none;
-    border-radius: 2px;
-    font-size: var(--font-size-base);
-    font-family: inherit;
-    font-weight: 600;
+    border-radius: var(--radius-lg);
+    font-size: 0.875rem;
+    font-family: var(--font-sans);
+    font-weight: 500;
     cursor: pointer;
     white-space: nowrap;
-    transition: background 0.15s;
+    transition: background 0.15s ease;
 
     &:hover {
-      background: var(--color-menu);
+      background: var(--color-primary-dim);
     }
   }
 
@@ -36,72 +41,78 @@
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--space-md);
+    // No dividers — spacing only
+    gap: 1rem;
   }
 
   &__skeleton {
     height: 100px;
+    border-radius: var(--radius-lg);
     background: linear-gradient(
       90deg,
-      var(--color-card-bg) 25%,
-      #e8e7e2 50%,
-      var(--color-card-bg) 75%
+      var(--color-surface-container-low) 25%,
+      var(--color-surface-container) 50%,
+      var(--color-surface-container-low) 75%
     );
     background-size: 200% 100%;
     animation: shimmer 1.4s infinite;
-    box-shadow: var(--shadow-card);
+    box-shadow: var(--shadow-float);
   }
 
   &__error {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--space-sm);
-    padding: var(--space-lg);
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    color: #b91c1c;
-    font-size: var(--font-size-base);
+    gap: 0.5rem;
+    padding: 1.25rem;
+    background: var(--color-tertiary-container);
+    border-radius: var(--radius-lg);
+    color: var(--color-error);
+    font-size: 0.9375rem;
+
+    p { margin: 0; }
   }
 
   &__retry-btn {
-    padding: var(--space-xs) var(--space-md);
-    background: #b91c1c;
-    color: #ffffff;
+    padding: 0.375rem 1rem;
+    background: var(--color-error);
+    color: var(--color-on-error);
     border: none;
-    border-radius: 2px;
-    font-size: var(--font-size-sm);
-    font-family: inherit;
-    font-weight: 600;
+    border-radius: var(--radius-lg);
+    font-size: 0.875rem;
+    font-family: var(--font-sans);
+    font-weight: 500;
     cursor: pointer;
-    transition: background 0.15s;
+    transition: background 0.15s ease;
 
     &:hover {
-      background: #991b1b;
+      background: var(--color-error-dim);
     }
   }
 
   &__empty {
-    padding: var(--space-xl) 0;
-    font-size: var(--font-size-base);
-    color: var(--color-text-muted);
+    padding: 2rem 0;
+    font-size: 0.9375rem;
+    color: var(--color-on-surface-variant);
   }
 
   &__toast {
     position: fixed;
-    bottom: var(--space-xl);
-    right: var(--space-xl);
+    bottom: 1.5rem;
+    right: 1.5rem;
     z-index: 300;
-    padding: var(--space-sm) var(--space-xl);
-    background: #065f46;
-    color: #ffffff;
-    font-size: var(--font-size-base);
-    font-family: inherit;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+    padding: 0.625rem 1.25rem;
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    font-size: 0.875rem;
+    font-family: var(--font-sans);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-ambient);
     animation: toast-in 0.2s ease-out;
 
     &--error {
-      background: #b91c1c;
+      background: var(--color-error);
+      color: var(--color-on-error);
     }
   }
 }

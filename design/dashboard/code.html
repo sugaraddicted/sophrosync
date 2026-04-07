@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Modern Archivist | Clinical Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;1,400&amp;family=Work+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary-container": "#d8e7d4",
+                "on-tertiary": "#fff7f6",
+                "error-dim": "#5c1202",
+                "on-secondary-fixed-variant": "#5b5b5b",
+                "secondary-dim": "#535353",
+                "surface-container-highest": "#dee4da",
+                "error-container": "#fe8b70",
+                "primary": "#546253",
+                "primary-fixed": "#d8e7d4",
+                "on-primary-fixed": "#354335",
+                "on-secondary": "#faf8f8",
+                "on-error-container": "#742410",
+                "on-tertiary-fixed-variant": "#6e5f5f",
+                "outline": "#767c74",
+                "outline-variant": "#aeb4aa",
+                "on-tertiary-fixed": "#514343",
+                "tertiary-dim": "#5e5050",
+                "on-surface-variant": "#5b6159",
+                "surface-container-low": "#f3f4ee",
+                "primary-dim": "#485648",
+                "secondary-fixed-dim": "#d5d4d4",
+                "tertiary-container": "#ffe9e9",
+                "surface-dim": "#d5dcd0",
+                "secondary-container": "#e4e2e2",
+                "on-primary-container": "#485547",
+                "surface-container": "#ecefe7",
+                "inverse-surface": "#0d0f0c",
+                "on-background": "#2e342d",
+                "surface-container-lowest": "#ffffff",
+                "surface-bright": "#fafaf5",
+                "on-tertiary-container": "#645555",
+                "background": "#fafaf5",
+                "inverse-primary": "#eefeeb",
+                "error": "#9e422c",
+                "surface-variant": "#dee4da",
+                "surface": "#fafaf5",
+                "secondary": "#5f5f5f",
+                "on-surface": "#2e342d",
+                "on-secondary-container": "#515252",
+                "inverse-on-surface": "#9c9d99",
+                "tertiary-fixed-dim": "#f0dbdb",
+                "secondary-fixed": "#e4e2e2",
+                "on-secondary-fixed": "#3f3f3f",
+                "on-error": "#fff7f6",
+                "on-primary-fixed-variant": "#515f51",
+                "tertiary-fixed": "#ffe9e9",
+                "tertiary": "#6b5b5b",
+                "primary-fixed-dim": "#c9d9c6",
+                "surface-container-high": "#e5eae0",
+                "on-primary": "#edfce9",
+                "surface-tint": "#546253"
+              },
+              fontFamily: {
+                "headline": ["Newsreader"],
+                "body": ["Work Sans"],
+                "label": ["Work Sans"]
+              },
+              borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #fafaf5;
+            color: #2e342d;
+            font-family: 'Work Sans', sans-serif;
+        }
+        h1, h2, h3, .editorial-serif {
+            font-family: 'Newsreader', serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+<!-- SideNavBar Integration -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r border-[#aeb4aa]/15 bg-[#f3f4ee] flex flex-col py-6 px-4 z-50">
+<div class="mb-10 px-2">
+<h1 class="font-newsreader text-lg text-[#546253]">Clinical Suite</h1>
+<p class="font-work-sans text-xs tracking-widest uppercase opacity-60">Modern Archivist</p>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Active State: Dashboard -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded bg-[#dee4da] text-[#546253] border-r-2 border-[#546253] font-work-sans text-sm font-medium tracking-wide transition-all scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded text-[#5f5f5f] hover:bg-[#dee4da]/30 font-work-sans text-sm font-medium tracking-wide transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span>Clients</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded text-[#5f5f5f] hover:bg-[#dee4da]/30 font-work-sans text-sm font-medium tracking-wide transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span>Calendar</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded text-[#5f5f5f] hover:bg-[#dee4da]/30 font-work-sans text-sm font-medium tracking-wide transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span>Documents</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded text-[#5f5f5f] hover:bg-[#dee4da]/30 font-work-sans text-sm font-medium tracking-wide transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>Billing</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded text-[#5f5f5f] hover:bg-[#dee4da]/30 font-work-sans text-sm font-medium tracking-wide transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-[#aeb4aa]/20 pt-6 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded text-[#5f5f5f] hover:bg-[#dee4da]/30 font-work-sans text-sm font-medium tracking-wide transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span>
+<span>Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded text-[#5f5f5f] hover:bg-[#dee4da]/30 font-work-sans text-sm font-medium tracking-wide transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-64 min-h-screen bg-background pb-24">
+<!-- TopAppBar Integration -->
+<header class="w-full sticky top-0 z-40 bg-[#fafaf5] flex justify-between items-center px-8 py-4">
+<div class="flex items-center gap-4">
+<h2 class="font-newsreader font-semibold text-[#546253]">The Modern Archivist</h2>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-secondary text-sm">search</span>
+<input class="bg-surface-container-low border-none rounded text-sm pl-10 pr-4 py-2 w-64 focus:ring-1 focus:ring-primary/30" placeholder="Search archive..." type="text"/>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 rounded hover:bg-[#dee4da]/50 transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 rounded hover:bg-[#dee4da]/50 transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-8 rounded bg-primary-container flex items-center justify-center overflow-hidden ml-2">
+<img class="h-full w-full object-cover" data-alt="Therapist Profile Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8kRxUF7ree82xbRwKP3Tohuj_rsIXmkwvALh1Xqw-OtRqKcVo-agO04aBvsF29djG_wwhKvsx-nrH86LjKKujDEKS4PYaNWRlB_HJj3-Jh-Q4uR_PG7P0kNuVR5zKCeqSXvnVcg02dF7Kcdsyl5AheJWx1q-kmwhqz0s1-GW6iz9-KWo_VVf4GrEs6UtlamK-HnngEf58D6mzjGCNB1MNHDMJJPeBCLYS6sOaXqvivNOZWmw0MU7XlxN_bcWP5mT0MPQY4kC2QUY"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Editorial Hero Header -->
+<section class="px-12 pt-16 mb-12">
+<div class="max-w-6xl">
+<p class="font-body text-secondary uppercase tracking-[0.2em] text-xs mb-4">Monday, October 23rd</p>
+<h1 class="text-6xl editorial-serif italic tracking-tight text-on-background mb-2">Good morning, Dr. Aris.</h1>
+<p class="font-body text-on-surface-variant max-w-xl text-lg leading-relaxed">Your archive is current. You have 4 sessions scheduled today, starting with Julian Vance at 10:00 AM.</p>
+</div>
+</section>
+<!-- Bento Grid Layout -->
+<div class="px-12 grid grid-cols-12 gap-8 max-w-7xl mx-auto">
+<!-- Calendar View: Large Spanning Area -->
+<div class="col-span-8 space-y-8">
+<div class="bg-surface-container-low p-8 rounded-lg">
+<div class="flex justify-between items-center mb-10">
+<h3 class="text-2xl editorial-serif text-primary">Weekly Schedule</h3>
+<div class="flex gap-2">
+<button class="p-1 hover:bg-surface-container-highest transition-colors rounded"><span class="material-symbols-outlined">chevron_left</span></button>
+<span class="font-body font-medium text-sm self-center px-4">Oct 23 — Oct 29</span>
+<button class="p-1 hover:bg-surface-container-highest transition-colors rounded"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+</div>
+<div class="grid grid-cols-7 gap-px bg-outline-variant/10">
+<!-- Calendar Headers -->
+<div class="bg-surface-container-low py-2 text-center font-body text-xs font-semibold text-secondary">MON</div>
+<div class="bg-surface-container-low py-2 text-center font-body text-xs font-semibold text-secondary">TUE</div>
+<div class="bg-surface-container-low py-2 text-center font-body text-xs font-semibold text-secondary">WED</div>
+<div class="bg-surface-container-low py-2 text-center font-body text-xs font-semibold text-secondary">THU</div>
+<div class="bg-surface-container-low py-2 text-center font-body text-xs font-semibold text-secondary">FRI</div>
+<div class="bg-surface-container-low py-2 text-center font-body text-xs font-semibold text-secondary">SAT</div>
+<div class="bg-surface-container-low py-2 text-center font-body text-xs font-semibold text-secondary">SUN</div>
+<!-- Row 1: Active Week -->
+<div class="bg-white min-h-[140px] p-2 relative group">
+<span class="text-xs font-medium opacity-40">23</span>
+<div class="mt-2 space-y-1">
+<div class="bg-primary/10 border-l-2 border-primary p-1.5 text-[10px] text-primary-dim font-medium leading-tight">
+                                    10:00 Julian V.
+                                </div>
+<div class="bg-primary/10 border-l-2 border-primary p-1.5 text-[10px] text-primary-dim font-medium leading-tight">
+                                    14:30 Elena R.
+                                </div>
+</div>
+</div>
+<div class="bg-white min-h-[140px] p-2">
+<span class="text-xs font-medium opacity-40">24</span>
+</div>
+<div class="bg-surface-container p-2 min-h-[140px]">
+<span class="text-xs font-medium opacity-40">25</span>
+<div class="mt-2">
+<div class="bg-secondary/10 border-l-2 border-secondary p-1.5 text-[10px] text-secondary font-medium leading-tight">
+                                    09:00 Staff Mtg
+                                </div>
+</div>
+</div>
+<div class="bg-white min-h-[140px] p-2">
+<span class="text-xs font-medium opacity-40">26</span>
+</div>
+<div class="bg-white min-h-[140px] p-2">
+<span class="text-xs font-medium opacity-40">27</span>
+</div>
+<div class="bg-surface-container-low min-h-[140px] p-2">
+<span class="text-xs font-medium opacity-40">28</span>
+</div>
+<div class="bg-surface-container-low min-h-[140px] p-2">
+<span class="text-xs font-medium opacity-40">29</span>
+</div>
+</div>
+</div>
+<!-- Upcoming Sessions List -->
+<div class="bg-surface-container-low p-8 rounded-lg">
+<h3 class="text-2xl editorial-serif text-primary mb-6">Upcoming Sessions</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-4 bg-white rounded shadow-sm">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded bg-surface-container flex items-center justify-center font-headline text-primary font-bold">JV</div>
+<div>
+<p class="font-body font-semibold text-on-surface">Julian Vance</p>
+<p class="font-body text-xs text-secondary italic">Cognitive Behavioral Therapy</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-body font-medium text-primary">10:00 AM</p>
+<p class="text-[10px] text-secondary tracking-widest uppercase">Room 4B / Remote</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 bg-white rounded shadow-sm opacity-80">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded bg-surface-container flex items-center justify-center font-headline text-primary font-bold">ER</div>
+<div>
+<p class="font-body font-semibold text-on-surface">Elena Rodriguez</p>
+<p class="font-body text-xs text-secondary italic">Family Systems Intake</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-body font-medium text-primary">02:30 PM</p>
+<p class="text-[10px] text-secondary tracking-widest uppercase">Studio A</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 bg-white rounded shadow-sm opacity-60">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded bg-surface-container flex items-center justify-center font-headline text-primary font-bold">MD</div>
+<div>
+<p class="font-body font-semibold text-on-surface">Marcus Dupont</p>
+<p class="font-body text-xs text-secondary italic">Standard Follow-up</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-body font-medium text-primary">04:00 PM</p>
+<p class="text-[10px] text-secondary tracking-widest uppercase">Remote Link</p>
+</div>
+</div>
+</div>
+<button class="mt-6 w-full py-3 border border-primary/20 text-primary font-medium text-sm hover:bg-primary/5 transition-colors">View All Archive Records</button>
+</div>
+</div>
+<!-- Stats & Insights Sidebar -->
+<div class="col-span-4 space-y-8">
+<!-- Clinical Insights (Stats Block) -->
+<div class="bg-primary text-on-primary p-8 rounded-lg shadow-xl relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="text-xl editorial-serif italic mb-6">Practice Velocity</h3>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between items-end mb-2">
+<p class="text-xs uppercase tracking-widest opacity-80">Weekly Hours</p>
+<p class="font-body text-xl">28 / <span class="opacity-60 text-sm">32</span></p>
+</div>
+<div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-white w-[87%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-end mb-2">
+<p class="text-xs uppercase tracking-widest opacity-80">Monthly Target</p>
+<p class="font-body text-xl">112 / <span class="opacity-60 text-sm">130</span></p>
+</div>
+<div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-white w-[74%]"></div>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-white/10">
+<div class="flex justify-between items-center">
+<div>
+<p class="text-[10px] uppercase tracking-[0.15em] opacity-60">Revenue Projection</p>
+<p class="text-2xl font-headline font-semibold">$14,200.00</p>
+</div>
+<span class="material-symbols-outlined text-white/40">trending_up</span>
+</div>
+</div>
+</div>
+<!-- Subtle aesthetic texture overlay -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-white/5 -mr-16 -mt-16 rounded-full blur-3xl"></div>
+</div>
+<!-- Quick Notes Area -->
+<div class="bg-surface-container p-8 rounded-lg">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary scale-75">edit_note</span>
+<h3 class="text-lg editorial-serif text-on-surface">Internal Reflections</h3>
+</div>
+<textarea class="w-full bg-white/50 border-none rounded p-4 text-sm font-body text-on-surface-variant min-h-[160px] focus:ring-1 focus:ring-primary/20 placeholder:italic" placeholder="Capture session themes or post-clinical notes..."></textarea>
+<div class="mt-4 flex justify-between items-center">
+<p class="text-[10px] text-secondary font-medium uppercase tracking-widest">Last saved 2m ago</p>
+<button class="text-xs font-semibold text-primary underline underline-offset-4">Archive Note</button>
+</div>
+</div>
+<!-- Clinical Insights (Practice Metrics) -->
+<div class="bg-surface-container-highest/30 p-8 rounded-lg border border-outline-variant/15">
+<h3 class="text-lg editorial-serif text-secondary mb-6">Patient Retention</h3>
+<div class="space-y-6">
+<div class="flex items-start gap-4">
+<div class="h-1.5 w-1.5 rounded-full bg-primary mt-2"></div>
+<div>
+<p class="text-sm font-body text-on-surface leading-tight">Client engagement is up 12% this quarter.</p>
+<p class="text-[10px] text-secondary mt-1">Based on session attendance logs.</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="h-1.5 w-1.5 rounded-full bg-primary mt-2"></div>
+<div>
+<p class="text-sm font-body text-on-surface leading-tight">3 Initial Intakes scheduled for next week.</p>
+<p class="text-[10px] text-secondary mt-1">Expansion capacity at 92%.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer / Bottom Branding -->
+<footer class="mt-24 px-12 pb-12 opacity-40">
+<div class="max-w-7xl mx-auto border-t border-outline-variant/20 pt-8 flex justify-between items-center">
+<p class="font-body text-xs tracking-widest uppercase">System Vers. 4.2.0-Editorial</p>
+<div class="flex gap-8">
+<a class="text-xs font-medium hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-xs font-medium hover:text-primary transition-colors" href="#">Documentation</a>
+<a class="text-xs font-medium hover:text-primary transition-colors" href="#">Support</a>
+</div>
+</div>
+</footer>
+</main>
+<!-- Contextual FAB -->
+<button class="fixed bottom-8 right-8 bg-primary text-white h-14 w-14 rounded shadow-2xl flex items-center justify-center hover:scale-105 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+</button>
+</body></html>
