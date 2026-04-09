@@ -1,11 +1,13 @@
 services:
+
+  # ── Infrastructure (always up) ───────────────────────────────────────────────
+
   postgres:
     image: postgres:16-alpine
     environment:
       POSTGRES_USER: sophrosync
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: postgres
-      # Passed to init.sh for per-service user creation
       CLIENTS_DB_PASSWORD: ${CLIENTS_DB_PASSWORD}
       CONSENT_DB_PASSWORD: ${CONSENT_DB_PASSWORD}
       NOTES_DB_PASSWORD: ${NOTES_DB_PASSWORD}
@@ -37,6 +39,69 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+
+  # ── Application services (opt-in via profiles) ───────────────────────────────
+  #
+  # Usage:
+  #   docker compose --profile clients up -d      # run clients-service in Docker
+  #   docker compose --profile notes up -d        # run notes-service in Docker
+  #   docker compose --profile gateway up -d      # run gateway in Docker
+  #   docker compose --profile services up -d     # run all services in Docker
+  #
+  # When debugging a service in VS, simply omit its profile — it runs on the
+  # same host port so the SPA proxy and other services reach it identically.
+
+  clients-service:
+    profiles: ["clients", "services"]
+    build:
+      context: .
+      dockerfile: src/Services/ClientService/Sophrosync.Clients.API/Dockerfile
+    ports:
+      - "5001:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__ClientsDb: "Host=postgres;Port=5432;Database=sophrosync_clients;Username=svc_clients;Password=${CLIENTS_DB_PASSWORD}"
+      Encryption__ClientsKey: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      Keycloak__Authority: "http://keycloak:8080/realms/sophrosync"
+      Keycloak__Audience: "sophrosync-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  notes-service:
+    profiles: ["notes", "services"]
+    build:
+      context: .
+      dockerfile: src/Services/NotesService/Sophrosync.Notes.API/Dockerfile
+    ports:
+      - "5003:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__NotesDb: "Host=postgres;Port=5432;Database=sophrosync_notes;Username=svc_notes;Password=${NOTES_DB_PASSWORD}"
+      Encryption__NotesKey: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      Keycloak__Authority: "http://keycloak:8080/realms/sophrosync"
+      Keycloak__Audience: "sophrosync-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  gateway:
+    profiles: ["gateway", "services"]
+    build:
+      context: .
+      dockerfile: src/Gateway/Sophrosync.Gateway/Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Keycloak__Authority: "http://keycloak:8080/realms/sophrosync"
+      Keycloak__Audience: "sophrosync-gateway"
+      # Point clusters at host machine services (VS debug or other containers via host port)
+      ReverseProxy__Clusters__clients-cluster__Destinations__clients-service__Address: "http://host.docker.internal:5001/"
+      ReverseProxy__Clusters__notes-cluster__Destinations__notes-service__Address: "http://host.docker.internal:5003/"
+    depends_on:
+      keycloak:
+        condition: service_started
 
 volumes:
   postgres_data:

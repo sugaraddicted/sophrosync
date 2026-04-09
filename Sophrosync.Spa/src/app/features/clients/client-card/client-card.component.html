@@ -1,0 +1,44 @@
+<article class="client-card">
+  <div class="client-card__body">
+    <p class="client-card__name">{{ client().name }}</p>
+    <p class="client-card__contact">{{ client().email }}</p>
+    <p class="client-card__contact">{{ client().phone }}</p>
+    <span
+      class="client-card__status"
+      [class.client-card__status--active]="client().status === 'active'"
+      [class.client-card__status--inactive]="client().status === 'inactive'"
+    >{{ client().status }}</span>
+  </div>
+
+  <div class="client-card__menu-wrap">
+    <button
+      class="client-card__menu-btn"
+      type="button"
+      aria-label="Client options"
+      aria-haspopup="menu"
+      [attr.aria-expanded]="menuOpen()"
+      (click)="toggleMenu()"
+    >&#8942;</button>
+
+    @if (menuOpen()) {
+      <ul class="client-card__dropdown" role="menu">
+        <li role="none">
+          <button
+            class="client-card__dropdown-item"
+            type="button"
+            role="menuitem"
+            (click)="onEdit()"
+          >Edit</button>
+        </li>
+        <li role="none">
+          <button
+            class="client-card__dropdown-item client-card__dropdown-item--danger"
+            type="button"
+            role="menuitem"
+            (click)="onDelete()"
+          >Delete</button>
+        </li>
+      </ul>
+    }
+  </div>
+</article>

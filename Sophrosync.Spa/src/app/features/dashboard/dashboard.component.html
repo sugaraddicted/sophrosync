@@ -1,7 +1,131 @@
 <div class="dashboard">
-  <h2 class="dashboard__greeting">Welcome, {{ profile()?.firstName ?? 'User' }}</h2>
-  <div class="dashboard__widgets">
-    <app-next-session-card class="dashboard__next-session" />
-    <app-appointments-calendar class="dashboard__calendar" />
+
+  <!-- ── Editorial Hero ─────────────────────────────────────────────── -->
+  <div class="dashboard__hero">
+    <p class="dashboard__date">{{ formattedDate }}</p>
+    <h1 class="dashboard__headline">{{ greeting() }}</h1>
+    <p class="dashboard__subtitle">Here is your practice overview for today.</p>
+  </div>
+
+  <!-- ── Bento Grid ─────────────────────────────────────────────────── -->
+  <div class="dashboard__bento">
+
+    <!-- LEFT: col-span-8 -->
+    <div class="dashboard__col-main">
+
+      <!-- Weekly mini-calendar strip -->
+      <div class="dashboard__week-strip">
+        <div class="week-strip__header">
+          <span class="week-strip__label">This week</span>
+        </div>
+        <div class="week-strip__days">
+          @for (day of weekDays; track day.label) {
+            <div class="week-strip__day" [class.week-strip__day--today]="day.isToday">
+              <span class="week-strip__day-name">{{ day.label }}</span>
+              <span class="week-strip__day-num">{{ day.date }}</span>
+              @if (day.hasSessions) {
+                <span class="week-strip__dot" aria-label="Sessions scheduled"></span>
+              } @else {
+                <span class="week-strip__dot week-strip__dot--empty"></span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Full month calendar -->
+      <app-appointments-calendar />
+
+      <!-- Upcoming sessions -->
+      <div class="dashboard__upcoming">
+        <h2 class="dashboard__section-title">Upcoming sessions</h2>
+        <ul class="upcoming-list" role="list">
+          @for (session of upcomingSessions; track session.name) {
+            <li class="upcoming-list__item">
+              <div
+                class="upcoming-list__avatar"
+                [style.background]="session.avatarColor"
+                aria-hidden="true"
+              >{{ session.initials }}</div>
+              <div class="upcoming-list__info">
+                <span class="upcoming-list__name">{{ session.name }}</span>
+                <span class="upcoming-list__type">{{ session.type }}</span>
+              </div>
+              <span class="upcoming-list__time">{{ session.time }}</span>
+            </li>
+          }
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: col-span-4 -->
+    <div class="dashboard__col-side">
+
+      <!-- Practice Velocity card -->
+      <div class="dashboard__velocity">
+        <h2 class="dashboard__velocity-title">Practice Velocity</h2>
+        <p class="dashboard__velocity-sub">March 2026</p>
+
+        <div class="velocity-stat">
+          <div class="velocity-stat__row">
+            <span class="velocity-stat__label">Weekly hours</span>
+            <span class="velocity-stat__value">{{ weeklyHoursPercent }}%</span>
+          </div>
+          <div class="velocity-bar" role="progressbar" [attr.aria-valuenow]="weeklyHoursPercent" aria-valuemin="0" aria-valuemax="100">
+            <div class="velocity-bar__fill" [style.width.%]="weeklyHoursPercent"></div>
+          </div>
+        </div>
+
+        <div class="velocity-stat">
+          <div class="velocity-stat__row">
+            <span class="velocity-stat__label">Monthly target</span>
+            <span class="velocity-stat__value">{{ monthlyTargetPercent }}%</span>
+          </div>
+          <div class="velocity-bar" role="progressbar" [attr.aria-valuenow]="monthlyTargetPercent" aria-valuemin="0" aria-valuemax="100">
+            <div class="velocity-bar__fill" [style.width.%]="monthlyTargetPercent"></div>
+          </div>
+        </div>
+
+        <div class="velocity-revenue">
+          <span class="velocity-revenue__label">Revenue projection</span>
+          <span class="velocity-revenue__value">$4,200</span>
+        </div>
+      </div>
+
+      <!-- Internal Reflections -->
+      <div class="dashboard__reflections">
+        <h2 class="dashboard__section-title">Internal reflections</h2>
+        <textarea
+          class="reflections__textarea"
+          placeholder="Capture thoughts, clinical notes-to-self, or observations…"
+          rows="5"
+          aria-label="Internal reflections"
+          [value]="reflectionText()"
+          (input)="reflectionText.set($any($event.target).value)"
+        ></textarea>
+      </div>
+
+      <!-- Patient Retention -->
+      <div class="dashboard__retention">
+        <h2 class="dashboard__section-title">Patient retention</h2>
+        <div class="retention-stats">
+          <div class="retention-stat">
+            <span class="retention-stat__num">94%</span>
+            <span class="retention-stat__label">Retention rate</span>
+          </div>
+          <div class="retention-stat">
+            <span class="retention-stat__num">18</span>
+            <span class="retention-stat__label">Active clients</span>
+          </div>
+          <div class="retention-stat">
+            <span class="retention-stat__num">3.2</span>
+            <span class="retention-stat__label">Avg months</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
   </div>
 </div>

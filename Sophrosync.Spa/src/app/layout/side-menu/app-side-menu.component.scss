@@ -1,32 +1,131 @@
 .side-menu {
-  background: var(--color-menu);
-  color: var(--color-chrome-text);
+  display: flex;
+  flex-direction: column;
   height: 100%;
-  overflow-y: auto;
+  background: var(--color-surface-container-low);
+  overflow: hidden;
 
+  // ── Brand ──────────────────────────────────────────────────────────
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem 1rem 1.25rem 1.25rem;
+    flex-shrink: 0;
+  }
+
+  &__collapse-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none;
+    border-radius: var(--radius-DEFAULT);
+    cursor: pointer;
+    color: var(--color-on-surface-variant);
+    flex-shrink: 0;
+    transition: background 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      background: var(--color-surface-container);
+      color: var(--color-on-surface);
+    }
+
+    .material-symbols-outlined {
+      font-size: 18px;
+    }
+  }
+
+  &__brand-text {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  &__brand-name {
+    font-family: var(--font-headline);
+    font-style: italic;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-on-surface);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__brand-sub {
+    font-size: 0.6875rem;
+    font-weight: 400;
+    color: var(--color-on-surface-variant);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  // ── Nav list ────────────────────────────────────────────────────────
   &__list {
     list-style: none;
     margin: 0;
-    padding: var(--space-md) 0;
+    padding: 0.5rem 0;
+    overflow-y: auto;
+    flex: 1;
+
+    &--bottom {
+      flex: 0;
+      padding: 0.5rem 0 1.5rem;
+      border-top: none;
+      margin-top: auto;
+    }
   }
 
+  // ── Nav item ────────────────────────────────────────────────────────
   &__item {
-    display: block;
-    padding: 12px var(--space-xl);
-    color: var(--color-chrome-text);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 1.25rem;
+    width: 100%;
     text-decoration: none;
-    font-size: var(--font-size-lg);
-    border-left: 3px solid transparent;
-    transition: background 0.15s, border-color 0.15s;
+    color: var(--color-on-surface-variant);
+    font-size: 0.9375rem;
+    font-weight: 400;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s ease, color 0.15s ease;
+    border-right: 2px solid transparent;
 
     &:hover {
-      background: var(--color-chrome-hover);
+      background: rgba(84, 98, 83, 0.08);
+      color: var(--color-on-surface);
     }
 
     &--active {
-      border-left-color: var(--color-chrome-active-border);
-      background: var(--color-chrome-active);
-      font-weight: 600;
+      background: var(--color-surface-container-highest);
+      color: var(--color-primary);
+      font-weight: 500;
+      border-right-color: var(--color-primary);
     }
+
+    &--btn {
+      // same as anchor but as a <button>
+      width: 100%;
+    }
+  }
+
+  &__icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    opacity: 0.85;
+  }
+
+  &__label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

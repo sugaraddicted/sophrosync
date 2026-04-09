@@ -13,6 +13,9 @@ public sealed class LoggingBehavior<TRequest, TResponse>(
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
+        // Intentionally log only the request type name — never the request payload.
+        // Request objects may contain PHI (names, emails, clinical data) and must not
+        // appear in log sinks to preserve HIPAA compliance.
         logger.LogInformation("Handling {RequestType}", typeof(TRequest).Name);
         var response = await next();
         logger.LogInformation("Handled {RequestType}", typeof(TRequest).Name);

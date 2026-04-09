@@ -1,0 +1,147 @@
+<div class="dashboard">
+
+  <!-- ─── Editorial hero ──────────────────────────────────────── -->
+  <section class="hero">
+    <p class="hero__date">{{ dateLabel }}</p>
+    <h1 class="hero__headline">{{ greeting }}</h1>
+    <p class="hero__sub">Your archive is current. You have {{ upcomingSessions.length }} sessions scheduled today.</p>
+  </section>
+
+  <!-- ─── Bento grid ──────────────────────────────────────────── -->
+  <div class="bento">
+
+    <!-- Left column -->
+    <div class="bento__main">
+
+      <!-- Weekly schedule strip -->
+      <div class="card">
+        <div class="card__header">
+          <h3 class="card__title">Weekly Schedule</h3>
+          <div class="week-nav">
+            <button class="week-nav__btn" aria-label="Previous week">
+              <span class="material-symbols-outlined">chevron_left</span>
+            </button>
+            <span class="week-nav__label">This Week</span>
+            <button class="week-nav__btn" aria-label="Next week">
+              <span class="material-symbols-outlined">chevron_right</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="week-grid">
+          @for (day of weekDays; track day.label) {
+            <div class="week-cell" [class.week-cell--today]="day.isToday" [class.week-cell--weekend]="day.label === 'SAT' || day.label === 'SUN'">
+              <div class="week-cell__header">
+                <span class="week-cell__label">{{ day.label }}</span>
+                <span class="week-cell__date">{{ day.date }}</span>
+              </div>
+              <div class="week-cell__sessions">
+                @for (s of day.sessions; track s.time) {
+                  <div class="session-chip">{{ s.time }} {{ s.label }}</div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Upcoming sessions -->
+      <div class="card">
+        <h3 class="card__title" style="margin-bottom: 1.5rem">Upcoming Sessions</h3>
+        <div class="sessions-list">
+          @for (session of upcomingSessions; track session.name; let idx = $index) {
+            <div class="session-row" [style.opacity]="idx === 0 ? '1' : idx === 1 ? '0.8' : '0.6'">
+              <div class="session-row__avatar">{{ session.initials }}</div>
+              <div class="session-row__info">
+                <p class="session-row__name">{{ session.name }}</p>
+                <p class="session-row__type">{{ session.type }}</p>
+              </div>
+              <div class="session-row__time">
+                <p class="session-row__time-value">{{ session.time }}</p>
+                <p class="session-row__location">{{ session.location }}</p>
+              </div>
+            </div>
+          }
+        </div>
+        <button class="btn-ghost">View All Archive Records</button>
+      </div>
+
+    </div>
+
+    <!-- Right column -->
+    <div class="bento__side">
+
+      <!-- Practice Velocity card -->
+      <div class="card card--primary">
+        <h3 class="card__title card__title--light">Practice Velocity</h3>
+        <div class="velocity">
+          <div class="velocity__metric">
+            <div class="velocity__metric-header">
+              <span class="velocity__label">Weekly Hours</span>
+              <span class="velocity__value">28 <span class="velocity__total">/ 32</span></span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-bar__fill" style="width: 87%"></div>
+            </div>
+          </div>
+          <div class="velocity__metric">
+            <div class="velocity__metric-header">
+              <span class="velocity__label">Monthly Target</span>
+              <span class="velocity__value">112 <span class="velocity__total">/ 130</span></span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-bar__fill" style="width: 74%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="velocity__revenue">
+          <div>
+            <p class="velocity__revenue-label">Revenue Projection</p>
+            <p class="velocity__revenue-value">$14,200.00</p>
+          </div>
+          <span class="material-symbols-outlined velocity__revenue-icon">trending_up</span>
+        </div>
+        <div class="card--primary__glow"></div>
+      </div>
+
+      <!-- Internal Reflections -->
+      <div class="card card--surface">
+        <div class="reflections-header">
+          <span class="material-symbols-outlined reflections-icon">edit_note</span>
+          <h3 class="card__title card__title--sm">Internal Reflections</h3>
+        </div>
+        <textarea
+          class="reflections-textarea"
+          placeholder="Capture session themes or post-clinical notes…"
+          rows="6"
+        ></textarea>
+        <div class="reflections-footer">
+          <span class="reflections-footer__saved">Last saved 2m ago</span>
+          <button class="reflections-footer__archive">Archive Note</button>
+        </div>
+      </div>
+
+      <!-- Patient Retention -->
+      <div class="card card--muted">
+        <h3 class="card__title card__title--secondary">Patient Retention</h3>
+        <div class="insights">
+          <div class="insight-item">
+            <span class="insight-item__dot"></span>
+            <div>
+              <p class="insight-item__text">Client engagement is up 12% this quarter.</p>
+              <p class="insight-item__meta">Based on session attendance logs.</p>
+            </div>
+          </div>
+          <div class="insight-item">
+            <span class="insight-item__dot"></span>
+            <div>
+              <p class="insight-item__text">3 Initial Intakes scheduled for next week.</p>
+              <p class="insight-item__meta">Expansion capacity at 92%.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,72 @@
+@use 'styles/mixins' as *;
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 15, 12, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 200;
+}
+
+.dialog {
+  @include card-base;
+
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 201;
+  width: min(400px, calc(100vw - 3rem));
+  box-shadow: var(--shadow-ambient);
+
+  &__title {
+    @include card-heading;
+  }
+
+  &__message {
+    margin: 0 0 1.5rem;
+    font-size: 0.9375rem;
+    color: var(--color-on-surface-variant);
+    line-height: 1.6;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  &__btn {
+    padding: 0.5rem 1.25rem;
+    font-size: 0.875rem;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    border-radius: var(--radius-lg);
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s ease, opacity 0.15s ease;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &--secondary {
+      background: var(--color-surface-container);
+      color: var(--color-on-surface);
+
+      &:hover:not(:disabled) {
+        background: var(--color-surface-container-high);
+      }
+    }
+
+    &--danger {
+      background: var(--color-error);
+      color: var(--color-on-error);
+
+      &:hover:not(:disabled) {
+        background: var(--color-error-dim);
+      }
+    }
+  }
+}

@@ -1,13 +1,64 @@
-<nav class="side-menu">
-  <ul class="side-menu__list">
-    @for (item of navItems; track item.path) {
+<nav class="side-menu" aria-label="Main navigation">
+
+  <!-- Brand identity -->
+  <div class="side-menu__brand">
+    <button
+      class="side-menu__collapse-btn"
+      type="button"
+      (click)="menuToggle.emit()"
+      aria-label="Collapse sidebar"
+    >
+      <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+    </button>
+    <div class="side-menu__brand-text">
+      <span class="side-menu__brand-name">Sophrosync</span>
+      <span class="side-menu__brand-sub">Clinical Suite</span>
+    </div>
+  </div>
+
+  <!-- Primary navigation -->
+  <ul class="side-menu__list" role="list">
+    @for (item of primaryNav; track item.path) {
       <li>
         <a
           class="side-menu__item"
           [routerLink]="item.path"
           routerLinkActive="side-menu__item--active"
-        >{{ item.label }}</a>
+          [ariaCurrentWhenActive]="'page'"
+        >
+          <span class="material-symbols-outlined side-menu__icon" aria-hidden="true">{{ item.icon }}</span>
+          <span class="side-menu__label">{{ item.label }}</span>
+        </a>
       </li>
     }
   </ul>
+
+  <!-- Bottom utilities -->
+  <ul class="side-menu__list side-menu__list--bottom" role="list">
+    @for (item of bottomNav; track item.path) {
+      <li>
+        <a
+          class="side-menu__item"
+          [routerLink]="item.path"
+          routerLinkActive="side-menu__item--active"
+          [ariaCurrentWhenActive]="'page'"
+        >
+          <span class="material-symbols-outlined side-menu__icon" aria-hidden="true">{{ item.icon }}</span>
+          <span class="side-menu__label">{{ item.label }}</span>
+        </a>
+      </li>
+    }
+    <li>
+      <button
+        class="side-menu__item side-menu__item--btn"
+        type="button"
+        (click)="logout()"
+        aria-label="Log out"
+      >
+        <span class="material-symbols-outlined side-menu__icon" aria-hidden="true">logout</span>
+        <span class="side-menu__label">Logout</span>
+      </button>
+    </li>
+  </ul>
+
 </nav>

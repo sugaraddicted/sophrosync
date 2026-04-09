@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clinical Suite - Calendar</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Work+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-dim": "#d5dcd0",
+              "secondary-container": "#e4e2e2",
+              "tertiary-container": "#ffe9e9",
+              "secondary-fixed-dim": "#d5d4d4",
+              "primary-dim": "#485648",
+              "surface-container-low": "#f3f4ee",
+              "on-primary-container": "#485547",
+              "outline-variant": "#aeb4aa",
+              "outline": "#767c74",
+              "on-tertiary-fixed-variant": "#6e5f5f",
+              "on-secondary": "#faf8f8",
+              "on-error-container": "#742410",
+              "on-surface-variant": "#5b6159",
+              "tertiary-dim": "#5e5050",
+              "on-tertiary-fixed": "#514343",
+              "error-container": "#fe8b70",
+              "surface-container-highest": "#dee4da",
+              "secondary-dim": "#535353",
+              "on-primary-fixed": "#354335",
+              "primary-fixed": "#d8e7d4",
+              "primary": "#546253",
+              "on-tertiary": "#fff7f6",
+              "primary-container": "#d8e7d4",
+              "on-secondary-fixed-variant": "#5b5b5b",
+              "error-dim": "#5c1202",
+              "primary-fixed-dim": "#c9d9c6",
+              "tertiary": "#6b5b5b",
+              "tertiary-fixed": "#ffe9e9",
+              "on-primary-fixed-variant": "#515f51",
+              "on-error": "#fff7f6",
+              "surface-tint": "#546253",
+              "on-primary": "#edfce9",
+              "surface-container-high": "#e5eae0",
+              "secondary-fixed": "#e4e2e2",
+              "tertiary-fixed-dim": "#f0dbdb",
+              "inverse-on-surface": "#9c9d99",
+              "on-secondary-container": "#515252",
+              "on-secondary-fixed": "#3f3f3f",
+              "inverse-primary": "#eefeeb",
+              "background": "#fafaf5",
+              "surface-bright": "#fafaf5",
+              "on-tertiary-container": "#645555",
+              "secondary": "#5f5f5f",
+              "on-surface": "#2e342d",
+              "surface-variant": "#dee4da",
+              "surface": "#fafaf5",
+              "error": "#9e422c",
+              "inverse-surface": "#0d0f0c",
+              "surface-container": "#ecefe7",
+              "surface-container-lowest": "#ffffff",
+              "on-background": "#2e342d"
+            },
+            fontFamily: {
+              "headline": ["Newsreader"],
+              "body": ["Work Sans"],
+              "label": ["Work Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: 60px repeat(7, 1fr);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body flex min-h-screen">
+<!-- SideNavBar (Shared Component) -->
+<aside class="h-screen w-64 left-0 sticky bg-[#f3f4ee] dark:bg-stone-900 flex flex-col py-8 px-4 space-y-2 shrink-0">
+<div class="mb-8 px-2">
+<h1 class="font-headline italic text-lg text-[#546253]">Clinical Suite</h1>
+<p class="text-[10px] uppercase tracking-widest text-on-surface-variant opacity-70">Modern Archivist v1.0</p>
+</div>
+<button class="bg-primary text-on-primary py-3 px-4 rounded-lg flex items-center justify-center gap-2 mb-6 hover:bg-primary-dim transition-colors group">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+<span class="font-label font-medium">New Session</span>
+</button>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-[#5f5f5f] dark:text-stone-400 hover:bg-[#fafaf5]/50 dark:hover:bg-stone-800/50 transition-all rounded-sm font-label font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#5f5f5f] dark:text-stone-400 hover:bg-[#fafaf5]/50 dark:hover:bg-stone-800/50 transition-all rounded-sm font-label font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+                Clients
+            </a>
+<!-- Active Tab: Calendar -->
+<a class="flex items-center gap-3 px-3 py-2 bg-[#dee4da] dark:bg-stone-800 text-[#546253] dark:text-emerald-300 rounded-sm font-label font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+                Calendar
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#5f5f5f] dark:text-stone-400 hover:bg-[#fafaf5]/50 dark:hover:bg-stone-800/50 transition-all rounded-sm font-label font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+                Documents
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#5f5f5f] dark:text-stone-400 hover:bg-[#fafaf5]/50 dark:hover:bg-stone-800/50 transition-all rounded-sm font-label font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+                Billing
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#5f5f5f] dark:text-stone-400 hover:bg-[#fafaf5]/50 dark:hover:bg-stone-800/50 transition-all rounded-sm font-label font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="mt-auto pt-4 border-t border-outline-variant/10 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-[#5f5f5f] dark:text-stone-400 hover:bg-[#fafaf5]/50 transition-all rounded-sm font-label font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span>
+                Help Center
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#5f5f5f] dark:text-stone-400 hover:bg-[#fafaf5]/50 transition-all rounded-sm font-label font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                Logout
+            </a>
+</div>
+</aside>
+<div class="flex-1 flex flex-col overflow-hidden">
+<!-- TopAppBar (Shared Component) -->
+<header class="w-full top-0 sticky z-30 bg-[#fafaf5] dark:bg-stone-950 flex justify-between items-center px-8 py-4">
+<div class="flex items-center gap-8">
+<span class="text-xl font-semibold text-[#546253] dark:text-emerald-500 font-headline">The Modern Archivist</span>
+<div class="hidden md:flex items-center bg-[#f3f4ee] dark:bg-stone-900 px-3 py-1.5 rounded-lg group">
+<span class="material-symbols-outlined text-on-surface-variant text-sm mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm font-label placeholder:text-outline/50 w-48" placeholder="Search archives..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-1 relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-1">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+</div>
+<div class="h-8 w-px bg-outline-variant/20"></div>
+<div class="flex items-center gap-3">
+<img alt="Therapist Profile" class="w-9 h-9 rounded-lg object-cover" data-alt="Portrait of a professional clinical psychologist" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCM0koUnePGzr3cbMfexO4nQ4tWLjb62pB35mCMqE7EoMAVp3xxH2mc_l9HyASt89Pp3UwqPQEHOW1QM7A01VuViVt2gWQiMd0Gr7tV7d8oPmqs3RjB7Z0ow8U8Gui14lZmgoZD3mrjcKvdxws3_rB31WARcako6boceGUTRI5wPoR0EbHHervWCb157cE6nRcBnNLzJ4UyJheieu02R_UP2ENUsAbwov8zXAUBua9SyQi64VrBRWHiVFzL8WU2Z2oqvMd-BGBcLx4"/>
+<div class="hidden lg:block">
+<p class="text-xs font-label font-semibold text-on-surface">Dr. Elena Thorne</p>
+<p class="text-[10px] text-on-surface-variant">Clinical Director</p>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto p-8 bg-background">
+<div class="max-w-[1600px] mx-auto space-y-12">
+<!-- Editorial Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="max-w-2xl">
+<h2 class="font-headline text-5xl font-light tracking-tight text-on-surface mb-2">Weekly Practice View</h2>
+<p class="font-body text-secondary leading-relaxed">Schedule management for October 16 — October 22, 2023. You have 24 hours of clinical sessions confirmed this week.</p>
+</div>
+<div class="flex items-center gap-2 bg-surface-container-low p-1.5 rounded-lg">
+<button class="p-2 hover:bg-surface-container-high rounded transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<span class="font-label font-medium px-4">Today</span>
+<button class="p-2 hover:bg-surface-container-high rounded transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Main Layout Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+<!-- Calendar Canvas (Editorial Bento Style) -->
+<div class="lg:col-span-9 space-y-6">
+<div class="bg-surface-container-lowest overflow-hidden rounded-lg shadow-sm border border-outline-variant/5">
+<!-- Calendar Header Row -->
+<div class="calendar-grid bg-surface-container-low border-b border-outline-variant/10 py-4">
+<div class="text-center font-label text-[10px] text-outline uppercase tracking-widest pt-4">GMT-5</div>
+<div class="text-center">
+<p class="font-label text-xs text-on-surface-variant font-medium">MON</p>
+<p class="font-headline text-2xl text-on-surface">16</p>
+</div>
+<div class="text-center">
+<p class="font-label text-xs text-on-surface-variant font-medium">TUE</p>
+<p class="font-headline text-2xl text-on-surface">17</p>
+</div>
+<div class="text-center bg-primary/5 rounded-t-lg mx-1 pt-0.5">
+<p class="font-label text-xs text-primary font-bold">WED</p>
+<p class="font-headline text-2xl text-primary">18</p>
+</div>
+<div class="text-center">
+<p class="font-label text-xs text-on-surface-variant font-medium">THU</p>
+<p class="font-headline text-2xl text-on-surface">19</p>
+</div>
+<div class="text-center">
+<p class="font-label text-xs text-on-surface-variant font-medium">FRI</p>
+<p class="font-headline text-2xl text-on-surface">20</p>
+</div>
+<div class="text-center">
+<p class="font-label text-xs text-on-surface-variant font-medium opacity-50">SAT</p>
+<p class="font-headline text-2xl text-on-surface opacity-50">21</p>
+</div>
+<div class="text-center">
+<p class="font-label text-xs text-on-surface-variant font-medium opacity-50">SUN</p>
+<p class="font-headline text-2xl text-on-surface opacity-50">22</p>
+</div>
+</div>
+<!-- Calendar Body -->
+<div class="relative max-h-[700px] overflow-y-auto">
+<!-- Time Grid Overlay -->
+<div class="calendar-grid">
+<!-- Time Slots -->
+<div class="border-r border-outline-variant/10 text-[10px] font-label text-outline px-2 space-y-16 py-8">
+<div class="h-12 flex items-center justify-end">08:00 AM</div>
+<div class="h-12 flex items-center justify-end">09:00 AM</div>
+<div class="h-12 flex items-center justify-end">10:00 AM</div>
+<div class="h-12 flex items-center justify-end">11:00 AM</div>
+<div class="h-12 flex items-center justify-end">12:00 PM</div>
+<div class="h-12 flex items-center justify-end">01:00 PM</div>
+<div class="h-12 flex items-center justify-end">02:00 PM</div>
+<div class="h-12 flex items-center justify-end">03:00 PM</div>
+<div class="h-12 flex items-center justify-end">04:00 PM</div>
+</div>
+<!-- Day Columns -->
+<div class="border-r border-outline-variant/5 min-h-[900px] relative p-1">
+<!-- Session: Mon 9am -->
+<div class="absolute top-[88px] left-1 right-1 h-[90px] bg-primary/10 border-l-4 border-primary p-2 group hover:bg-primary/20 transition-all cursor-pointer">
+<p class="text-[10px] font-label font-bold text-primary leading-tight">09:00 - 09:50</p>
+<p class="text-xs font-headline font-semibold text-on-surface">Julianne Moore</p>
+<p class="text-[10px] text-on-surface-variant mt-1">Grief Counseling</p>
+</div>
+</div>
+<div class="border-r border-outline-variant/5 min-h-[900px] relative p-1">
+<!-- Session: Tue 11am -->
+<div class="absolute top-[280px] left-1 right-1 h-[90px] bg-secondary/10 border-l-4 border-secondary p-2 group hover:bg-secondary/20 transition-all cursor-pointer">
+<p class="text-[10px] font-label font-bold text-secondary leading-tight">11:00 - 11:50</p>
+<p class="text-xs font-headline font-semibold text-on-surface">Marcus Webb</p>
+<p class="text-[10px] text-on-surface-variant mt-1">Initial Intake</p>
+</div>
+<!-- Session: Tue 2pm -->
+<div class="absolute top-[568px] left-1 right-1 h-[90px] bg-primary/10 border-l-4 border-primary p-2 group hover:bg-primary/20 transition-all cursor-pointer">
+<p class="text-[10px] font-label font-bold text-primary leading-tight">02:00 - 02:50</p>
+<p class="text-xs font-headline font-semibold text-on-surface">Sarah Jenkins</p>
+<p class="text-[10px] text-on-surface-variant mt-1">CBT Session</p>
+</div>
+</div>
+<div class="border-r border-outline-variant/5 min-h-[900px] relative p-1 bg-primary/[0.02]">
+<!-- Session: Wed 8am -->
+<div class="absolute top-[0px] left-1 right-1 h-[90px] bg-primary/10 border-l-4 border-primary p-2">
+<p class="text-[10px] font-label font-bold text-primary leading-tight">08:00 - 08:50</p>
+<p class="text-xs font-headline font-semibold text-on-surface">Private Study</p>
+<p class="text-[10px] text-on-surface-variant mt-1">Notes Review</p>
+</div>
+<!-- Session: Wed 1pm -->
+<div class="absolute top-[472px] left-1 right-1 h-[140px] bg-primary-dim/10 border-l-4 border-primary-dim p-2">
+<p class="text-[10px] font-label font-bold text-primary-dim leading-tight">01:00 - 02:30</p>
+<p class="text-xs font-headline font-semibold text-on-surface">Clinical Supervision</p>
+<p class="text-[10px] text-on-surface-variant mt-1">Peer Review Group</p>
+</div>
+</div>
+<div class="border-r border-outline-variant/5 min-h-[900px] relative p-1">
+<!-- Empty Day Pattern -->
+<div class="h-full w-full opacity-5 pointer-events-none" style="background-image: radial-gradient(circle, #546253 1px, transparent 1px); background-size: 10px 10px;"></div>
+</div>
+<div class="border-r border-outline-variant/5 min-h-[900px] relative p-1">
+<!-- Session: Fri 10am -->
+<div class="absolute top-[184px] left-1 right-1 h-[90px] bg-primary/10 border-l-4 border-primary p-2">
+<p class="text-[10px] font-label font-bold text-primary leading-tight">10:00 - 10:50</p>
+<p class="text-xs font-headline font-semibold text-on-surface">Robert Frost</p>
+<p class="text-[10px] text-on-surface-variant mt-1">Existential Therapy</p>
+</div>
+</div>
+<div class="border-r border-outline-variant/5 min-h-[900px] p-1 bg-surface-container-low opacity-40"></div>
+<div class="min-h-[900px] p-1 bg-surface-container-low opacity-40"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Side Panels (Insights & Reminders) -->
+<div class="lg:col-span-3 space-y-10">
+<!-- Practice Insights -->
+<section>
+<h3 class="font-headline text-2xl text-on-surface mb-6">Practice Insights</h3>
+<div class="space-y-4">
+<div class="p-6 rounded-lg bg-surface-container-low border border-outline-variant/5 relative overflow-hidden group">
+<div class="relative z-10">
+<p class="font-label text-xs text-on-surface-variant uppercase tracking-wider mb-2">Total Clinical Hours</p>
+<div class="flex items-baseline gap-2">
+<span class="font-headline text-4xl text-primary font-medium">32.5</span>
+<span class="text-xs text-on-surface-variant">hrs</span>
+</div>
+<div class="mt-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="trending_up">trending_up</span>
+<span class="text-xs font-label text-on-surface-variant">+4% from last week</span>
+</div>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-5 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-8xl" data-icon="clinical_notes">clinical_notes</span>
+</div>
+</div>
+<div class="p-6 rounded-lg bg-surface-container-low border border-outline-variant/5">
+<p class="font-label text-xs text-on-surface-variant uppercase tracking-wider mb-2">Utilization Rate</p>
+<div class="flex items-center justify-between mb-2">
+<span class="font-headline text-4xl text-secondary">82%</span>
+<span class="text-[10px] font-label text-outline bg-surface-container-high px-2 py-0.5 rounded">Optimal</span>
+</div>
+<div class="w-full h-1.5 bg-outline-variant/20 rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 82%;"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Upcoming Reminders -->
+<section>
+<h3 class="font-headline text-2xl text-on-surface mb-6">Upcoming Reminders</h3>
+<div class="space-y-4">
+<!-- Reminder Item -->
+<div class="flex gap-4 p-4 rounded-lg hover:bg-surface-container transition-colors group">
+<div class="w-10 h-10 rounded bg-tertiary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-tertiary-container" data-icon="history_edu">history_edu</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-headline font-semibold text-on-surface leading-snug">Treatment Plan: Sarah Jenkins</p>
+<p class="text-xs text-on-surface-variant mt-1">Due in 2 days — Needs update</p>
+<button class="mt-3 text-[10px] font-label font-bold text-primary uppercase tracking-widest hover:underline">Update Now</button>
+</div>
+</div>
+<div class="flex gap-4 p-4 rounded-lg hover:bg-surface-container transition-colors group">
+<div class="w-10 h-10 rounded bg-secondary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="contract">contract</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-headline font-semibold text-on-surface leading-snug">Intake Pending: Aaron Ross</p>
+<p class="text-xs text-on-surface-variant mt-1">Policy signature missing</p>
+<button class="mt-3 text-[10px] font-label font-bold text-primary uppercase tracking-widest hover:underline">Send Reminder</button>
+</div>
+</div>
+<div class="flex gap-4 p-4 rounded-lg hover:bg-surface-container transition-colors group">
+<div class="w-10 h-10 rounded bg-primary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="payments">payments</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-headline font-semibold text-on-surface leading-snug">Unbilled Sessions (4)</p>
+<p class="text-xs text-on-surface-variant mt-1">Ready for insurance submission</p>
+<button class="mt-3 text-[10px] font-label font-bold text-primary uppercase tracking-widest hover:underline">Process Batch</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Subtle Newsletter/Editorial CTA -->
+<div class="mt-12 p-8 bg-primary rounded-lg relative overflow-hidden text-on-primary">
+<h4 class="font-headline text-xl mb-2 relative z-10">Clinical Excellence</h4>
+<p class="text-xs font-body opacity-80 leading-relaxed relative z-10 mb-4">Read our latest research on somatic techniques for trauma processing.</p>
+<a class="text-xs font-label font-bold uppercase tracking-widest border-b border-on-primary relative z-10" href="#">Read Journal</a>
+<!-- Soft texture circle -->
+<div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

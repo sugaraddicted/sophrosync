@@ -1,0 +1,70 @@
+/* ─── Shared feature page styles ─────────────────────────── */
+
+:host {
+  display: block;
+}
+
+.feature-page {
+  padding: 0 3rem 5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.feature-hero {
+  padding: 4rem 0 2.5rem;
+}
+
+.feature-hero__category {
+  font-family: var(--font-body);
+  color: #5f5f5f;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 1rem;
+}
+
+.feature-hero__headline {
+  font-family: var(--font-headline);
+  font-style: italic;
+  font-size: 3.75rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: #2e342d;
+  line-height: 1.05;
+  margin-bottom: 1rem;
+}
+
+.feature-hero__sub {
+  font-size: 1.0625rem;
+  color: #5b6159;
+  line-height: 1.6;
+  max-width: 520px;
+}
+
+.placeholder-card {
+  background-color: #f3f4ee;
+  border-radius: 0.25rem;
+  padding: 5rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.placeholder-card__icon {
+  font-size: 3rem;
+  color: #aeb4aa;
+  margin-bottom: 0.5rem;
+}
+
+.placeholder-card__label {
+  font-family: var(--font-headline);
+  font-size: 1.25rem;
+  color: #5b6159;
+}
+
+.placeholder-card__meta {
+  font-size: 0.875rem;
+  color: #767c74;
+}
