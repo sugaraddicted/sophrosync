@@ -11,6 +11,12 @@
     "changeOrigin": true,
     "logLevel": "debug"
   },
+  "/api/identity": {
+    "target": "http://localhost:5005",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
   "/api": {
     "target": "http://localhost:60228",
     "secure": false,

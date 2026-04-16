@@ -70,6 +70,15 @@
           }
         }
       ]
+    },
+    {
+      "clientId": "sophrosync-admin",
+      "name": "Sophrosync Backend Admin",
+      "enabled": true,
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "serviceAccountsEnabled": true,
+      "secret": "change-me-in-dev"
     }
   ],
   "users": [
@@ -87,6 +96,19 @@
       "realmRoles": [ "admin" ],
       "attributes": {
         "tenant_id": [ "11111111-1111-1111-1111-111111111111" ]
+      }
+    },
+    {
+      "username": "service-account-sophrosync-admin",
+      "enabled": true,
+      "serviceAccountClientId": "sophrosync-admin",
+      "clientRoles": {
+        "realm-management": [
+          "manage-users",
+          "view-users",
+          "query-users",
+          "view-realm"
+        ]
       }
     },
     {

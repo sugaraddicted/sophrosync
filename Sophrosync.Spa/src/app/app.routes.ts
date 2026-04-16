@@ -9,6 +9,25 @@ export const routes: Routes = [
       import('./features/login/login.component').then((m) => m.LoginComponent),
   },
   {
+    path: 'register',
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/registration/register/register.component').then(
+            (m) => m.RegisterComponent
+          ),
+      },
+      {
+        path: 'confirmation',
+        loadComponent: () =>
+          import('./features/registration/email-confirmation/email-confirmation.component').then(
+            (m) => m.EmailConfirmationComponent
+          ),
+      },
+    ],
+  },
+  {
     path: '',
     loadComponent: () =>
       import('./layout/shell/shell-layout.component').then(

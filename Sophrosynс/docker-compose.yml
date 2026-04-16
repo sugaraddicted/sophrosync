@@ -10,6 +10,7 @@ services:
       POSTGRES_DB: postgres
       CLIENTS_DB_PASSWORD: ${CLIENTS_DB_PASSWORD}
       CONSENT_DB_PASSWORD: ${CONSENT_DB_PASSWORD}
+      IDENTITY_DB_PASSWORD: ${IDENTITY_DB_PASSWORD}
       NOTES_DB_PASSWORD: ${NOTES_DB_PASSWORD}
       NOTIFICATIONS_DB_PASSWORD: ${NOTIFICATIONS_DB_PASSWORD}
       REPORTING_DB_PASSWORD: ${REPORTING_DB_PASSWORD}
@@ -64,6 +65,26 @@ services:
       Encryption__ClientsKey: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
       Keycloak__Authority: "http://keycloak:8080/realms/sophrosync"
       Keycloak__Audience: "sophrosync-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  identity-service:
+    profiles: ["identity", "services"]
+    build:
+      context: .
+      dockerfile: src/Services/IdentityService/Sophrosync.Identity.API/Dockerfile
+    ports:
+      - "5005:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__IdentityDb: "Host=postgres;Port=5432;Database=sophrosync_identity;Username=svc_identity;Password=${IDENTITY_DB_PASSWORD}"
+      Keycloak__Authority: "http://keycloak:8080/realms/sophrosync"
+      Keycloak__Audience: "sophrosync-gateway"
+      Keycloak__BaseUrl: "http://keycloak:8080"
+      Keycloak__Realm: "sophrosync"
+      Keycloak__AdminClientId: "sophrosync-admin"
+      Keycloak__AdminClientSecret: "${KEYCLOAK_ADMIN_CLIENT_SECRET}"
     depends_on:
       postgres:
         condition: service_healthy
