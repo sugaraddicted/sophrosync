@@ -1,11 +1,14 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   OnInit,
+  inject,
   input,
   output,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormGroup,
@@ -13,6 +16,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { Note, NoteType, CreateNoteDto, UpdateNoteDto } from '../models/note.model';
+import { ClientsService } from '../../clients/clients.service';
+import { Client } from '../../clients/models/client.model';
 
 export type NoteFormResult =
   | { mode: 'create'; dto: CreateNoteDto }
@@ -32,7 +37,11 @@ export class NoteFormModalComponent implements OnInit {
   readonly submitted = output<NoteFormResult>();
   readonly cancelled = output<void>();
 
+  private readonly clientsService = inject(ClientsService);
+  private readonly destroyRef = inject(DestroyRef);
+
   protected readonly submitting = signal(false);
+  protected readonly clients = signal<Client[]>([]);
 
   protected readonly noteTypes: NoteType[] = [
     'DAP', 'SOAP', 'FreeForm', 'Intake', 'Treatment', 'Discharge',
@@ -52,6 +61,12 @@ export class NoteFormModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (!this.isEdit) {
+      this.clientsService.getClients()
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(clients => this.clients.set(clients));
+    }
+
     const existing = this.note();
     if (existing) {
       // Edit mode — hide clientId/sessionDate/type (immutable after creation)

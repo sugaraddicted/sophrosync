@@ -6,12 +6,25 @@ using Sophrosync.SharedKernel.Domain;
 
 namespace Sophrosync.Notes.Infrastructure.Persistence;
 
-public sealed class NotesDbContext(
-    DbContextOptions<NotesDbContext> options,
-    ICurrentTenant currentTenant,
-    ICurrentUser currentUser,
-    NotesEncryptionOptions encryptionOptions) : DbContext(options)
+public sealed class NotesDbContext : DbContext
 {
+    private readonly Guid _tenantId;
+    private readonly Guid _userId;
+    private readonly bool _isTherapist;
+    private readonly string _encryptionKey;
+
+    public NotesDbContext(
+        DbContextOptions<NotesDbContext> options,
+        ICurrentTenant currentTenant,
+        ICurrentUser currentUser,
+        NotesEncryptionOptions encryptionOptions) : base(options)
+    {
+        _tenantId = currentTenant.Id;
+        _userId = currentUser.Id;
+        _isTherapist = currentUser.IsInRole("therapist");
+        _encryptionKey = encryptionOptions.Key;
+    }
+
     public DbSet<Note> Notes => Set<Note>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -19,15 +32,15 @@ public sealed class NotesDbContext(
         // Register configuration explicitly so the correct encryption key is always passed.
         // Do NOT use ApplyConfigurationsFromAssembly — it would invoke the parameterless constructor
         // with the all-zeros placeholder key.
-        modelBuilder.ApplyConfiguration(new NoteConfiguration(encryptionOptions.Key));
+        modelBuilder.ApplyConfiguration(new NoteConfiguration(_encryptionKey));
 
-        // Combined query filter: exclude soft-deleted rows, enforce tenant isolation,
-        // and — for therapist role — restrict to only their own notes.
+        // Values are resolved from per-instance fields, not from captured service references,
+        // so this filter remains correct under DbContext pooling.
         modelBuilder.Entity<Note>()
             .HasQueryFilter(e =>
                 !e.IsDeleted &&
-                e.TenantId == currentTenant.Id &&
-                (!currentUser.IsInRole("therapist") || e.TherapistId == currentUser.Id));
+                e.TenantId == _tenantId &&
+                (!_isTherapist || e.TherapistId == _userId));
 
         base.OnModelCreating(modelBuilder);
     }

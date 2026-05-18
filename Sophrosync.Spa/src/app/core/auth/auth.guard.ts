@@ -15,11 +15,6 @@ export const authGuard: CanActivateFn = () => {
 
 export const roleGuard = (role: string): CanActivateFn => () => {
   const auth = inject(AuthService);
-  const router = inject(Router);
 
-  if (auth.isAuthenticated() && auth.userRoles().includes(role)) {
-    return true;
-  }
-
-  return router.createUrlTree(['/login']);
+  return auth.isAuthenticated() && auth.userRoles().includes(role);
 };

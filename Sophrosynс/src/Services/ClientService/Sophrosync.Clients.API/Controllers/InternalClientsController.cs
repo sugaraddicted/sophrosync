@@ -1,28 +1,22 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Sophrosync.SharedKernel.Abstractions;
 
 namespace Sophrosync.Clients.API.Controllers;
 
-/// <summary>
-/// Internal endpoint consumed by ReportingService.
-/// Stub — returns placeholder data until ClientService is fully implemented.
-/// Blocked from public access by YARP gateway.
-/// </summary>
 [ApiController]
 [Route("internal/clients")]
-[Authorize]
-public sealed class InternalClientsController : ControllerBase
+[Authorize(Policy = "CanReadClients")]
+public sealed class InternalClientsController(ICurrentTenant currentTenant) : ControllerBase
 {
     [HttpGet("summary")]
-    public IActionResult GetSummary(
-        [FromQuery] Guid tenantId,
-        [FromQuery] DateTime from,
-        [FromQuery] DateTime to)
+    public IActionResult GetSummary([FromQuery] DateTime from, [FromQuery] DateTime to)
     {
-        // TODO: implement when ClientService domain + application layers are scaffolded
+        // TenantId is resolved from the JWT claim — callers cannot spoof it via query string.
+        // TODO: replace stub with real queries once ClientService application layer is complete.
         return Ok(new
         {
-            TenantId = tenantId,
+            TenantId = currentTenant.Id,
             PeriodStart = from,
             PeriodEnd = to,
             TotalClientsActive = 0,

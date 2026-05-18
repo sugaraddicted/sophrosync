@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError, timer } from 'rxjs';
 import { retry } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Note, CreateNoteDto, UpdateNoteDto } from './models/note.model';
 
@@ -11,7 +12,15 @@ export class NotesService {
   private readonly base = `${environment.apiUrl}/notes`;
 
   getNotes(): Observable<Note[]> {
-    return this.http.get<Note[]>(this.base).pipe(retry(1));
+    return this.http.get<Note[]>(this.base).pipe(
+      retry({
+        count: 1,
+        delay: (err) =>
+          err instanceof HttpErrorResponse && err.status >= 400 && err.status < 500
+            ? throwError(() => err)
+            : timer(1000),
+      })
+    );
   }
 
   getNoteById(id: string): Observable<Note> {

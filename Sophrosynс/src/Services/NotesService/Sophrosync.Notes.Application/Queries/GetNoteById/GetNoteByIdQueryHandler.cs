@@ -15,6 +15,9 @@ public sealed class GetNoteByIdQueryHandler(
 {
     public async Task<NoteDto?> Handle(GetNoteByIdQuery request, CancellationToken cancellationToken)
     {
+        if (!currentTenant.HasTenant)
+            throw new UnauthorizedAccessException("Tenant context is required.");
+
         var note = await repository.GetByIdAsync(request.Id, cancellationToken);
 
         if (note is not null)

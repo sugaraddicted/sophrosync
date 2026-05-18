@@ -1,5 +1,6 @@
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Scalar.AspNetCore;
@@ -8,6 +9,7 @@ using Sophrosync.Clients.Application.Commands.CreateClient;
 using Sophrosync.Clients.Infrastructure;
 using Sophrosync.SharedKernel.Abstractions;
 using Sophrosync.SharedKernel.Behaviors;
+using Sophrosync.SharedKernel.Security;
 using Sophrosync.SharedKernel.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,6 +56,7 @@ builder.Services.AddValidatorsFromAssembly(typeof(CreateClientCommand).Assembly)
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentTenant, CurrentTenantService>();
 builder.Services.AddScoped<ICurrentUser, CurrentUserService>();
+builder.Services.AddScoped<IClaimsTransformation, KeycloakRolesTransformation>();
 
 builder.Services.AddClientsInfrastructure(builder.Configuration);
 

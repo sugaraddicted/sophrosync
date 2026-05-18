@@ -104,7 +104,7 @@ export class NotesComponent implements OnInit {
         },
         error: () => this.showToast('Failed to create note.', 'error'),
       });
-    } else {
+    } else if (result.mode === 'edit') {
       const amendSource = this.noteToAmend();
       if (amendSource) {
         this.notesService.amendNote(amendSource.id, result.dto).pipe(

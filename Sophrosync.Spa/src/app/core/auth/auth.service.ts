@@ -102,11 +102,16 @@ export class AuthService {
   }
 
   private applyTokens(tokens: TokenResponse): void {
+    const payload = this.decodeJwt(tokens.access_token);
+    if (!payload) {
+      sessionStorage.removeItem('sophrosync_rt');
+      return;
+    }
+
     this.accessToken = tokens.access_token;
     this.tokenExpiry = Date.now() + (tokens.expires_in - 30) * 1000;
     sessionStorage.setItem('sophrosync_rt', tokens.refresh_token);
 
-    const payload = this.decodeJwt(tokens.access_token);
     this.userProfile.set({
       username: payload.preferred_username,
       email: payload.email ?? '',
@@ -117,8 +122,15 @@ export class AuthService {
     this.isAuthenticated.set(true);
   }
 
-  private decodeJwt(token: string): JwtPayload {
-    const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-    return JSON.parse(atob(base64));
+  private decodeJwt(token: string): JwtPayload | null {
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) return null;
+      const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(atob(base64)) as JwtPayload;
+    } catch {
+      sessionStorage.removeItem('sophrosync_rt');
+      return null;
+    }
   }
 }

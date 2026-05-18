@@ -8,17 +8,20 @@
   <form class="modal__form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
     @if (!isEdit) {
       <div class="modal__field">
-        <label class="modal__label" for="note-client-id">Client ID</label>
-        <input
+        <label class="modal__label" for="note-client-id">Client</label>
+        <select
           id="note-client-id"
-          class="modal__input"
-          type="text"
+          class="modal__select"
           formControlName="clientId"
-          placeholder="Client UUID"
           [class.modal__input--error]="form.controls.clientId.invalid && form.controls.clientId.touched"
-        />
+        >
+          <option value="" disabled>Select a client…</option>
+          @for (client of clients(); track client.id) {
+            <option [value]="client.id">{{ client.name }}</option>
+          }
+        </select>
         @if (form.controls.clientId.invalid && form.controls.clientId.touched) {
-          <p class="modal__error">Client ID is required.</p>
+          <p class="modal__error">Client is required.</p>
         }
       </div>
 

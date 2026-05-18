@@ -15,6 +15,9 @@ public sealed class GetNotesByClientIdQueryHandler(
 {
     public async Task<List<NoteDto>> Handle(GetNotesByClientIdQuery request, CancellationToken cancellationToken)
     {
+        if (!currentTenant.HasTenant)
+            throw new UnauthorizedAccessException("Tenant context is required.");
+
         var notes = await repository.GetByClientIdAsync(request.ClientId, cancellationToken);
 
         // Structured PHI access log — never log the actual PHI content

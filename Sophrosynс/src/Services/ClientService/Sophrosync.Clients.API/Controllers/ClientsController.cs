@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sophrosync.Clients.Application.Commands.CreateClient;
 using Sophrosync.Clients.Application.Commands.DeleteClient;
@@ -8,13 +9,9 @@ using Sophrosync.Clients.Application.Queries.GetClients;
 
 namespace Sophrosync.Clients.API.Controllers;
 
-/// <summary>
-/// Public CRUD endpoints for the Client resource.
-/// Authorization is intentionally omitted for local development / SPA integration.
-/// Re-enable [Authorize] once Keycloak is wired up.
-/// </summary>
 [ApiController]
 [Route("api/clients")]
+[Authorize(Policy = "CanReadClients")]
 public sealed class ClientsController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
@@ -29,6 +26,7 @@ public sealed class ClientsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Policy = "CanManageClients")]
     public async Task<IActionResult> Create([FromBody] CreateClientCommand command, CancellationToken ct = default)
     {
         var dto = await mediator.Send(command, ct);
@@ -36,6 +34,7 @@ public sealed class ClientsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize(Policy = "CanManageClients")]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateClientRequest body, CancellationToken ct = default)
     {
         var command = new UpdateClientCommand(id, body.Name, body.Email, body.Phone, body.Status);
@@ -44,6 +43,7 @@ public sealed class ClientsController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Policy = "CanManageClients")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken ct = default)
     {
         var deleted = await mediator.Send(new DeleteClientCommand(id), ct);

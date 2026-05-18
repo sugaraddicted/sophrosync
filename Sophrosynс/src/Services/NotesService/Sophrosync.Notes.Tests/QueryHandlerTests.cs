@@ -182,4 +182,68 @@ public sealed class QueryHandlerTests
 
         result.Should().BeEmpty();
     }
+
+    // -----------------------------------------------------------------------
+    // Tenant-guard tests — repository must never be reached without a tenant
+    // -----------------------------------------------------------------------
+
+    private static Mock<ICurrentTenant> NoTenant()
+    {
+        var mock = new Mock<ICurrentTenant>();
+        mock.Setup(t => t.HasTenant).Returns(false);
+        return mock;
+    }
+
+    [Fact]
+    public async Task GetNoteByIdHandler_NoTenantContext_ThrowsUnauthorizedAccessException()
+    {
+        var repo = new Mock<INoteRepository>();
+
+        var handler = new GetNoteByIdQueryHandler(
+            repo.Object,
+            NoTenant().Object,
+            User().Object,
+            NullLogger<GetNoteByIdQueryHandler>.Instance);
+
+        var act = async () => await handler.Handle(
+            new GetNoteByIdQuery(Guid.NewGuid()), CancellationToken.None);
+
+        await act.Should().ThrowAsync<UnauthorizedAccessException>();
+        repo.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task GetNotesHandler_NoTenantContext_ThrowsUnauthorizedAccessException()
+    {
+        var repo = new Mock<INoteRepository>();
+
+        var handler = new GetNotesQueryHandler(
+            repo.Object,
+            NoTenant().Object,
+            User().Object,
+            NullLogger<GetNotesQueryHandler>.Instance);
+
+        var act = async () => await handler.Handle(new GetNotesQuery(), CancellationToken.None);
+
+        await act.Should().ThrowAsync<UnauthorizedAccessException>();
+        repo.Verify(r => r.GetAllAsync(It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task GetNotesByClientIdHandler_NoTenantContext_ThrowsUnauthorizedAccessException()
+    {
+        var repo = new Mock<INoteRepository>();
+
+        var handler = new GetNotesByClientIdQueryHandler(
+            repo.Object,
+            NoTenant().Object,
+            User().Object,
+            NullLogger<GetNotesByClientIdQueryHandler>.Instance);
+
+        var act = async () => await handler.Handle(
+            new GetNotesByClientIdQuery(Guid.NewGuid()), CancellationToken.None);
+
+        await act.Should().ThrowAsync<UnauthorizedAccessException>();
+        repo.Verify(r => r.GetByClientIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
 }

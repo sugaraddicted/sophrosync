@@ -5,6 +5,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <ProjectReference Include="..\Sophrosync.Notifications.Application\Sophrosync.Notifications.Application.csproj" />
     <ProjectReference Include="..\Sophrosync.Notifications.Infrastructure\Sophrosync.Notifications.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\Shared\Sophrosync.SharedKernel\Sophrosync.SharedKernel.csproj" />
