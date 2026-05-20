@@ -9,6 +9,25 @@ export const routes: Routes = [
       import('./features/login/login.component').then((m) => m.LoginComponent),
   },
   {
+    path: 'register',
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/registration/register/register.component').then(
+            (m) => m.RegisterComponent
+          ),
+      },
+      {
+        path: 'confirmation',
+        loadComponent: () =>
+          import('./features/registration/email-confirmation/email-confirmation.component').then(
+            (m) => m.EmailConfirmationComponent
+          ),
+      },
+    ],
+  },
+  {
     path: '',
     loadComponent: () =>
       import('./layout/shell/shell-layout.component').then(
@@ -25,15 +44,31 @@ export const routes: Routes = [
       },
       {
         path: 'clients',
-        redirectTo: 'dashboard',
+        loadComponent: () =>
+          import('./features/clients/clients-page/clients-page.component').then(
+            (m) => m.ClientsPageComponent
+          ),
       },
       {
-        path: 'schedule',
-        redirectTo: 'dashboard',
+        path: 'calendar',
+        loadComponent: () =>
+          import('./features/calendar/calendar.component').then(
+            (m) => m.CalendarComponent
+          ),
       },
       {
         path: 'notes',
-        redirectTo: 'dashboard',
+        loadComponent: () =>
+          import('./features/notes/notes.component').then(
+            (m) => m.NotesComponent
+          ),
+      },
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import('./features/settings/settings.component').then(
+            (m) => m.SettingsComponent
+          ),
       },
     ],
   },

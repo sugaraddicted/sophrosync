@@ -35,6 +35,24 @@
   }
 }
 
+.card-footer {
+  padding: 1rem 2rem 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #9ca3af;
+  border-top: 1px solid #f0f0f0;
+
+  a {
+    color: #6366f1;
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
 .card-body {
   padding: 1.75rem 2rem 2rem;
   display: flex;

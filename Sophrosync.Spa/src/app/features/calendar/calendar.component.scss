@@ -1,0 +1,64 @@
+@use 'styles/mixins' as *;
+
+.feature-page {
+  &__hero {
+    margin-bottom: 2.5rem;
+  }
+
+  &__date-label {
+    margin: 0 0 0.375rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-on-surface-variant);
+  }
+
+  &__headline {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-headline);
+    font-style: italic;
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--color-on-surface);
+  }
+
+  &__subtitle {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--color-on-surface-variant);
+    font-weight: 300;
+  }
+
+  &__placeholder {
+    @include section-surface;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+
+  &__placeholder-icon {
+    font-size: 48px;
+    color: var(--color-outline-variant);
+  }
+
+  &__placeholder-text {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-on-surface);
+  }
+
+  &__placeholder-hint {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--color-on-surface-variant);
+    max-width: 40ch;
+  }
+}

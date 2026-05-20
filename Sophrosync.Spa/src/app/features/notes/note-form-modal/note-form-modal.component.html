@@ -1,0 +1,106 @@
+<div class="modal-backdrop" (click)="onCancel()" aria-hidden="true"></div>
+
+<div class="modal" role="dialog" aria-modal="true" [attr.aria-labelledby]="isEdit ? 'edit-note-title' : 'add-note-title'">
+  <h2 class="modal__title" [id]="isEdit ? 'edit-note-title' : 'add-note-title'">
+    {{ isEdit ? 'Edit Note' : 'New Note' }}
+  </h2>
+
+  <form class="modal__form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    @if (!isEdit) {
+      <div class="modal__field">
+        <label class="modal__label" for="note-client-id">Client ID</label>
+        <input
+          id="note-client-id"
+          class="modal__input"
+          type="text"
+          formControlName="clientId"
+          placeholder="Client UUID"
+          [class.modal__input--error]="form.controls.clientId.invalid && form.controls.clientId.touched"
+        />
+        @if (form.controls.clientId.invalid && form.controls.clientId.touched) {
+          <p class="modal__error">Client ID is required.</p>
+        }
+      </div>
+
+      <div class="modal__row">
+        <div class="modal__field">
+          <label class="modal__label" for="note-session-date">Session date</label>
+          <input
+            id="note-session-date"
+            class="modal__input"
+            type="date"
+            formControlName="sessionDate"
+            [class.modal__input--error]="form.controls.sessionDate.invalid && form.controls.sessionDate.touched"
+          />
+          @if (form.controls.sessionDate.invalid && form.controls.sessionDate.touched) {
+            <p class="modal__error">Session date is required.</p>
+          }
+        </div>
+
+        <div class="modal__field">
+          <label class="modal__label" for="note-type">Type</label>
+          <select id="note-type" class="modal__select" formControlName="type">
+            @for (t of noteTypes; track t) {
+              <option [value]="t">{{ t }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    }
+
+    <div class="modal__field">
+      <label class="modal__label" for="note-title">Title</label>
+      <input
+        id="note-title"
+        class="modal__input"
+        type="text"
+        formControlName="title"
+        maxlength="200"
+        [class.modal__input--error]="form.controls.title.invalid && form.controls.title.touched"
+      />
+      @if (form.controls.title.invalid && form.controls.title.touched) {
+        <p class="modal__error">Title is required (max 200 characters).</p>
+      }
+    </div>
+
+    <div class="modal__field">
+      <label class="modal__label" for="note-content">Content</label>
+      <textarea
+        id="note-content"
+        class="modal__textarea"
+        formControlName="content"
+        rows="8"
+        maxlength="50000"
+        [class.modal__textarea--error]="form.controls.content.invalid && form.controls.content.touched"
+      ></textarea>
+      @if (form.controls.content.invalid && form.controls.content.touched) {
+        <p class="modal__error">Content is required (max 50 000 characters).</p>
+      }
+    </div>
+
+    <div class="modal__field">
+      <label class="modal__label" for="note-tags">Tags <span class="modal__optional">(optional, comma-separated)</span></label>
+      <input
+        id="note-tags"
+        class="modal__input"
+        type="text"
+        formControlName="tags"
+        placeholder="e.g. anxiety, cbt, session-3"
+      />
+    </div>
+
+    <div class="modal__actions">
+      <button
+        class="modal__btn modal__btn--secondary"
+        type="button"
+        (click)="onCancel()"
+        [disabled]="submitting()"
+      >Cancel</button>
+      <button
+        class="modal__btn modal__btn--primary"
+        type="submit"
+        [disabled]="submitting()"
+      >{{ submitting() ? 'Saving…' : (isEdit ? 'Save Changes' : 'Create Note') }}</button>
+    </div>
+  </form>
+</div>

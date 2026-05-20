@@ -1,0 +1,104 @@
+<div class="notes-page">
+  <div class="notes-page__header">
+    <h2 class="notes-page__heading">Notes</h2>
+    <button
+      class="notes-page__add-btn"
+      type="button"
+      (click)="openNewNote()"
+      aria-label="Create new note"
+    >+ New Note</button>
+  </div>
+
+  <div class="notes-page__filters">
+    <select
+      class="notes-page__filter-select"
+      [ngModel]="filterStatus()"
+      (ngModelChange)="filterStatus.set($event)"
+      aria-label="Filter by status"
+    >
+      <option value="">All statuses</option>
+      @for (s of statusOptions; track s) {
+        <option [value]="s">{{ s }}</option>
+      }
+    </select>
+
+    <select
+      class="notes-page__filter-select"
+      [ngModel]="filterType()"
+      (ngModelChange)="filterType.set($event)"
+      aria-label="Filter by type"
+    >
+      <option value="">All types</option>
+      @for (t of typeOptions; track t) {
+        <option [value]="t">{{ t }}</option>
+      }
+    </select>
+  </div>
+
+  @if (isLoading()) {
+    <ul class="notes-page__list" aria-busy="true" aria-label="Loading notes">
+      @for (skeleton of [1, 2, 3, 4]; track skeleton) {
+        <li class="notes-page__skeleton" aria-hidden="true"></li>
+      }
+    </ul>
+  } @else if (loadError()) {
+    <div class="notes-page__error" role="alert">
+      <p>{{ loadError() }}</p>
+      <button class="notes-page__retry-btn" type="button" (click)="loadNotes()">Retry</button>
+    </div>
+  } @else if (filteredNotes().length === 0) {
+    <div class="notes-page__empty" role="status">
+      <p>{{ notes().length === 0 ? 'No notes yet. Create your first note to get started.' : 'No notes match the current filters.' }}</p>
+    </div>
+  } @else {
+    <ul class="notes-page__list" aria-label="Notes">
+      @for (note of filteredNotes(); track note.id) {
+        <li>
+          <button
+            class="notes-page__card"
+            type="button"
+            (click)="openDetail(note)"
+            [attr.aria-label]="'Open note: ' + note.title"
+          >
+            <div class="notes-page__card-top">
+              <span class="notes-page__card-title">{{ note.title }}</span>
+              <span class="notes-page__badge notes-page__badge--{{ note.status.toLowerCase() }}">{{ note.status }}</span>
+            </div>
+            <div class="notes-page__card-meta">
+              <span class="notes-page__card-type">{{ note.type }}</span>
+              <span class="notes-page__card-dot" aria-hidden="true">·</span>
+              <span class="notes-page__card-date">{{ formatDate(note.sessionDate) }}</span>
+              <span class="notes-page__card-dot" aria-hidden="true">·</span>
+              <span class="notes-page__card-author">{{ note.authorFullName }}</span>
+            </div>
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</div>
+
+@if (showFormModal()) {
+  <app-note-form-modal
+    [note]="noteToEdit()"
+    (submitted)="onFormSubmitted($event)"
+    (cancelled)="closeFormModal()"
+  />
+}
+
+@if (selectedNote(); as activeNote) {
+  <app-note-detail-modal
+    [note]="activeNote"
+    (actionRequested)="onNoteAction(activeNote, $event)"
+    (closed)="closeDetail()"
+  />
+}
+
+@if (toast(); as activeToast) {
+  <div
+    class="notes-page__toast"
+    [class.notes-page__toast--error]="activeToast.kind === 'error'"
+    role="status"
+    aria-live="polite"
+  >{{ activeToast.message }}</div>
+}

@@ -1,0 +1,266 @@
+<div class="editor-layout">
+
+  <!-- ─── Editor Header ─────────────────────────────────────────── -->
+  <header class="editor-header">
+    <a class="editor-header__back" routerLink="/notes">
+      <span class="material-symbols-outlined">arrow_back</span>
+      Notes
+    </a>
+
+    <div class="editor-header__center">
+      @if (note()) {
+        <app-status-badge [status]="note()!.status" />
+      }
+    </div>
+
+    <div class="editor-header__save-status">
+      @if (!isNew()) {
+        @if (saving()) {
+          <span class="save-status save-status--saving">
+            <span class="material-symbols-outlined">sync</span>
+            Saving…
+          </span>
+        } @else if (lastSaved()) {
+          <span class="save-status save-status--saved">
+            <span class="material-symbols-outlined">check_circle</span>
+            Last saved {{ formatTime(lastSaved()!) }}
+          </span>
+        }
+      }
+    </div>
+  </header>
+
+  <!-- ─── Save error banner ─────────────────────────────────────── -->
+  @if (saveError()) {
+    <div class="editor-banner editor-banner--error">
+      <span class="material-symbols-outlined">warning</span>
+      Could not save. Check your connection and try again.
+    </div>
+  }
+
+  <!-- ─── Signed warning banner ─────────────────────────────────── -->
+  @if (noteStatus() === 'Signed') {
+    <div class="editor-banner editor-banner--warning">
+      <span class="material-symbols-outlined">info</span>
+      This note has been signed. Edits are logged.
+    </div>
+  }
+
+  <!-- ─── Loading state ─────────────────────────────────────────── -->
+  @if (loading()) {
+    <div class="editor-loading">
+      <span class="material-symbols-outlined">progress_activity</span>
+      Loading note…
+    </div>
+  }
+
+  @if (!loading()) {
+
+    <!-- ─── Type selector (new note or Draft) ────────────────────── -->
+    @if (isNew() || noteStatus() === 'Draft') {
+      <div class="editor-type-selector">
+        @for (type of noteTypes; track type) {
+          <button
+            class="type-btn"
+            [class.type-btn--active]="selectedType() === type"
+            (click)="selectedType.set(type)">
+            {{ noteTypeLabels[type] }}
+          </button>
+        }
+      </div>
+    }
+
+    <!-- ─── Scrollable content area ──────────────────────────────── -->
+    <div class="editor-body">
+
+      <!-- Title -->
+      <div class="editor-field">
+        <label class="editor-label" for="note-title">Title <span class="editor-label__optional">(optional)</span></label>
+        @if (isReadOnly()) {
+          <p class="editor-readonly-text editor-readonly-text--title">{{ note()?.title || '—' }}</p>
+        } @else {
+          <input
+            id="note-title"
+            class="editor-input"
+            type="text"
+            placeholder="Add a title…"
+            [value]="titleValue()"
+            (input)="titleValue.set($any($event.target).value)" />
+        }
+      </div>
+
+      <!-- Content -->
+      <div class="editor-field editor-field--content">
+        <label class="editor-label" for="note-content">
+          Content <span class="editor-label__required">*</span>
+        </label>
+        @if (isReadOnly()) {
+          <div class="editor-readonly-text editor-readonly-content">{{ note()?.content }}</div>
+        } @else {
+          <textarea
+            id="note-content"
+            class="editor-textarea"
+            placeholder="Write your note here…"
+            [value]="contentValue()"
+            (input)="contentValue.set($any($event.target).value)"></textarea>
+        }
+      </div>
+
+      <!-- Tags -->
+      <div class="editor-field">
+        <label class="editor-label" for="note-tags">Tags <span class="editor-label__optional">(optional, comma-separated)</span></label>
+        @if (isReadOnly()) {
+          <p class="editor-readonly-text">{{ note()?.tags || '—' }}</p>
+        } @else {
+          <input
+            id="note-tags"
+            class="editor-input"
+            type="text"
+            placeholder="anxiety, cbt, session-3…"
+            [value]="tagsValue()"
+            (input)="tagsValue.set($any($event.target).value)" />
+        }
+      </div>
+
+      <!-- Metadata (edit mode) -->
+      @if (!isNew() && note()) {
+        <div class="editor-meta">
+          <span>Author: <strong>{{ note()!.authorFullName }}</strong></span>
+          @if (note()!.signedByFullName) {
+            <span>Signed by: <strong>{{ note()!.signedByFullName }}</strong></span>
+          }
+          @if (note()!.lockedByFullName) {
+            <span>Locked by: <strong>{{ note()!.lockedByFullName }}</strong></span>
+          }
+        </div>
+      }
+
+      <!-- Addendum section (Locked/Amended notes) -->
+      @if (isReadOnly() && !isNew()) {
+        <div class="editor-addendum-section">
+          @if (!showAddendum()) {
+            <button class="editor-btn editor-btn--secondary" (click)="openAddendum()">
+              <span class="material-symbols-outlined">add</span>
+              Add Addendum
+            </button>
+          } @else {
+            <div class="editor-addendum">
+              <label class="editor-label" for="addendum-content">Addendum</label>
+              <textarea
+                id="addendum-content"
+                class="editor-textarea editor-textarea--addendum"
+                placeholder="Write your addendum here…"
+                [value]="addendumContent()"
+                (input)="addendumContent.set($any($event.target).value)"></textarea>
+              <div class="editor-addendum__actions">
+                <button
+                  class="editor-btn editor-btn--primary"
+                  [disabled]="addendumSaving() || !addendumContent().trim()"
+                  (click)="submitAddendum()">
+                  @if (addendumSaving()) { Submitting… } @else { Submit Addendum }
+                </button>
+                <button class="editor-btn editor-btn--ghost" (click)="cancelAddendum()">Cancel</button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+    </div>
+
+    <!-- ─── Sticky footer action bar ─────────────────────────────── -->
+    <footer class="editor-footer">
+
+      <!-- New note footer -->
+      @if (isNew()) {
+        <div class="editor-footer__actions">
+          <button
+            class="editor-btn editor-btn--secondary"
+            [disabled]="saving() || !contentValue().trim()"
+            (click)="saveDraft()">
+            @if (saving()) { Saving… } @else { Save Draft }
+          </button>
+        </div>
+      }
+
+      <!-- Draft / PendingCoSign footer -->
+      @if (!isNew() && (noteStatus() === 'Draft' || noteStatus() === 'PendingCoSign')) {
+        <div class="editor-footer__actions">
+          @if (!showDeleteConfirm()) {
+            <button class="editor-btn editor-btn--secondary" (click)="saveNote()">Save Draft</button>
+            <button class="editor-btn editor-btn--primary" (click)="openSignModal()">Sign Note</button>
+            <button class="editor-btn editor-btn--danger-text" (click)="openDeleteConfirm()">Delete</button>
+          } @else {
+            <span class="editor-delete-confirm">Delete this note? This cannot be undone.</span>
+            <button class="editor-btn editor-btn--danger" (click)="confirmDelete()">Delete</button>
+            <button class="editor-btn editor-btn--ghost" (click)="cancelDelete()">Keep it</button>
+          }
+        </div>
+      }
+
+      <!-- Signed footer -->
+      @if (!isNew() && noteStatus() === 'Signed') {
+        <div class="editor-footer__actions">
+          <button class="editor-btn editor-btn--secondary" (click)="saveNote()">Save</button>
+          <button class="editor-btn editor-btn--primary" (click)="openLockStep1()">Lock Note</button>
+        </div>
+      }
+
+      <!-- PendingCoSign footer (co-sign action) -->
+      @if (!isNew() && noteStatus() === 'PendingCoSign') {
+        <div class="editor-footer__actions editor-footer__actions--secondary">
+          <button class="editor-btn editor-btn--primary" (click)="coSign()">Co-Sign Note</button>
+        </div>
+      }
+
+    </footer>
+
+  }
+
+</div>
+
+<!-- ─── Sign Modal ──────────────────────────────────────────────── -->
+@if (showSignModal()) {
+  <div class="modal-overlay" (click)="cancelSign()">
+    <div class="modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+      <h2 class="modal__title">Sign this note</h2>
+      <p class="modal__body">
+        Signing attests this is an accurate clinical record and you take professional responsibility for its content.
+      </p>
+      <div class="modal__actions">
+        <button class="editor-btn editor-btn--primary" (click)="confirmSign()">Sign Note</button>
+        <button class="editor-btn editor-btn--ghost" (click)="cancelSign()">Cancel</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ─── Lock Modal Step 1 ───────────────────────────────────────── -->
+@if (showLockStep1()) {
+  <div class="modal-overlay" (click)="cancelLock()">
+    <div class="modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+      <h2 class="modal__title">Lock this note?</h2>
+      <p class="modal__body">
+        Locking permanently closes this note. You can add an addendum later, but the original cannot be changed.
+      </p>
+      <div class="modal__actions">
+        <button class="editor-btn editor-btn--primary" (click)="advanceToLockStep2()">Continue to Lock</button>
+        <button class="editor-btn editor-btn--ghost" (click)="cancelLock()">Cancel</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ─── Lock Modal Step 2 ───────────────────────────────────────── -->
+@if (showLockStep2()) {
+  <div class="modal-overlay" (click)="cancelLock()">
+    <div class="modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+      <h2 class="modal__title">Confirm lock</h2>
+      <p class="modal__body">Lock the note?</p>
+      <div class="modal__actions">
+        <button class="editor-btn editor-btn--danger" (click)="confirmLock()">Lock Note</button>
+        <button class="editor-btn editor-btn--ghost" (click)="backToLockStep1()">Go Back</button>
+      </div>
+    </div>
+  </div>
+}

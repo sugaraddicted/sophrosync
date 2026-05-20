@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Sophrosync.Identity.API": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "scalar/v1",
+      "envFile": "../../../../.env",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:5005"
+    }
+  }
+}

@@ -10,28 +10,29 @@
   &__body {
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm);
+    gap: 0.5rem;
   }
 
   &__client {
     margin: 0;
-    font-size: var(--font-size-md);
+    font-size: 0.9375rem;
     font-weight: 600;
+    color: var(--color-on-surface);
   }
 
   &__time {
     margin: 0;
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    color: var(--color-on-surface-variant);
   }
 
   &__notes-link {
-    font-size: var(--font-size-sm);
-    color: var(--color-link);
+    font-size: 0.875rem;
+    color: var(--color-primary);
     text-decoration: underline;
 
     &:hover {
-      color: var(--color-text-primary);
+      color: var(--color-on-surface);
     }
   }
 }

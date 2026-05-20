@@ -1,15 +1,29 @@
-/// Shared card surface
+/// Surface card — container-lowest on container-low, ambient shadow
 @mixin card-base {
-  background: var(--color-card-bg);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
-  padding: var(--space-lg);
+  background: var(--color-surface-container-lowest);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-float);
+  padding: 1.5rem;
 }
 
-/// Standard card section heading
+/// Standard card section heading (Work Sans, functional)
 @mixin card-heading {
-  margin: 0 0 var(--space-md);
-  font-size: var(--font-size-lg);
-  font-weight: 600;
-  color: var(--color-text-primary);
+  margin: 0 0 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--color-on-surface-variant);
+  text-transform: uppercase;
+}
+
+/// Ghost border fallback — outline-variant at 15% opacity
+@mixin ghost-border {
+  border: 1px solid rgba(174, 180, 170, 0.15);
+}
+
+/// Surface container section wrapper
+@mixin section-surface {
+  background: var(--color-surface-container-low);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
 }

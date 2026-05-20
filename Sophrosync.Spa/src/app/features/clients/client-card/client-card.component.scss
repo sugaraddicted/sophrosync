@@ -1,0 +1,121 @@
+@use 'styles/mixins' as *;
+
+.client-card {
+  @include card-base;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-on-surface);
+  }
+
+  &__contact {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--color-on-surface-variant);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__status {
+    display: inline-block;
+    margin-top: 0.25rem;
+    padding: 2px 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: var(--radius-DEFAULT);
+
+    &--active {
+      background: var(--color-primary-fixed);
+      color: var(--color-on-primary-fixed);
+    }
+
+    &--inactive {
+      background: var(--color-surface-container);
+      color: var(--color-on-surface-variant);
+    }
+  }
+
+  &__menu-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  &__menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: none;
+    border: none;
+    border-radius: var(--radius-DEFAULT);
+    font-size: 1.1rem;
+    color: var(--color-on-surface-variant);
+    cursor: pointer;
+    line-height: 1;
+    transition: background 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      background: var(--color-surface-container);
+      color: var(--color-on-surface);
+    }
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    z-index: 100;
+    min-width: 128px;
+    margin: 0;
+    padding: 0.25rem 0;
+    list-style: none;
+    background: var(--color-surface-container-lowest);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-ambient);
+  }
+
+  &__dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 0.875rem;
+    font-family: var(--font-sans);
+    color: var(--color-on-surface);
+    cursor: pointer;
+    transition: background 0.12s ease;
+
+    &:hover {
+      background: var(--color-surface-container-low);
+    }
+
+    &--danger {
+      color: var(--color-error);
+
+      &:hover {
+        background: var(--color-tertiary-container);
+      }
+    }
+  }
+}

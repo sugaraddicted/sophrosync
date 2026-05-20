@@ -1,8 +1,16 @@
 <div class="shell" [class.shell--collapsed]="!menuOpen()">
-  <app-header class="shell__header" (menuToggle)="toggleMenu()" />
-  <app-side-menu class="shell__nav" />
-  <main class="shell__main">
-    <router-outlet />
-  </main>
-  <app-footer class="shell__footer" />
+
+  <!-- Left sidebar navigation -->
+  <aside class="shell__nav">
+    <app-side-menu (menuToggle)="toggleMenu()" />
+  </aside>
+
+  <!-- Right: header + scrollable content -->
+  <div class="shell__main">
+    <app-header (menuToggle)="toggleMenu()" />
+    <main class="flex-1 overflow-y-auto px-8 py-8" id="main-content" tabindex="-1">
+      <router-outlet />
+    </main>
+  </div>
+
 </div>

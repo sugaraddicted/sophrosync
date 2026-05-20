@@ -1,0 +1,22 @@
+<article class="note-card" (click)="onClick()" (keydown.enter)="onClick()" tabindex="0" role="button">
+  <div class="note-card__meta">
+    <app-status-badge [status]="note().status" />
+    <span class="note-card__type">{{ typeLabel }}</span>
+    <span class="note-card__dot" aria-hidden="true">·</span>
+    <span class="note-card__author">{{ note().authorFullName }}</span>
+    <span class="note-card__dot" aria-hidden="true">·</span>
+    <time class="note-card__date" [attr.datetime]="note().createdAt">
+      {{ note().createdAt | date:'MMM d, yyyy' }}
+    </time>
+  </div>
+
+  <p class="note-card__title">{{ displayTitle }}</p>
+
+  @if (tagList.length > 0) {
+    <div class="note-card__tags">
+      @for (tag of tagList; track tag) {
+        <span class="note-card__tag">{{ tag }}</span>
+      }
+    </div>
+  }
+</article>

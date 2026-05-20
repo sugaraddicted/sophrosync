@@ -1,0 +1,72 @@
+<div class="clients-page">
+  <div class="clients-page__header">
+    <h2 class="clients-page__heading">Clients</h2>
+    <button
+      class="clients-page__add-btn"
+      type="button"
+      (click)="openAddModal()"
+      aria-label="Add new client"
+    >+ Add Client</button>
+  </div>
+
+  @if (isLoading()) {
+    <ul class="clients-page__list" aria-busy="true" aria-label="Loading clients">
+      @for (skeleton of [1, 2, 3, 4]; track skeleton) {
+        <li class="clients-page__skeleton" aria-hidden="true"></li>
+      }
+    </ul>
+  } @else if (loadError()) {
+    <div class="clients-page__error" role="alert">
+      <p>{{ loadError() }}</p>
+      <button class="clients-page__retry-btn" type="button" (click)="loadClients()">Retry</button>
+    </div>
+  } @else if (clients().length === 0) {
+    <div class="clients-page__empty" role="status">
+      <p>No clients yet. Add your first client to get started.</p>
+    </div>
+  } @else {
+    <ul class="clients-page__list" aria-label="Clients">
+      @for (client of clients(); track client.id) {
+        <li>
+          <app-client-card
+            [client]="client"
+            (editRequested)="openEditModal($event)"
+            (deleteRequested)="openDeleteDialog($event)"
+          />
+        </li>
+      }
+    </ul>
+  }
+</div>
+
+@if (showAddModal()) {
+  <app-add-client-modal
+    (submitted)="onCreateSubmitted($event)"
+    (cancelled)="closeAddModal()"
+  />
+}
+
+@if (clientToEdit(); as editTarget) {
+  <app-edit-client-modal
+    [client]="editTarget"
+    (submitted)="onEditSubmitted($event)"
+    (cancelled)="closeEditModal()"
+  />
+}
+
+@if (clientToDelete(); as deleteTarget) {
+  <app-confirm-delete-dialog
+    [client]="deleteTarget"
+    (confirmed)="onDeleteConfirmed()"
+    (cancelled)="closeDeleteDialog()"
+  />
+}
+
+@if (toast(); as activeToast) {
+  <div
+    class="clients-page__toast"
+    [class.clients-page__toast--error]="activeToast.kind === 'error'"
+    role="status"
+    aria-live="polite"
+  >{{ activeToast.message }}</div>
+}

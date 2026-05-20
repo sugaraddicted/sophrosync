@@ -1,14 +1,32 @@
-<header class="header">
-  <div class="header__left">
-    <button class="header__menu-btn" (click)="menuToggle.emit()" aria-label="Toggle navigation">
-      <span class="header__bar"></span>
-      <span class="header__bar"></span>
-      <span class="header__bar"></span>
+<header class="top-header" role="banner">
+
+  <div class="top-header__left">
+    <!-- Search -->
+    <label class="top-header__search" aria-label="Search">
+      <span class="material-symbols-outlined top-header__search-icon" aria-hidden="true">search</span>
+      <input
+        class="top-header__search-input"
+        type="search"
+        placeholder="Search clients, notes…"
+        aria-label="Search clients, notes"
+      >
+    </label>
+  </div>
+
+  <div class="top-header__right">
+    <!-- Notifications -->
+    <button
+      class="top-header__icon-btn"
+      type="button"
+      aria-label="Notifications"
+    >
+      <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
     </button>
-    <span class="header__brand">Sophrosync</span>
+
+    <!-- Profile avatar -->
+    <button class="top-header__avatar" type="button" aria-label="Profile menu">
+      {{ initials }}
+    </button>
   </div>
-  <div class="header__user">
-    <div class="header__avatar">JD</div>
-    <span class="header__username">Jane Doe</span>
-  </div>
+
 </header>

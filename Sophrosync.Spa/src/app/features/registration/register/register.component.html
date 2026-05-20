@@ -1,0 +1,135 @@
+<div class="page">
+  <div class="card">
+    <div class="card-header">
+      <h1>Register your practice</h1>
+      <p>Create your Sophrosync account</p>
+    </div>
+
+    <form class="card-body" [formGroup]="form" (ngSubmit)="onSubmit()">
+      @if (errorMessage()) {
+        <div class="alert" role="alert">{{ errorMessage() }}</div>
+      }
+
+      <div class="row-2col">
+        <div class="field">
+          <label for="firstName">First name</label>
+          <input
+            id="firstName"
+            type="text"
+            formControlName="firstName"
+            autocomplete="given-name"
+            placeholder="Jane"
+          />
+          @if (fieldInvalid('firstName')) {
+            <span class="field-error">First name is required.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="lastName">Last name</label>
+          <input
+            id="lastName"
+            type="text"
+            formControlName="lastName"
+            autocomplete="family-name"
+            placeholder="Smith"
+          />
+          @if (fieldInvalid('lastName')) {
+            <span class="field-error">Last name is required.</span>
+          }
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="practiceName">Practice name</label>
+        <input
+          id="practiceName"
+          type="text"
+          formControlName="practiceName"
+          autocomplete="organization"
+          placeholder="Smith Therapy Group"
+        />
+        @if (fieldInvalid('practiceName')) {
+          <span class="field-error">Practice name is required.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          autocomplete="email"
+          placeholder="jane@example.com"
+        />
+        @if (fieldInvalid('email')) {
+          <span class="field-error">A valid email address is required.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          autocomplete="new-password"
+          placeholder="At least 8 characters"
+        />
+        @if (fieldInvalid('password')) {
+          <span class="field-error">Password must be at least 8 characters.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="confirmPassword">Confirm password</label>
+        <input
+          id="confirmPassword"
+          type="password"
+          formControlName="confirmPassword"
+          autocomplete="new-password"
+          placeholder="Re-enter your password"
+        />
+        @if (passwordMismatch) {
+          <span class="field-error">Passwords do not match.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="timeZone">Time zone</label>
+        <select id="timeZone" formControlName="timeZone">
+          <option value="" disabled>Select your time zone</option>
+          @for (tz of timeZones; track tz.value) {
+            <option [value]="tz.value">{{ tz.label }}</option>
+          }
+        </select>
+        @if (fieldInvalid('timeZone')) {
+          <span class="field-error">Please select a time zone.</span>
+        }
+      </div>
+
+      <div class="field field--checkbox">
+        <label class="checkbox-label">
+          <input type="checkbox" formControlName="acceptedTerms" />
+          <span>I agree to the Terms of Service and Business Associate Agreement</span>
+        </label>
+        @if (fieldInvalid('acceptedTerms')) {
+          <span class="field-error">You must accept the terms to continue.</span>
+        }
+      </div>
+
+      <button type="submit" class="btn-primary" [disabled]="isLoading()">
+        @if (isLoading()) {
+          Creating account…
+        } @else {
+          Create Account
+        }
+      </button>
+    </form>
+
+    <div class="card-footer">
+      Already have an account? <a routerLink="/login">Sign in</a>
+    </div>
+  </div>
+</div>

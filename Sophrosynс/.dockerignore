@@ -1,0 +1,23 @@
+# Node
+**/node_modules/
+**/.angular/
+**/dist/
+
+# .NET build output
+**/bin/
+**/obj/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vs/
+**/.idea/
+**/*.user
+
+# Misc
+**/*.md
+design/
+docs/
+keycloak/themes/

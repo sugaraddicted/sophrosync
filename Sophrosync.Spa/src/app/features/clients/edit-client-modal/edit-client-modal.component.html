@@ -1,0 +1,74 @@
+<div class="modal-backdrop" (click)="onCancel()" aria-hidden="true"></div>
+
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="edit-client-title">
+  <h2 class="modal__title" id="edit-client-title">Edit Client</h2>
+
+  <form class="modal__form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <div class="modal__field">
+      <label class="modal__label" for="edit-name">Full name</label>
+      <input
+        id="edit-name"
+        class="modal__input"
+        type="text"
+        formControlName="name"
+        autocomplete="name"
+        [class.modal__input--error]="form.controls.name.invalid && form.controls.name.touched"
+      />
+      @if (form.controls.name.invalid && form.controls.name.touched) {
+        <p class="modal__error">Name is required.</p>
+      }
+    </div>
+
+    <div class="modal__field">
+      <label class="modal__label" for="edit-email">Email</label>
+      <input
+        id="edit-email"
+        class="modal__input"
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+        [class.modal__input--error]="form.controls.email.invalid && form.controls.email.touched"
+      />
+      @if (form.controls.email.invalid && form.controls.email.touched) {
+        <p class="modal__error">A valid email is required.</p>
+      }
+    </div>
+
+    <div class="modal__field">
+      <label class="modal__label" for="edit-phone">Phone</label>
+      <input
+        id="edit-phone"
+        class="modal__input"
+        type="tel"
+        formControlName="phone"
+        autocomplete="tel"
+        [class.modal__input--error]="form.controls.phone.invalid && form.controls.phone.touched"
+      />
+      @if (form.controls.phone.invalid && form.controls.phone.touched) {
+        <p class="modal__error">Phone is required.</p>
+      }
+    </div>
+
+    <div class="modal__field">
+      <label class="modal__label" for="edit-status">Status</label>
+      <select id="edit-status" class="modal__select" formControlName="status">
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+    </div>
+
+    <div class="modal__actions">
+      <button
+        class="modal__btn modal__btn--secondary"
+        type="button"
+        (click)="onCancel()"
+        [disabled]="submitting()"
+      >Cancel</button>
+      <button
+        class="modal__btn modal__btn--primary"
+        type="submit"
+        [disabled]="submitting()"
+      >{{ submitting() ? 'Saving…' : 'Save Changes' }}</button>
+    </div>
+  </form>
+</div>

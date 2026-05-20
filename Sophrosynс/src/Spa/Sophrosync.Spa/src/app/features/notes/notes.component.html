@@ -1,0 +1,86 @@
+<div class="feature-page notes-page">
+
+  <section class="feature-hero">
+    <p class="feature-hero__category">Clinical Archive</p>
+    <h1 class="feature-hero__headline">Notes</h1>
+    <p class="feature-hero__sub">Author, sign, and archive session notes with precision.</p>
+  </section>
+
+  <!-- Filters -->
+  <div class="notes-filters">
+    <div class="notes-filters__group">
+      @for (s of statusOptions; track s) {
+        <button
+          class="filter-chip"
+          [class.filter-chip--active]="statusFilter() === s"
+          (click)="setStatusFilter(s)">
+          {{ statusLabels[s] }}
+        </button>
+      }
+    </div>
+    <div class="notes-filters__group">
+      @for (t of typeOptions; track t) {
+        <button
+          class="filter-chip"
+          [class.filter-chip--active]="typeFilter() === t"
+          (click)="setTypeFilter(t)">
+          {{ t }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="notes-loading">
+      <span class="material-symbols-outlined notes-loading__icon">progress_activity</span>
+      <p>Loading notes…</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (!loading() && error()) {
+    <div class="placeholder-card">
+      <span class="material-symbols-outlined placeholder-card__icon">error_outline</span>
+      <p class="placeholder-card__label">Could not load notes</p>
+      <p class="placeholder-card__meta">Check your connection and try again.</p>
+    </div>
+  }
+
+  <!-- Empty: no notes at all -->
+  @if (!loading() && !error() && notes().length === 0) {
+    <div class="placeholder-card">
+      <span class="material-symbols-outlined placeholder-card__icon">edit_note</span>
+      <p class="placeholder-card__label">Your notes will appear here</p>
+      <p class="placeholder-card__meta">Start a session note from the calendar.</p>
+      <a class="placeholder-card__cta" routerLink="/calendar">Go to Calendar</a>
+    </div>
+  }
+
+  <!-- Empty: filters active but no results -->
+  @if (!loading() && !error() && notes().length > 0 && filteredNotes().length === 0) {
+    <div class="placeholder-card">
+      <span class="material-symbols-outlined placeholder-card__icon">filter_alt</span>
+      <p class="placeholder-card__label">No notes match your filters</p>
+      <button class="placeholder-card__cta placeholder-card__cta--btn" (click)="clearFilters()">
+        Clear filters
+      </button>
+    </div>
+  }
+
+  <!-- Note cards -->
+  @if (!loading() && !error() && filteredNotes().length > 0) {
+    <div class="notes-grid">
+      @for (note of filteredNotes(); track note.id) {
+        <app-note-card [note]="note" (noteClick)="onNoteClick($event)" />
+      }
+    </div>
+  }
+
+</div>
+
+<!-- FAB -->
+<button class="notes-fab" (click)="newNote()" aria-label="New note">
+  <span class="material-symbols-outlined">add</span>
+  <span class="notes-fab__label">New Note</span>
+</button>

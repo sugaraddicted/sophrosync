@@ -1,0 +1,213 @@
+:host {
+  display: block;
+  height: 100dvh;
+}
+
+/* ─── Shell layout ─────────────────────────────────────────── */
+
+.shell {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ─── Sidebar ─────────────────────────────────────────────── */
+
+.sidebar {
+  width: 256px;
+  flex-shrink: 0;
+  background-color: #f3f4ee;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1rem;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.sidebar__brand {
+  padding: 0 0.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.sidebar__brand-name {
+  display: block;
+  font-family: var(--font-headline);
+  font-style: italic;
+  font-size: 1.125rem;
+  color: #546253;
+  letter-spacing: -0.01em;
+}
+
+.sidebar__brand-sub {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #5b6159;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+
+.sidebar__nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebar__nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.125rem;
+  color: #5f5f5f;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: background-color 0.15s, color 0.15s;
+
+  /* Active indicator via inset box-shadow — no width change */
+  box-shadow: inset -2px 0 0 transparent;
+  transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
+
+  &:hover {
+    background-color: rgba(222, 228, 218, 0.3);
+  }
+
+  &--active {
+    background-color: #dee4da;
+    color: #546253;
+    box-shadow: inset -2px 0 0 #546253;
+  }
+}
+
+.sidebar__bottom {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(174, 180, 170, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ─── Main canvas ─────────────────────────────────────────── */
+
+.main-canvas {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* ─── Topbar ──────────────────────────────────────────────── */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 2rem;
+  background-color: #fafaf5;
+  flex-shrink: 0;
+  /* Subtle bottom separation via shadow, not border */
+  box-shadow: 0 1px 0 rgba(174, 180, 170, 0.2);
+}
+
+.topbar__left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.topbar__brand {
+  font-family: var(--font-headline);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #546253;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.topbar__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.topbar__search-icon {
+  position: absolute;
+  left: 0.625rem;
+  color: #5f5f5f;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.topbar__search-input {
+  background-color: #f3f4ee;
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem 0.5rem 2.125rem;
+  font-size: 0.875rem;
+  width: 240px;
+  color: #2e342d;
+
+  &::placeholder {
+    color: #767c74;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px rgba(84, 98, 83, 0.3);
+  }
+}
+
+.topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.topbar__icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  background: transparent;
+  border-radius: 0.25rem;
+  color: #546253;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: rgba(222, 228, 218, 0.5);
+  }
+}
+
+.topbar__avatar {
+  width: 2.125rem;
+  height: 2.125rem;
+  border-radius: 0.25rem;
+  background-color: #d8e7d4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.75rem;
+}
+
+.topbar__avatar-initials {
+  font-family: var(--font-headline);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #485547;
+}
+
+/* ─── Page content ────────────────────────────────────────── */
+
+.page-content {
+  flex: 1;
+  overflow-y: auto;
+  background-color: #fafaf5;
+}
