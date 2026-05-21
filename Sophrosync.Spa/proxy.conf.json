@@ -11,6 +11,12 @@
     "changeOrigin": true,
     "logLevel": "debug"
   },
+  "/api/appointments": {
+    "target": "http://localhost:5002",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
   "/api/identity": {
     "target": "http://localhost:5005",
     "secure": false,

@@ -4,9 +4,12 @@
     <button class="cal-nav__btn cal-nav__btn--prev" (click)="prev()" aria-label="Previous month"></button>
     <button class="cal-nav__btn cal-nav__btn--next" (click)="next()" aria-label="Next month"></button>
   </div>
+  @if (error()) {
+    <p class="cal-error">{{ error() }}</p>
+  }
   <app-month-grid
     [month]="currentMonth().month"
     [year]="currentMonth().year"
-    [appointments]="currentMonth().appointments"
+    [appointments]="appointments()"
   />
 </div>

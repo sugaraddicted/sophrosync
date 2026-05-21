@@ -51,6 +51,17 @@ app.Use(async (context, next) =>
     await next();
 });
 
+// Block all /internal/** paths — these routes are service-to-service only and must never be reachable from outside
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path.StartsWithSegments("/internal"))
+    {
+        context.Response.StatusCode = StatusCodes.Status404NotFound;
+        return;
+    }
+    await next();
+});
+
 app.MapReverseProxy();
 
 app.Run();

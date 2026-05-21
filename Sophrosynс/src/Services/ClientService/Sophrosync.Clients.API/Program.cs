@@ -2,10 +2,12 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using Serilog;
 using Sophrosync.Clients.Application.Commands.CreateClient;
 using Sophrosync.Clients.Infrastructure;
+using Sophrosync.Clients.Infrastructure.Persistence;
 using Sophrosync.SharedKernel.Abstractions;
 using Sophrosync.SharedKernel.Behaviors;
 using Sophrosync.SharedKernel.Services;
@@ -26,8 +28,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.Authority = builder.Configuration["Keycloak:Authority"];
-        options.Audience = builder.Configuration["Keycloak:Audience"];
         options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
+        options.TokenValidationParameters.ValidateIssuer = false;
+        options.TokenValidationParameters.ValidateAudience = false;
+        options.MapInboundClaims = false;
     });
 
 builder.Services.AddAuthorization(options =>
@@ -112,6 +116,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.MapScalarApiReference(options =>
         options.WithOpenApiRoutePattern("/swagger/v1/swagger.json"));
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ClientsDbContext>();
+    await db.Database.MigrateAsync();
 }
 
 app.Run();

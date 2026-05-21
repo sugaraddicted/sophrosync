@@ -21,7 +21,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./postgres/init.sh:/docker-entrypoint-initdb.d/init.sh
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U sophrosync"]
+      test: ["CMD-SHELL", "pg_isready -U sophrosync -d postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -40,12 +40,24 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/health/ready || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      - "1025:1025"
+      - "8025:8025"
 
   # ── Application services (opt-in via profiles) ───────────────────────────────
   #
   # Usage:
   #   docker compose --profile clients up -d      # run clients-service in Docker
-  #   docker compose --profile notes up -d        # run notes-service in Docker
+  #   docker compose --profile schedule up -d     # run schedule-service in Docker
   #   docker compose --profile gateway up -d      # run gateway in Docker
   #   docker compose --profile services up -d     # run all services in Docker
   #
@@ -89,6 +101,22 @@ services:
       postgres:
         condition: service_healthy
 
+  schedule-service:
+    profiles: ["schedule", "services"]
+    build:
+      context: .
+      dockerfile: src/Services/ScheduleService/Sophrosync.Schedule.API/Dockerfile
+    ports:
+      - "5002:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__ScheduleDb: "Host=postgres;Port=5432;Database=sophrosync_schedule;Username=svc_schedule;Password=${SCHEDULE_DB_PASSWORD}"
+      Keycloak__Authority: "http://keycloak:8080/realms/sophrosync"
+      Keycloak__Audience: "sophrosync-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   notes-service:
     profiles: ["notes", "services"]
     build:
@@ -100,6 +128,58 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__NotesDb: "Host=postgres;Port=5432;Database=sophrosync_notes;Username=svc_notes;Password=${NOTES_DB_PASSWORD}"
       Encryption__NotesKey: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      Keycloak__Authority: "http://keycloak:8080/realms/sophrosync"
+      Keycloak__Audience: "sophrosync-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  consent-service:
+    profiles: ["consent", "services"]
+    build:
+      context: .
+      dockerfile: src/Services/ConsentService/Sophrosync.Consent.API/Dockerfile
+    ports:
+      - "5006:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__ConsentDb: "Host=postgres;Port=5432;Database=sophrosync_consent;Username=svc_consent;Password=${CONSENT_DB_PASSWORD}"
+      Keycloak__Authority: "http://keycloak:8080/realms/sophrosync"
+      Keycloak__Audience: "sophrosync-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  notifications-service:
+    profiles: ["notifications", "services"]
+    build:
+      context: .
+      dockerfile: src/Services/NotificationService/Sophrosync.Notifications.API/Dockerfile
+    ports:
+      - "5007:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__NotificationsDb: "Host=postgres;Port=5432;Database=sophrosync_notifications;Username=svc_notifications;Password=${NOTIFICATIONS_DB_PASSWORD}"
+      Smtp__Host: mailhog
+      Smtp__Port: "1025"
+      Keycloak__Authority: "http://keycloak:8080/realms/sophrosync"
+      Keycloak__Audience: "sophrosync-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+
+  reporting-service:
+    profiles: ["reporting", "services"]
+    build:
+      context: .
+      dockerfile: src/Services/ReportingService/Sophrosync.Reporting.API/Dockerfile
+    ports:
+      - "5008:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__ReportingDb: "Host=postgres;Port=5432;Database=sophrosync_reporting;Username=svc_reporting;Password=${REPORTING_DB_PASSWORD}"
       Keycloak__Authority: "http://keycloak:8080/realms/sophrosync"
       Keycloak__Audience: "sophrosync-gateway"
     depends_on:

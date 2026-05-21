@@ -8,17 +8,26 @@
   <form class="modal__form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
     @if (!isEdit) {
       <div class="modal__field">
-        <label class="modal__label" for="note-client-id">Client ID</label>
-        <input
-          id="note-client-id"
-          class="modal__input"
-          type="text"
-          formControlName="clientId"
-          placeholder="Client UUID"
-          [class.modal__input--error]="form.controls.clientId.invalid && form.controls.clientId.touched"
-        />
+        @if (clientsLoading()) {
+          <label class="modal__label">Client</label>
+          <p class="modal__hint">Loading clients…</p>
+        } @else if (clientsError()) {
+          <label class="modal__label">Client</label>
+          <p class="modal__error">{{ clientsError() }}</p>
+          <button class="modal__btn modal__btn--secondary modal__btn--sm" type="button" (click)="loadClients()">Retry</button>
+        } @else {
+          <label class="modal__label">Client</label>
+          <app-searchable-select
+            formControlName="clientId"
+            [options]="clientOptions()"
+            placeholder="Select a client"
+            searchPlaceholder="Search clients…"
+            [class.modal__select--error]="form.controls.clientId.invalid && form.controls.clientId.touched"
+            aria-required="true"
+          ></app-searchable-select>
+        }
         @if (form.controls.clientId.invalid && form.controls.clientId.touched) {
-          <p class="modal__error">Client ID is required.</p>
+          <p class="modal__error">Client is required.</p>
         }
       </div>
 

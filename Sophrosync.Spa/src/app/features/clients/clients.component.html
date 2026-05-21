@@ -1,0 +1,97 @@
+<div class="clients">
+  <h2 class="clients__title">Clients</h2>
+
+  <div class="clients__controls">
+    <input
+      class="clients__search"
+      type="text"
+      placeholder="Search clients"
+      [value]="searchQuery()"
+      (input)="onSearch($event)"
+    />
+    <div class="clients__toggle" role="group" aria-label="Filter by status">
+      <button
+        class="clients__toggle-btn"
+        [class.clients__toggle-btn--active]="statusFilter() === 'Active'"
+        (click)="setStatus('Active')"
+      >Active</button>
+      <span class="clients__toggle-sep" aria-hidden="true"></span>
+      <button
+        class="clients__toggle-btn"
+        [class.clients__toggle-btn--active]="statusFilter() === 'All'"
+        (click)="setStatus('All')"
+      >All</button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="clients__table">
+      <div class="clients__thead">
+        <div class="clients__th clients__th--name">Name</div>
+        <div class="clients__th clients__th--status">Status</div>
+        <div class="clients__th clients__th--actions">Actions</div>
+      </div>
+      <div class="clients__tbody">
+        @for (row of placeholderRows; track row) {
+          <div class="clients__row clients__row--placeholder">
+            <div class="clients__td clients__td--name">
+              <span class="clients__ph-name"></span>
+            </div>
+            <div class="clients__td clients__td--status">
+              <span class="clients__ph-status"></span>
+            </div>
+            <div class="clients__td clients__td--actions"></div>
+          </div>
+        }
+      </div>
+    </div>
+  } @else if (error()) {
+    <div class="clients__state">
+      <hr class="clients__state-rule" />
+      <p class="clients__state-msg clients__state-msg--error">Could not load clients.</p>
+      <button class="clients__retry" (click)="retry()">Try again</button>
+    </div>
+  } @else {
+    <div class="clients__table">
+      <div class="clients__thead">
+        <div class="clients__th clients__th--name">Name</div>
+        <div class="clients__th clients__th--status">Status</div>
+        <div class="clients__th clients__th--actions">Actions</div>
+      </div>
+      <div class="clients__tbody">
+        @for (c of filtered(); track c.id) {
+          <div class="clients__row">
+            <div class="clients__td clients__td--name">
+              <a class="clients__name-link" [routerLink]="['/clients', c.id]">
+                {{ c.name }}
+              </a>
+            </div>
+            <div class="clients__td clients__td--status">
+              <span
+                class="clients__badge"
+                [class.clients__badge--active]="c.status === 'Active'"
+                [class.clients__badge--inactive]="c.status === 'Inactive'"
+              >
+                <span class="clients__badge-dot"></span>{{ c.status }}
+              </span>
+            </div>
+            <div class="clients__td clients__td--actions">
+              <a class="clients__action-link" [routerLink]="['/clients', c.id]">View</a>
+            </div>
+          </div>
+        } @empty {
+          <div class="clients__state">
+            <hr class="clients__state-rule" />
+            <p class="clients__state-msg">
+              @if (statusFilter() === 'Active' && clients().length > 0) {
+                No active clients.<br /><span class="clients__state-hint">Switch to All to see inactive clients.</span>
+              } @else {
+                No clients yet.
+              }
+            </p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

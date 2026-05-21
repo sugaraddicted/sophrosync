@@ -1,7 +1,10 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   OnInit,
+  computed,
+  inject,
   input,
   output,
   signal,
@@ -13,6 +16,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { Note, NoteType, CreateNoteDto, UpdateNoteDto } from '../models/note.model';
+import { ClientsService, ClientDto } from '../../clients/clients.service';
+import { SearchableSelectComponent } from '../../../shared/components/searchable-select/searchable-select.component';
 
 export type NoteFormResult =
   | { mode: 'create'; dto: CreateNoteDto }
@@ -20,25 +25,35 @@ export type NoteFormResult =
 
 @Component({
   selector: 'app-note-form-modal',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SearchableSelectComponent],
   templateUrl: './note-form-modal.component.html',
   styleUrl: './note-form-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NoteFormModalComponent implements OnInit {
+  private readonly clientsService = inject(ClientsService);
+  private readonly cdr = inject(ChangeDetectorRef);
+
   /** Pass a note to switch to edit mode; omit for create mode. */
   readonly note = input<Note | null>(null);
 
   readonly submitted = output<NoteFormResult>();
   readonly cancelled = output<void>();
 
-  protected readonly submitting = signal(false);
+  readonly submitting = signal(false);
+  readonly clients = signal<ClientDto[]>([]);
+  readonly clientsLoading = signal(false);
+  readonly clientsError = signal<string | null>(null);
 
-  protected readonly noteTypes: NoteType[] = [
+  readonly noteTypes: NoteType[] = [
     'DAP', 'SOAP', 'FreeForm', 'Intake', 'Treatment', 'Discharge',
   ];
 
-  protected readonly form = new FormGroup({
+  readonly clientOptions = computed(() =>
+    this.clients().map(c => ({ value: c.id, label: c.name }))
+  );
+
+  readonly form = new FormGroup({
     clientId:    new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     sessionDate: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     type:        new FormControl<NoteType>('SOAP', { nonNullable: true, validators: [Validators.required] }),
@@ -66,10 +81,28 @@ export class NoteFormModalComponent implements OnInit {
       this.form.controls.sessionDate.disable();
       this.form.controls.type.disable();
     } else {
-      // Create mode — default sessionDate to today
+      // Create mode — default sessionDate to today and load client list
       const today = new Date().toISOString().substring(0, 10);
       this.form.controls.sessionDate.setValue(today);
+      this.loadClients();
     }
+  }
+
+  loadClients(): void {
+    this.clientsLoading.set(true);
+    this.clientsError.set(null);
+    this.clientsService.getAll()
+      .then(data => {
+        this.clients.set(data);
+        this.clientsError.set(null);
+      })
+      .catch(() => {
+        this.clientsError.set('Failed to load clients. Please try again.');
+      })
+      .finally(() => {
+        this.clientsLoading.set(false);
+        this.cdr.markForCheck();
+      });
   }
 
   onSubmit(): void {

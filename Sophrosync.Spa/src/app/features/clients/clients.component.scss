@@ -1,0 +1,281 @@
+.clients {
+  max-width: 880px;
+
+  &__title {
+    margin: 0 0 24px;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-primary);
+  }
+
+  &__controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  &__search {
+    width: 320px;
+    height: 36px;
+    padding: 0 10px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--color-text-primary);
+    background: #fff;
+    border: 1px solid #2c2c2c;
+    border-radius: 0;
+    outline: none;
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: var(--color-text-secondary);
+    }
+
+    &:focus {
+      border: 2px solid #26392d;
+    }
+  }
+
+  &__toggle {
+    display: flex;
+    align-items: center;
+    height: 36px;
+  }
+
+  &__toggle-btn {
+    background: none;
+    border: none;
+    padding: 0 12px;
+    height: 100%;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #555;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+
+    &:hover {
+      color: #2c2c2c;
+    }
+
+    &--active {
+      font-weight: 700;
+      color: #2c2c2c;
+      border-bottom-color: #26392d;
+    }
+  }
+
+  &__toggle-sep {
+    width: 1px;
+    height: 16px;
+    background: #555;
+    flex-shrink: 0;
+  }
+
+  // Table — no card wrapper, sits directly on sand bg
+  &__table {
+    border-top: 1px solid #26392d;
+    border-bottom: 1px solid #26392d;
+  }
+
+  &__thead {
+    display: flex;
+    align-items: center;
+    height: 36px;
+    border-bottom: 1px solid rgba(85, 85, 85, 0.5);
+  }
+
+  &__th {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #555;
+
+    &--name {
+      flex: 1;
+    }
+
+    &--status {
+      width: 160px;
+      padding: 0 16px;
+      box-sizing: border-box;
+    }
+
+    &--actions {
+      width: 140px;
+      text-align: right;
+      box-sizing: border-box;
+    }
+  }
+
+  &__tbody {
+    // no extra styling needed; rows handle their own borders
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    height: 52px;
+    border-bottom: 1px solid rgba(44, 44, 44, 0.12);
+    cursor: default;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: rgba(38, 57, 45, 0.07);
+    }
+
+    &--placeholder {
+      cursor: default;
+    }
+  }
+
+  &__td {
+    &--name {
+      flex: 1;
+    }
+
+    &--status {
+      width: 160px;
+      padding: 0 16px;
+      box-sizing: border-box;
+    }
+
+    &--actions {
+      width: 140px;
+      display: flex;
+      justify-content: flex-end;
+      box-sizing: border-box;
+    }
+  }
+
+  &__name-link {
+    font-family: inherit;
+    font-size: 16px;
+    color: #2c2c2c;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+
+    &--active {
+      color: #26392d;
+    }
+
+    &--inactive {
+      color: #555;
+    }
+  }
+
+  &__badge-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+
+    .clients__badge--active & {
+      background: #26392d;
+    }
+
+    .clients__badge--inactive & {
+      background: #555;
+    }
+  }
+
+  &__action-link {
+    font-family: inherit;
+    font-size: 13px;
+    color: #464444;
+    text-decoration: underline;
+
+    &:hover {
+      color: #26392d;
+    }
+  }
+
+  // Placeholder skeleton rows — no animation (brutalist)
+  &__ph-name {
+    display: block;
+    width: 200px;
+    height: 12px;
+    background: rgba(44, 44, 44, 0.1);
+    border-radius: 0;
+  }
+
+  &__ph-status {
+    display: block;
+    width: 60px;
+    height: 10px;
+    background: rgba(44, 44, 44, 0.1);
+    border-radius: 0;
+  }
+
+  // Empty and error states
+  &__state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 80px;
+    padding-bottom: 40px;
+  }
+
+  &__state-rule {
+    width: 240px;
+    border: none;
+    border-top: 1px solid #555;
+    margin: 0 0 16px;
+  }
+
+  &__state-msg {
+    margin: 0;
+    font-size: 16px;
+    font-style: italic;
+    color: #555;
+    text-align: center;
+    line-height: 1.6;
+
+    &--error {
+      color: #2c2c2c;
+    }
+  }
+
+  &__state-hint {
+    display: block;
+    font-style: normal;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  &__retry {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-top: 12px;
+    font-family: inherit;
+    font-size: 14px;
+    color: #464444;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: #26392d;
+    }
+  }
+}

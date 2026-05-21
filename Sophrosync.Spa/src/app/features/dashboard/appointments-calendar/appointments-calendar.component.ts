@@ -1,5 +1,14 @@
-import { Component, computed, signal } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  NgZone,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { MonthGridComponent } from './month-grid/month-grid.component';
+import { AppointmentsService, AppointmentDto } from '../appointments.service';
 
 export interface Appointment {
   day: number;
@@ -11,54 +20,78 @@ interface MonthDescriptor {
   month: number;
   year: number;
   label: string;
-  appointments: Appointment[];
 }
-
-// Placeholder data keyed by "YYYY-M" (month 0-based)
-const PLACEHOLDER_APPOINTMENTS: Record<string, Appointment[]> = {
-  '2026-2': [
-    { day: 5,  time: '09:00', client: 'Anna Berg' },
-    { day: 12, time: '11:30', client: 'Tom Reeves' },
-    { day: 17, time: '10:00', client: 'Jane Doe' },
-    { day: 18, time: '14:00', client: 'Maria Stone' },
-    { day: 24, time: '09:30', client: 'James Park' },
-    { day: 25, time: '16:00', client: 'Lucy Chen' },
-  ],
-  '2026-3': [
-    { day: 2,  time: '10:00', client: 'Anna Berg' },
-    { day: 9,  time: '13:00', client: 'Tom Reeves' },
-    { day: 16, time: '11:00', client: 'Jane Doe' },
-    { day: 23, time: '15:30', client: 'Maria Stone' },
-  ],
-  '2026-4': [
-    { day: 7,  time: '09:00', client: 'James Park' },
-    { day: 14, time: '14:00', client: 'Anna Berg' },
-    { day: 21, time: '10:30', client: 'Tom Reeves' },
-  ],
-};
 
 @Component({
   selector: 'app-appointments-calendar',
+  standalone: true,
   imports: [MonthGridComponent],
   templateUrl: './appointments-calendar.component.html',
   styleUrl: './appointments-calendar.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppointmentsCalendarComponent {
+export class AppointmentsCalendarComponent implements OnInit {
   private readonly today = new Date();
+  private readonly appointmentsService = inject(AppointmentsService);
+  private readonly ngZone = inject(NgZone);
 
   readonly windowOffset = signal(0);
+  readonly appointments = signal<Appointment[]>([]);
+  readonly loading = signal(false);
+  readonly error = signal<string | null>(null);
 
   readonly currentMonth = computed<MonthDescriptor>(() => {
     const d = new Date(this.today.getFullYear(), this.today.getMonth() + this.windowOffset(), 1);
-    const key = `${d.getFullYear()}-${d.getMonth()}`;
     return {
       month: d.getMonth(),
       year: d.getFullYear(),
       label: d.toLocaleString('default', { month: 'long', year: 'numeric' }),
-      appointments: PLACEHOLDER_APPOINTMENTS[key] ?? [],
     };
   });
 
-  prev(): void { this.windowOffset.update(v => v - 1); }
-  next(): void { this.windowOffset.update(v => v + 1); }
+  ngOnInit(): void {
+    this.loadCurrentMonth();
+  }
+
+  prev(): void {
+    this.windowOffset.update(v => v - 1);
+    this.loadCurrentMonth();
+  }
+
+  next(): void {
+    this.windowOffset.update(v => v + 1);
+    this.loadCurrentMonth();
+  }
+
+  private loadCurrentMonth(): void {
+    const offset = this.windowOffset();
+    const d = new Date(this.today.getFullYear(), this.today.getMonth() + offset, 1);
+    const from = new Date(d.getFullYear(), d.getMonth(), 1);
+    const to   = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59);
+    this.loading.set(true);
+    this.error.set(null);
+
+    this.ngZone.run(async () => {
+      try {
+        const dtos = await this.appointmentsService.getByDateRange(from, to);
+        this.appointments.set(dtos.map(dto => this.toAppointment(dto)));
+      } catch {
+        this.error.set('Failed to load appointments');
+        this.appointments.set([]);
+      } finally {
+        this.loading.set(false);
+      }
+    });
+  }
+
+  private toAppointment(dto: AppointmentDto): Appointment {
+    const d = new Date(dto.scheduledAt);
+    const hours   = String(d.getUTCHours()).padStart(2, '0');
+    const minutes = String(d.getUTCMinutes()).padStart(2, '0');
+    return {
+      day: d.getUTCDate(),
+      time: `${hours}:${minutes}`,
+      client: dto.type,
+    };
+  }
 }
