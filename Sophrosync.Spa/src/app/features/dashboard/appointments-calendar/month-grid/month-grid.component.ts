@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { Appointment } from '../appointments-calendar.component';
 
 @Component({
@@ -11,6 +11,9 @@ export class MonthGridComponent {
   readonly month = input.required<number>();   // 0-based
   readonly year = input.required<number>();
   readonly appointments = input<Appointment[]>([]);
+
+  readonly dayClicked = output<number>();
+  readonly appointmentClicked = output<Appointment>();
 
   readonly dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -33,4 +36,9 @@ export class MonthGridComponent {
     }
     return map;
   });
+
+  onApptClick(event: Event, appt: Appointment): void {
+    event.stopPropagation();
+    this.appointmentClicked.emit(appt);
+  }
 }

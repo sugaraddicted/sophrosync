@@ -1,13 +1,64 @@
-<div class="feature-page">
-  <div class="feature-page__hero">
-    <p class="feature-page__date-label">Schedule</p>
-    <h1 class="feature-page__headline">Calendar.</h1>
-    <p class="feature-page__subtitle">Your appointments and availability, at a glance.</p>
+<div class="calendar-page">
+
+  <div class="calendar-page__header">
+    <h1 class="calendar-page__title">Calendar</h1>
+    <button
+      class="calendar-page__btn-schedule"
+      type="button"
+      (click)="showScheduleModal.set(true)"
+      aria-label="Schedule new appointment"
+    >
+      + Schedule
+    </button>
   </div>
 
-  <div class="feature-page__placeholder">
-    <span class="material-symbols-outlined feature-page__placeholder-icon" aria-hidden="true">calendar_today</span>
-    <p class="feature-page__placeholder-text">Full calendar view coming soon.</p>
-    <p class="feature-page__placeholder-hint">Appointments, recurring sessions, and availability management.</p>
+  <div class="calendar-page__nav" aria-label="Month navigation">
+    <button
+      class="calendar-page__nav-btn"
+      type="button"
+      (click)="prev()"
+      aria-label="Previous month"
+    >&#8249;</button>
+    <span class="calendar-page__month-label">{{ currentMonth().label }}</span>
+    <button
+      class="calendar-page__nav-btn"
+      type="button"
+      (click)="next()"
+      aria-label="Next month"
+    >&#8250;</button>
   </div>
+
+  @if (loading()) {
+    <p class="calendar-page__loading" aria-live="polite">Loading appointments…</p>
+  }
+
+  @if (error()) {
+    <p class="calendar-page__error" role="alert">{{ error() }}</p>
+  }
+
+  <app-month-grid
+    [month]="currentMonth().month"
+    [year]="currentMonth().year"
+    [appointments]="mappedAppointments()"
+    (dayClicked)="onDayClicked($event)"
+    (appointmentClicked)="onAppointmentClicked($event)"
+  />
+
+  @if (showScheduleModal()) {
+    <app-schedule-appointment-modal
+      [prefillDate]="prefillDate()"
+      (submitted)="onScheduleSubmit($event)"
+      (cancelled)="onScheduleCancelled()"
+    />
+  }
+
+  @if (selectedAppointment()) {
+    <app-appointment-detail-modal
+      [appointment]="selectedAppointment()!"
+      [clientNames]="clientNames()"
+      (actionRequested)="onAction($event)"
+      (closed)="selectedAppointment.set(null)"
+    />
+  }
+
 </div>

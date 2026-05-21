@@ -1,0 +1,106 @@
+<div class="modal-backdrop" (click)="onCancel()" aria-hidden="true"></div>
+
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="schedule-appt-title">
+  <h2 class="modal__title" id="schedule-appt-title">Schedule Appointment</h2>
+
+  <form class="modal__form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+    <!-- Client -->
+    <div class="modal__field">
+      @if (clientsLoading()) {
+        <label class="modal__label">Client</label>
+        <p class="modal__hint">Loading clients…</p>
+      } @else if (clientsError()) {
+        <label class="modal__label">Client</label>
+        <p class="modal__error">{{ clientsError() }}</p>
+        <button class="modal__btn modal__btn--secondary modal__btn--sm" type="button" (click)="loadClients()">Retry</button>
+      } @else {
+        <label class="modal__label">Client</label>
+        <app-searchable-select
+          formControlName="clientId"
+          [options]="clientOptions()"
+          placeholder="Select client"
+          searchPlaceholder="Search clients…"
+          [class.modal__select--error]="form.controls.clientId.invalid && form.controls.clientId.touched"
+          aria-required="true"
+        ></app-searchable-select>
+      }
+      @if (form.controls.clientId.invalid && form.controls.clientId.touched) {
+        <p class="modal__error">Client is required.</p>
+      }
+    </div>
+
+    <!-- Date / Time -->
+    <div class="modal__field">
+      <label class="modal__label" for="appt-scheduled-at">Date &amp; Time</label>
+      <input
+        id="appt-scheduled-at"
+        class="modal__input"
+        type="datetime-local"
+        formControlName="scheduledAt"
+        [class.modal__input--error]="form.controls.scheduledAt.invalid && form.controls.scheduledAt.touched"
+        aria-required="true"
+      />
+      @if (form.controls.scheduledAt.invalid && form.controls.scheduledAt.touched) {
+        <p class="modal__error">Date and time are required.</p>
+      }
+    </div>
+
+    <div class="modal__row">
+      <!-- Duration -->
+      <div class="modal__field">
+        <label class="modal__label" for="appt-duration">Duration (min)</label>
+        <input
+          id="appt-duration"
+          class="modal__input"
+          type="number"
+          formControlName="durationMinutes"
+          min="15"
+          max="480"
+          step="15"
+          [class.modal__input--error]="form.controls.durationMinutes.invalid && form.controls.durationMinutes.touched"
+        />
+        @if (form.controls.durationMinutes.invalid && form.controls.durationMinutes.touched) {
+          <p class="modal__error">Duration must be between 15 and 480 minutes.</p>
+        }
+      </div>
+
+      <!-- Type -->
+      <div class="modal__field">
+        <label class="modal__label" for="appt-type">Type</label>
+        <select id="appt-type" class="modal__select" formControlName="type">
+          <option value="InPerson">In Person</option>
+          <option value="Video">Video Call</option>
+          <option value="Phone">Phone Call</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="modal__field">
+      <label class="modal__label" for="appt-notes">Notes <span class="modal__optional">(optional)</span></label>
+      <textarea
+        id="appt-notes"
+        class="modal__textarea"
+        formControlName="notes"
+        rows="3"
+        maxlength="5000"
+        placeholder="Any notes for this appointment…"
+      ></textarea>
+    </div>
+
+    <div class="modal__actions">
+      <button
+        class="modal__btn modal__btn--secondary"
+        type="button"
+        (click)="onCancel()"
+        [disabled]="submitting()"
+      >Cancel</button>
+      <button
+        class="modal__btn modal__btn--primary"
+        type="submit"
+        [disabled]="submitting()"
+      >{{ submitting() ? 'Scheduling…' : 'Schedule' }}</button>
+    </div>
+  </form>
+</div>

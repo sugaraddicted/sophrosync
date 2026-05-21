@@ -18,6 +18,7 @@ interface TokenResponse {
 }
 
 interface JwtPayload {
+  sub: string;
   preferred_username: string;
   email: string;
   given_name: string;
@@ -39,6 +40,7 @@ export class AuthService {
   readonly isAuthenticated = signal(false);
   readonly userProfile = signal<UserProfile | null>(null);
   readonly userRoles = signal<string[]>([]);
+  readonly userId = signal<string>('');
 
   async login(username: string, password: string): Promise<void> {
     const body = new HttpParams()
@@ -62,6 +64,7 @@ export class AuthService {
     this.isAuthenticated.set(false);
     this.userProfile.set(null);
     this.userRoles.set([]);
+    this.userId.set('');
     await this.router.navigate(['/login']);
   }
 
@@ -114,6 +117,7 @@ export class AuthService {
       lastName: payload.family_name ?? '',
     });
     this.userRoles.set(payload.roles ?? payload.realm_access?.roles ?? []);
+    this.userId.set(payload.sub ?? '');
     this.isAuthenticated.set(true);
   }
 

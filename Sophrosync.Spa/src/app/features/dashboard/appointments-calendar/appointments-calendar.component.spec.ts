@@ -2,9 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { AppointmentsCalendarComponent } from './appointments-calendar.component';
 import { AppointmentsService, AppointmentDto } from '../appointments.service';
 
-const makeDto = (scheduledAt = '2026-05-15T09:00:00Z'): AppointmentDto => ({
-  id: '1', tenantId: 't1', clientId: 'c1', therapistId: 'th1',
-  scheduledAt, durationMinutes: 60, type: 'InPerson', status: 'Scheduled',
+const makeDto = (scheduledAt = '2026-05-15T09:00:00', type = 'InPerson'): AppointmentDto => ({
+  id: 'dto-id-1', tenantId: 't1', clientId: 'c1', therapistId: 'th1',
+  scheduledAt, durationMinutes: 60, type, status: 'Scheduled', createdAt: '',
 });
 
 describe('AppointmentsCalendarComponent', () => {
@@ -33,7 +33,7 @@ describe('AppointmentsCalendarComponent', () => {
   });
 
   it('populates appointments signal after successful load', async () => {
-    mockService.getByDateRange.mockResolvedValue([makeDto('2026-05-15T09:00:00Z')]);
+    mockService.getByDateRange.mockResolvedValue([makeDto('2026-05-15T09:00:00')]);
     const fixture = TestBed.createComponent(AppointmentsCalendarComponent);
     fixture.detectChanges();
     await fixture.whenStable();
@@ -41,12 +41,28 @@ describe('AppointmentsCalendarComponent', () => {
     expect(appts).toHaveLength(1);
     expect(appts[0].day).toBe(15);
     expect(appts[0].time).toBe('09:00');
-    expect(appts[0].client).toBe('InPerson');
+  });
+
+  it('maps id from dto.id', async () => {
+    mockService.getByDateRange.mockResolvedValue([makeDto('2026-05-15T09:00:00')]);
+    const fixture = TestBed.createComponent(AppointmentsCalendarComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(fixture.componentInstance.appointments()[0].id).toBe('dto-id-1');
+  });
+
+  it('maps client to human-readable type label', async () => {
+    mockService.getByDateRange.mockResolvedValue([makeDto('2026-05-15T09:00:00', 'InPerson')]);
+    const fixture = TestBed.createComponent(AppointmentsCalendarComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(fixture.componentInstance.appointments()[0].client).toBe('In Person');
   });
 
   it('sets loading to false after fetch completes', async () => {
     const fixture = TestBed.createComponent(AppointmentsCalendarComponent);
     fixture.detectChanges();
+    await fixture.whenStable();
     await fixture.whenStable();
     expect(fixture.componentInstance.loading()).toBe(false);
   });
@@ -55,6 +71,7 @@ describe('AppointmentsCalendarComponent', () => {
     mockService.getByDateRange.mockRejectedValue(new Error('network error'));
     const fixture = TestBed.createComponent(AppointmentsCalendarComponent);
     fixture.detectChanges();
+    await fixture.whenStable();
     await fixture.whenStable();
     expect(fixture.componentInstance.error()).not.toBeNull();
     expect(fixture.componentInstance.appointments()).toHaveLength(0);

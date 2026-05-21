@@ -1,7 +1,7 @@
 import {
-  Component,
   ChangeDetectionStrategy,
-  NgZone,
+  ChangeDetectorRef,
+  Component,
   OnInit,
   computed,
   inject,
@@ -19,7 +19,7 @@ import { AppointmentsService, AppointmentDto } from '../appointments.service';
 })
 export class NextSessionCardComponent implements OnInit {
   private readonly appointmentsService = inject(AppointmentsService);
-  private readonly ngZone = inject(NgZone);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   readonly nextSession = signal<AppointmentDto | null>(null);
   readonly loading = signal(true);
@@ -86,18 +86,14 @@ export class NextSessionCardComponent implements OnInit {
     const thirtyDaysOut = new Date(now);
     thirtyDaysOut.setDate(thirtyDaysOut.getDate() + 30);
 
-    this.ngZone.run(async () => {
-      try {
-        const dtos = await this.appointmentsService.getByDateRange(now, thirtyDaysOut);
+    this.appointmentsService.getByDateRange(now, thirtyDaysOut)
+      .then(dtos => {
         const upcoming = dtos
           .filter(d => d.status === 'Scheduled' || d.status === 'Confirmed')
           .sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime());
         this.nextSession.set(upcoming[0] ?? null);
-      } catch {
-        this.error.set(true);
-      } finally {
-        this.loading.set(false);
-      }
-    });
+      })
+      .catch(() => { this.error.set(true); })
+      .finally(() => { this.loading.set(false); this.cdr.markForCheck(); });
   }
 }

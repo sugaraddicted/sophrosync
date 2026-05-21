@@ -19,7 +19,7 @@
           <span class="week-strip__label">This week</span>
         </div>
         <div class="week-strip__days">
-          @for (day of weekDays; track day.label) {
+          @for (day of weekDays(); track day.label) {
             <div class="week-strip__day" [class.week-strip__day--today]="day.isToday">
               <span class="week-strip__day-name">{{ day.label }}</span>
               <span class="week-strip__day-num">{{ day.date }}</span>
@@ -39,28 +39,48 @@
       <!-- Upcoming sessions -->
       <div class="dashboard__upcoming">
         <h2 class="dashboard__section-title">Upcoming sessions</h2>
-        <ul class="upcoming-list" role="list">
-          @for (session of upcomingSessions; track session.name) {
-            <li class="upcoming-list__item">
-              <div
-                class="upcoming-list__avatar"
-                [style.background]="session.avatarColor"
-                aria-hidden="true"
-              >{{ session.initials }}</div>
-              <div class="upcoming-list__info">
-                <span class="upcoming-list__name">{{ session.name }}</span>
-                <span class="upcoming-list__type">{{ session.type }}</span>
-              </div>
-              <span class="upcoming-list__time">{{ session.time }}</span>
-            </li>
-          }
-        </ul>
+        @if (sessionsLoading()) {
+          <ul class="upcoming-list" role="list" aria-busy="true">
+            @for (_ of [1, 2, 3]; track $index) {
+              <li class="upcoming-list__item upcoming-list__item--skeleton">
+                <div class="upcoming-list__avatar-skeleton"></div>
+                <div class="upcoming-list__info-skeleton">
+                  <div class="upcoming-list__skeleton-line upcoming-list__skeleton-line--name"></div>
+                  <div class="upcoming-list__skeleton-line upcoming-list__skeleton-line--type"></div>
+                </div>
+              </li>
+            }
+          </ul>
+        } @else {
+          <ul class="upcoming-list" role="list">
+            @for (session of upcomingSessions(); track $index) {
+              <li class="upcoming-list__item">
+                <div
+                  class="upcoming-list__avatar"
+                  [style.background]="session.avatarColor"
+                  aria-hidden="true"
+                >{{ session.initials }}</div>
+                <div class="upcoming-list__info">
+                  <span class="upcoming-list__name">{{ session.name }}</span>
+                  <span class="upcoming-list__type">{{ session.type }}</span>
+                </div>
+                <span class="upcoming-list__time">{{ session.time }}</span>
+              </li>
+            }
+            @if (upcomingSessions().length === 0) {
+              <li class="upcoming-list__empty">No upcoming sessions this week.</li>
+            }
+          </ul>
+        }
       </div>
 
     </div>
 
     <!-- RIGHT: col-span-4 -->
     <div class="dashboard__col-side">
+
+      <!-- Next session card -->
+      <app-next-session-card />
 
       <!-- Practice Velocity card -->
       <div class="dashboard__velocity">

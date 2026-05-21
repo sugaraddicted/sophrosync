@@ -1,8 +1,8 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   OnInit,
-  ChangeDetectionStrategy,
-  NgZone,
   computed,
   inject,
   signal,
@@ -11,6 +11,7 @@ import { MonthGridComponent } from './month-grid/month-grid.component';
 import { AppointmentsService, AppointmentDto } from '../appointments.service';
 
 export interface Appointment {
+  id: string;
   day: number;
   time: string;   // "HH:MM"
   client: string;
@@ -33,7 +34,7 @@ interface MonthDescriptor {
 export class AppointmentsCalendarComponent implements OnInit {
   private readonly today = new Date();
   private readonly appointmentsService = inject(AppointmentsService);
-  private readonly ngZone = inject(NgZone);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   readonly windowOffset = signal(0);
   readonly appointments = signal<Appointment[]>([]);
@@ -71,27 +72,31 @@ export class AppointmentsCalendarComponent implements OnInit {
     this.loading.set(true);
     this.error.set(null);
 
-    this.ngZone.run(async () => {
-      try {
-        const dtos = await this.appointmentsService.getByDateRange(from, to);
-        this.appointments.set(dtos.map(dto => this.toAppointment(dto)));
-      } catch {
-        this.error.set('Failed to load appointments');
-        this.appointments.set([]);
-      } finally {
-        this.loading.set(false);
-      }
-    });
+    this.appointmentsService.getByDateRange(from, to)
+      .then(dtos => { this.appointments.set(dtos.map(dto => this.toAppointment(dto))); })
+      .catch(() => { this.error.set('Failed to load appointments'); this.appointments.set([]); })
+      .finally(() => { this.loading.set(false); this.cdr.markForCheck(); });
+  }
+
+  private readonly TYPE_LABELS: Record<string, string> = {
+    InPerson: 'In Person',
+    Video: 'Video Call',
+    Phone: 'Phone Call',
+  };
+
+  private typeLabel(type: string): string {
+    return this.TYPE_LABELS[type] ?? type;
   }
 
   private toAppointment(dto: AppointmentDto): Appointment {
     const d = new Date(dto.scheduledAt);
-    const hours   = String(d.getUTCHours()).padStart(2, '0');
-    const minutes = String(d.getUTCMinutes()).padStart(2, '0');
+    const hours   = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
     return {
-      day: d.getUTCDate(),
+      id: dto.id,
+      day: d.getDate(),
       time: `${hours}:${minutes}`,
-      client: dto.type,
+      client: this.typeLabel(dto.type),
     };
   }
 }

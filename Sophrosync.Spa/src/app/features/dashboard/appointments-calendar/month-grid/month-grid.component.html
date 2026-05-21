@@ -7,10 +7,25 @@
       <div class="month-card__cell month-card__cell--blank"></div>
     }
     @for (day of days(); track day) {
-      <div class="month-card__cell" [class.month-card__cell--has-appt]="dayMap().has(day)">
+      <div
+        class="month-card__cell"
+        [class.month-card__cell--has-appt]="dayMap().has(day)"
+        (click)="dayClicked.emit(day)"
+        role="button"
+        [attr.aria-label]="'Day ' + day"
+        tabindex="0"
+        (keydown.enter)="dayClicked.emit(day)"
+      >
         <span class="month-card__day-num">{{ day }}</span>
         @for (appt of dayMap().get(day) ?? []; track $index) {
-          <div class="month-card__bar">
+          <div
+            class="month-card__bar"
+            (click)="onApptClick($event, appt)"
+            (keydown.enter)="onApptClick($event, appt)"
+            tabindex="0"
+            role="button"
+            [attr.aria-label]="'Appointment at ' + appt.time + ' — ' + appt.client"
+          >
             <span class="month-card__bar-time">{{ appt.time }}</span>
             <span class="month-card__bar-client">{{ appt.client }}</span>
           </div>

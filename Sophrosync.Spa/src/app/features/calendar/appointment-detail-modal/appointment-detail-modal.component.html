@@ -1,0 +1,146 @@
+<div class="modal-backdrop" (click)="closed.emit()" aria-hidden="true"></div>
+
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="appt-detail-title">
+
+  <div class="modal__header">
+    <h2 class="modal__title" id="appt-detail-title">Appointment</h2>
+    <button
+      class="modal__close"
+      type="button"
+      aria-label="Close"
+      (click)="closed.emit()"
+    >&#x2715;</button>
+  </div>
+
+  <!-- Details -->
+  <div class="modal__details">
+    <div class="modal__detail-row">
+      <span class="modal__detail-label">Client</span>
+      <span class="modal__detail-value">{{ clientName() }}</span>
+    </div>
+    <div class="modal__detail-row">
+      <span class="modal__detail-label">Date &amp; Time</span>
+      <span class="modal__detail-value">{{ formattedDateTime() }}</span>
+    </div>
+    <div class="modal__detail-row">
+      <span class="modal__detail-label">Duration</span>
+      <span class="modal__detail-value">{{ appointment().durationMinutes }} min</span>
+    </div>
+    <div class="modal__detail-row">
+      <span class="modal__detail-label">Type</span>
+      <span class="modal__detail-value">{{ typeLabel() }}</span>
+    </div>
+    <div class="modal__detail-row">
+      <span class="modal__detail-label">Status</span>
+      <span
+        class="modal__status-badge"
+        [class.modal__status-badge--scheduled]="appointment().status === 'Scheduled'"
+        [class.modal__status-badge--confirmed]="appointment().status === 'Confirmed'"
+        [class.modal__status-badge--completed]="appointment().status === 'Completed'"
+        [class.modal__status-badge--cancelled]="appointment().status === 'Cancelled'"
+        [class.modal__status-badge--noshow]="appointment().status === 'NoShow'"
+      >{{ appointment().status }}</span>
+    </div>
+    @if (appointment().notes) {
+      <div class="modal__detail-row modal__detail-row--full">
+        <span class="modal__detail-label">Notes</span>
+        <span class="modal__detail-value modal__detail-value--notes">{{ appointment().notes }}</span>
+      </div>
+    }
+    @if (appointment().cancellationReason) {
+      <div class="modal__detail-row modal__detail-row--full">
+        <span class="modal__detail-label">Cancellation reason</span>
+        <span class="modal__detail-value modal__detail-value--notes">{{ appointment().cancellationReason }}</span>
+      </div>
+    }
+  </div>
+
+  <!-- Actions -->
+  @if (isEditable()) {
+    <div class="modal__actions">
+      @if (canConfirm()) {
+        <button
+          class="modal__btn modal__btn--primary"
+          type="button"
+          (click)="onConfirm()"
+        >Confirm</button>
+      }
+      <button
+        class="modal__btn modal__btn--secondary"
+        type="button"
+        (click)="onStartReschedule()"
+      >Reschedule</button>
+      <button
+        class="modal__btn modal__btn--danger"
+        type="button"
+        (click)="onStartCancel()"
+      >Cancel</button>
+    </div>
+  }
+
+  <!-- Inline cancel form -->
+  @if (pendingAction() === 'cancel') {
+    <div class="modal__inline-form">
+      <label class="modal__label" for="cancel-reason">Reason for cancellation</label>
+      <textarea
+        id="cancel-reason"
+        class="modal__textarea"
+        rows="3"
+        placeholder="Enter cancellation reason…"
+        [value]="cancelReason()"
+        (input)="cancelReason.set($any($event.target).value)"
+        aria-required="true"
+      ></textarea>
+      <div class="modal__inline-actions">
+        <button class="modal__btn modal__btn--secondary" type="button" (click)="pendingAction.set(null)">Back</button>
+        <button
+          class="modal__btn modal__btn--danger"
+          type="button"
+          [disabled]="!cancelReason().trim()"
+          (click)="onConfirmCancel()"
+        >Confirm cancellation</button>
+      </div>
+    </div>
+  }
+
+  <!-- Inline reschedule form -->
+  @if (pendingAction() === 'reschedule') {
+    <div class="modal__inline-form">
+      <div class="modal__field">
+        <label class="modal__label" for="reschedule-date">New date &amp; time</label>
+        <input
+          id="reschedule-date"
+          class="modal__input"
+          type="datetime-local"
+          [value]="rescheduleDate()"
+          (input)="rescheduleDate.set($any($event.target).value)"
+          aria-required="true"
+        />
+      </div>
+      <div class="modal__field">
+        <label class="modal__label" for="reschedule-duration">New duration (min) <span class="modal__optional">(optional)</span></label>
+        <input
+          id="reschedule-duration"
+          class="modal__input"
+          type="number"
+          min="15"
+          max="480"
+          step="15"
+          placeholder="Leave blank to keep current"
+          [value]="rescheduleDuration() ?? ''"
+          (input)="rescheduleDuration.set($any($event.target).value ? +$any($event.target).value : null)"
+        />
+      </div>
+      <div class="modal__inline-actions">
+        <button class="modal__btn modal__btn--secondary" type="button" (click)="pendingAction.set(null)">Back</button>
+        <button
+          class="modal__btn modal__btn--primary"
+          type="button"
+          [disabled]="!rescheduleDate()"
+          (click)="onConfirmReschedule()"
+        >Confirm reschedule</button>
+      </div>
+    </div>
+  }
+
+</div>
