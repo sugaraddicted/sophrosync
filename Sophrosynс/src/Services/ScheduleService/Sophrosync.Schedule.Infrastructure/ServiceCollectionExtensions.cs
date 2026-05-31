@@ -17,6 +17,7 @@ public static class ServiceCollectionExtensions
             options.UseNpgsql(configuration.GetConnectionString("ScheduleDb")));
 
         services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+        services.AddScoped<IAvailabilityTemplateRepository, AvailabilityTemplateRepository>();
 
         return services;
     }

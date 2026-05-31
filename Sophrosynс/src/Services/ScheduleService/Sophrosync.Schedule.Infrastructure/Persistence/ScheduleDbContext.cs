@@ -18,13 +18,18 @@ public sealed class ScheduleDbContext : DbContext
     }
 
     public DbSet<Appointment> Appointments => Set<Appointment>();
+    public DbSet<AvailabilityTemplate> AvailabilityTemplates => Set<AvailabilityTemplate>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new AppointmentConfiguration());
+        modelBuilder.ApplyConfiguration(new AvailabilityTemplateConfiguration());
 
         // Value is resolved from a per-instance field — safe under DbContext pooling.
         modelBuilder.Entity<Appointment>()
+            .HasQueryFilter(e => e.TenantId == _tenantId);
+
+        modelBuilder.Entity<AvailabilityTemplate>()
             .HasQueryFilter(e => e.TenantId == _tenantId);
 
         base.OnModelCreating(modelBuilder);
