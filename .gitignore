@@ -21,6 +21,9 @@ dist/
 # Claude Code local settings
 .claude/
 
+# Obsidian vault
+Sophrosync.Obs/
+
 # OS
 .DS_Store
 Thumbs.db
