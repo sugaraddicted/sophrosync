@@ -33,4 +33,10 @@
     overflow: hidden;
     background: var(--color-background);
   }
+
+  &__content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 3rem 2rem 2rem;
+  }
 }

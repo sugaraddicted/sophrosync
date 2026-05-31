@@ -2,9 +2,32 @@
 
   <!-- ── Editorial Hero ─────────────────────────────────────────────── -->
   <div class="dashboard__hero">
-    <p class="dashboard__date">{{ formattedDate }}</p>
-    <h1 class="dashboard__headline">{{ greeting() }}</h1>
-    <p class="dashboard__subtitle">Here is your practice overview for today.</p>
+    <div class="dashboard__hero-content">
+      <p class="dashboard__date">{{ formattedDate }}</p>
+      <h1 class="dashboard__headline">{{ greeting() }}</h1>
+      <p class="dashboard__subtitle">Here is your practice overview for today.</p>
+    </div>
+
+    <!-- Practice stats strip -->
+    <div class="dashboard__stats">
+      <div class="dashboard__stat">
+        <span class="dashboard__stat-value">{{ weeklyHoursPercent }}</span>
+        <span class="dashboard__stat-unit">%</span>
+        <span class="dashboard__stat-label">Weekly target</span>
+      </div>
+      <div class="dashboard__stat-sep" aria-hidden="true"></div>
+      <div class="dashboard__stat">
+        <span class="dashboard__stat-value">{{ upcomingSessions().length }}</span>
+        <span class="dashboard__stat-unit"></span>
+        <span class="dashboard__stat-label">Sessions today</span>
+      </div>
+      <div class="dashboard__stat-sep" aria-hidden="true"></div>
+      <div class="dashboard__stat">
+        <span class="dashboard__stat-value">94</span>
+        <span class="dashboard__stat-unit">%</span>
+        <span class="dashboard__stat-label">Retention rate</span>
+      </div>
+    </div>
   </div>
 
   <!-- ── Bento Grid ─────────────────────────────────────────────────── -->
@@ -38,37 +61,41 @@
 
       <!-- Upcoming sessions -->
       <div class="dashboard__upcoming">
-        <h2 class="dashboard__section-title">Upcoming sessions</h2>
+        <div class="dashboard__upcoming-header">
+          <h2 class="dashboard__sessions-title">Today's Sessions</h2>
+          <button class="dashboard__calendar-link" type="button">View Full Calendar</button>
+        </div>
         @if (sessionsLoading()) {
-          <ul class="upcoming-list" role="list" aria-busy="true">
+          <ul class="sessions-list" role="list" aria-busy="true">
             @for (_ of [1, 2, 3]; track $index) {
-              <li class="upcoming-list__item upcoming-list__item--skeleton">
-                <div class="upcoming-list__avatar-skeleton"></div>
-                <div class="upcoming-list__info-skeleton">
-                  <div class="upcoming-list__skeleton-line upcoming-list__skeleton-line--name"></div>
-                  <div class="upcoming-list__skeleton-line upcoming-list__skeleton-line--type"></div>
+              <li class="session-row session-row--skeleton" aria-hidden="true">
+                <div class="session-row__time-skeleton"></div>
+                <div class="session-row__divider"></div>
+                <div class="session-row__info-skeleton">
+                  <div class="session-row__skeleton-line session-row__skeleton-line--name"></div>
+                  <div class="session-row__skeleton-line session-row__skeleton-line--type"></div>
                 </div>
               </li>
             }
           </ul>
         } @else {
-          <ul class="upcoming-list" role="list">
+          <ul class="sessions-list" role="list">
             @for (session of upcomingSessions(); track $index) {
-              <li class="upcoming-list__item">
-                <div
-                  class="upcoming-list__avatar"
-                  [style.background]="session.avatarColor"
-                  aria-hidden="true"
-                >{{ session.initials }}</div>
-                <div class="upcoming-list__info">
-                  <span class="upcoming-list__name">{{ session.name }}</span>
-                  <span class="upcoming-list__type">{{ session.type }}</span>
+              <li class="session-row">
+                <div class="session-row__time">
+                  <span class="session-row__hour">{{ session.time.split(' ')[0] }}</span>
+                  <span class="session-row__ampm">{{ session.time.split(' ')[1] }}</span>
                 </div>
-                <span class="upcoming-list__time">{{ session.time }}</span>
+                <div class="session-row__divider" aria-hidden="true"></div>
+                <div class="session-row__info">
+                  <h4 class="session-row__name">{{ session.name }}</h4>
+                  <p class="session-row__type">{{ session.type }}</p>
+                </div>
+                <span class="material-symbols-outlined session-row__chevron" aria-hidden="true">chevron_right</span>
               </li>
             }
             @if (upcomingSessions().length === 0) {
-              <li class="upcoming-list__empty">No upcoming sessions this week.</li>
+              <li class="session-row__empty">No upcoming sessions this week.</li>
             }
           </ul>
         }

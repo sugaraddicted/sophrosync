@@ -3,12 +3,12 @@ export interface Client {
   name: string;
   email: string;
   phone: string;
-  status: 'active' | 'inactive';
+  status: 'active' | 'inactive' | 'archived';
 }
 
 export interface ClientDto {
   name: string;
   email: string;
   phone: string;
-  status: 'active' | 'inactive';
+  status: 'active' | 'inactive' | 'archived';
 }

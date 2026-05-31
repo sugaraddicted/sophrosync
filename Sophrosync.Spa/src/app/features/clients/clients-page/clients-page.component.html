@@ -1,43 +1,209 @@
 <div class="clients-page">
-  <div class="clients-page__header">
-    <h2 class="clients-page__heading">Clients</h2>
-    <button
-      class="clients-page__add-btn"
-      type="button"
-      (click)="openAddModal()"
-      aria-label="Add new client"
-    >+ Add Client</button>
+
+  <!-- ── Hero ────────────────────────────────────────────────────────── -->
+  <header class="clients-page__hero">
+    <div class="clients-page__hero-left">
+      <h2 class="clients-page__heading">Client Directory</h2>
+      <p class="clients-page__subtitle">
+        Manage clinical records and appointment history with streamlined editorial oversight and patient-first organization.
+      </p>
+    </div>
+    <div class="clients-page__hero-actions">
+      <button class="clients-page__export-btn" type="button" aria-label="Export client ledger">
+        <span class="material-symbols-outlined">file_upload</span>
+        Export Ledger
+      </button>
+      <button
+        class="clients-page__add-btn"
+        type="button"
+        (click)="openAddModal()"
+        aria-label="Onboard new client"
+      >
+        <span class="material-symbols-outlined">person_add</span>
+        Onboard Client
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Metrics strip ──────────────────────────────────────────────── -->
+  <section class="clients-page__metrics" aria-label="Summary metrics">
+    <div class="clients-page__metric clients-page__metric--primary">
+      <span class="clients-page__metric-label">Total Active Clients</span>
+      <div class="clients-page__metric-bottom">
+        <span class="clients-page__metric-value clients-page__metric-value--primary">{{ metrics().totalActive }}</span>
+        <span class="clients-page__metric-sub clients-page__metric-sub--primary">+4 this month</span>
+      </div>
+    </div>
+    <div class="clients-page__metric clients-page__metric--tertiary">
+      <span class="clients-page__metric-label">Retention Rate</span>
+      <div class="clients-page__metric-bottom">
+        <span class="clients-page__metric-value clients-page__metric-value--tertiary">{{ metrics().retentionRate }}%</span>
+        <span class="clients-page__metric-sub clients-page__metric-sub--tertiary">▲ 2.1%</span>
+      </div>
+    </div>
+    <div class="clients-page__metric clients-page__metric--outline">
+      <span class="clients-page__metric-label">Upcoming Sessions</span>
+      <div class="clients-page__metric-bottom">
+        <span class="clients-page__metric-value">{{ metrics().upcomingSessions }}</span>
+        <span class="clients-page__metric-sub">Next 7 days</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Filter bar ─────────────────────────────────────────────────── -->
+  <div class="clients-page__filter-bar">
+    <div class="clients-page__search-wrap">
+      <span class="material-symbols-outlined clients-page__search-icon" aria-hidden="true">search</span>
+      <input
+        class="clients-page__search-input"
+        type="text"
+        placeholder="Search by name or case ID..."
+        [value]="filterSearch()"
+        (input)="filterSearch.set($any($event.target).value)"
+        aria-label="Search clients"
+      />
+    </div>
+    <div class="clients-page__pills" role="tablist" aria-label="Filter by status">
+      @for (tab of filterTabs; track tab.value) {
+        <button
+          class="clients-page__pill"
+          [class.clients-page__pill--active]="filterStatus() === tab.value"
+          type="button"
+          role="tab"
+          [attr.aria-selected]="filterStatus() === tab.value"
+          (click)="filterStatus.set(tab.value)"
+        >{{ tab.label }}</button>
+      }
+    </div>
   </div>
 
-  @if (isLoading()) {
-    <ul class="clients-page__list" aria-busy="true" aria-label="Loading clients">
-      @for (skeleton of [1, 2, 3, 4]; track skeleton) {
-        <li class="clients-page__skeleton" aria-hidden="true"></li>
-      }
-    </ul>
-  } @else if (loadError()) {
-    <div class="clients-page__error" role="alert">
-      <p>{{ loadError() }}</p>
-      <button class="clients-page__retry-btn" type="button" (click)="loadClients()">Retry</button>
-    </div>
-  } @else if (clients().length === 0) {
-    <div class="clients-page__empty" role="status">
-      <p>No clients yet. Add your first client to get started.</p>
-    </div>
-  } @else {
-    <ul class="clients-page__list" aria-label="Clients">
-      @for (client of clients(); track client.id) {
-        <li>
-          <app-client-card
-            [client]="client"
-            (editRequested)="openEditModal($event)"
-            (deleteRequested)="openDeleteDialog($event)"
-          />
-        </li>
-      }
-    </ul>
-  }
+  <!-- ── Client table ───────────────────────────────────────────────── -->
+  <div class="clients-page__table-wrap">
+
+    @if (isLoading()) {
+      <div class="clients-page__loading" role="status" aria-label="Loading clients">
+        @for (skeleton of [1, 2, 3, 4]; track skeleton) {
+          <div class="clients-page__skeleton" aria-hidden="true"></div>
+        }
+      </div>
+    } @else if (loadError()) {
+      <div class="clients-page__error" role="alert">
+        <p>{{ loadError() }}</p>
+        <button class="clients-page__retry-btn" type="button" (click)="loadClients()">Retry</button>
+      </div>
+    } @else {
+      <div class="clients-page__overflow">
+        <table class="clients-page__table" aria-label="Client directory">
+          <thead class="clients-page__thead">
+            <tr>
+              <th class="clients-page__th clients-page__th--name" scope="col">Client Name</th>
+              <th class="clients-page__th" scope="col">Status</th>
+              <th class="clients-page__th" scope="col">Last Session</th>
+              <th class="clients-page__th" scope="col">Next Appointment</th>
+              <th class="clients-page__th clients-page__th--actions" scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (filteredClients().length === 0) {
+              <tr>
+                <td class="clients-page__empty-row" colspan="5">
+                  {{ filterStatus() === 'all' && filterSearch() === ''
+                    ? 'No clients yet. Add your first client to get started.'
+                    : 'No clients match your current filter.' }}
+                </td>
+              </tr>
+            } @else {
+              @for (client of filteredClients(); track client.id) {
+                <tr
+                  class="clients-page__row"
+                  [class.clients-page__row--dropdown-open]="openDropdownId() === client.id"
+                >
+                  <!-- Client Name -->
+                  <td class="clients-page__td clients-page__td--name">
+                    <div class="clients-page__client-cell">
+                      <div
+                        class="clients-page__avatar"
+                        [class.clients-page__avatar--inactive]="client.status === 'inactive'"
+                        [class.clients-page__avatar--archived]="client.status === 'archived'"
+                        aria-hidden="true"
+                      >{{ client.name.substring(0, 2).toUpperCase() }}</div>
+                      <div>
+                        <div class="clients-page__client-name">{{ client.name }}</div>
+                        <div class="clients-page__client-case">Case ID: #{{ client.id.substring(0, 4).toUpperCase() }}</div>
+                      </div>
+                    </div>
+                  </td>
+
+                  <!-- Status -->
+                  <td class="clients-page__td">
+                    <span
+                      class="clients-page__badge"
+                      [class.clients-page__badge--active]="client.status === 'active'"
+                      [class.clients-page__badge--inactive]="client.status === 'inactive'"
+                      [class.clients-page__badge--archived]="client.status === 'archived'"
+                    >{{ client.status }}</span>
+                  </td>
+
+                  <!-- Last Session -->
+                  <td class="clients-page__td clients-page__td--muted">—</td>
+
+                  <!-- Next Appointment -->
+                  <td class="clients-page__td clients-page__td--unscheduled">Not scheduled</td>
+
+                  <!-- Actions -->
+                  <td class="clients-page__td clients-page__td--actions">
+                    <div class="clients-page__action-wrap">
+                      <button
+                        class="clients-page__action-btn"
+                        type="button"
+                        [attr.aria-label]="'Actions for ' + client.name"
+                        [attr.aria-expanded]="openDropdownId() === client.id"
+                        (click)="toggleDropdown(client.id)"
+                      >
+                        <span class="material-symbols-outlined">more_vert</span>
+                      </button>
+                      @if (openDropdownId() === client.id) {
+                        <div class="clients-page__dropdown" role="menu">
+                          <button
+                            class="clients-page__dropdown-item"
+                            type="button"
+                            role="menuitem"
+                            (click)="openEditModal(client); closeDropdown()"
+                          >
+                            <span class="material-symbols-outlined">edit</span>
+                            Edit
+                          </button>
+                          <button
+                            class="clients-page__dropdown-item clients-page__dropdown-item--danger"
+                            type="button"
+                            role="menuitem"
+                            (click)="openDeleteDialog(client); closeDropdown()"
+                          >
+                            <span class="material-symbols-outlined">delete</span>
+                            Delete
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Table footer -->
+      <div class="clients-page__table-footer">
+        <span>Showing {{ filteredClients().length }} of {{ clients().length }} entries</span>
+      </div>
+    }
+
+  </div>
+
 </div>
+
+<!-- ── Modals ──────────────────────────────────────────────────────────── -->
 
 @if (showAddModal()) {
   <app-add-client-modal

@@ -3,24 +3,25 @@ import {
   Component,
   OnInit,
   ViewChild,
+  computed,
   inject,
   signal,
 } from '@angular/core';
 import { finalize } from 'rxjs';
 import { ClientsService } from '../clients.service';
 import { Client, ClientDto } from '../models/client.model';
-import { ClientCardComponent } from '../client-card/client-card.component';
 import { AddClientModalComponent } from '../add-client-modal/add-client-modal.component';
 import { EditClientModalComponent } from '../edit-client-modal/edit-client-modal.component';
 import { EditClientResult } from '../edit-client-modal/edit-client-modal.component';
 import { ConfirmDeleteDialogComponent } from '../confirm-delete-dialog/confirm-delete-dialog.component';
 
 type Toast = { message: string; kind: 'success' | 'error' };
+type FilterStatus = 'all' | 'active' | 'inactive' | 'archived';
 
 @Component({
   selector: 'app-clients-page',
+  standalone: true,
   imports: [
-    ClientCardComponent,
     AddClientModalComponent,
     EditClientModalComponent,
     ConfirmDeleteDialogComponent,
@@ -36,9 +37,43 @@ export class ClientsPageComponent implements OnInit {
   protected readonly isLoading = signal(true);
   protected readonly loadError = signal<string | null>(null);
 
+  readonly filterStatus = signal<FilterStatus>('all');
+  readonly filterSearch = signal('');
+
+  readonly filterTabs: { label: string; value: FilterStatus }[] = [
+    { label: 'All Statuses', value: 'all' },
+    { label: 'Active Only', value: 'active' },
+    { label: 'Inactive', value: 'inactive' },
+    { label: 'Archived', value: 'archived' },
+  ];
+
+  readonly filteredClients = computed(() => {
+    const status = this.filterStatus();
+    const search = this.filterSearch().toLowerCase().trim();
+    let list = this.clients();
+
+    if (status !== 'all') {
+      list = list.filter(c => c.status === status);
+    }
+    if (search) {
+      list = list.filter(c =>
+        c.name.toLowerCase().includes(search) ||
+        c.id.toLowerCase().includes(search)
+      );
+    }
+    return list;
+  });
+
+  readonly metrics = computed(() => ({
+    totalActive: this.clients().filter(c => c.status === 'active').length,
+    retentionRate: 94,
+    upcomingSessions: 18,
+  }));
+
   protected readonly showAddModal = signal(false);
   protected readonly clientToEdit = signal<Client | null>(null);
   protected readonly clientToDelete = signal<Client | null>(null);
+  protected readonly openDropdownId = signal<string | null>(null);
 
   protected readonly toast = signal<Toast | null>(null);
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
@@ -85,6 +120,14 @@ export class ClientsPageComponent implements OnInit {
 
   closeDeleteDialog(): void {
     this.clientToDelete.set(null);
+  }
+
+  toggleDropdown(id: string): void {
+    this.openDropdownId.update(current => current === id ? null : id);
+  }
+
+  closeDropdown(): void {
+    this.openDropdownId.set(null);
   }
 
   onCreateSubmitted(dto: ClientDto): void {

@@ -38,7 +38,7 @@ export class EditClientModalComponent implements OnInit {
     name:   new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     email:  new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
     phone:  new FormControl('', { nonNullable: true }),
-    status: new FormControl<'active' | 'inactive'>('active', { nonNullable: true }),
+    status: new FormControl<'active' | 'inactive' | 'archived'>('active', { nonNullable: true }),
   });
 
   ngOnInit(): void {

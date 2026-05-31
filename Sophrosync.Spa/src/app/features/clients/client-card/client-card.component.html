@@ -1,14 +1,18 @@
 <article class="client-card">
+  <div class="client-card__avatar" aria-hidden="true">
+    {{ client().name.charAt(0).toUpperCase() }}
+  </div>
+
   <div class="client-card__body">
     <p class="client-card__name">{{ client().name }}</p>
     <p class="client-card__contact">{{ client().email }}</p>
-    <p class="client-card__contact">{{ client().phone }}</p>
-    <span
-      class="client-card__status"
-      [class.client-card__status--active]="client().status === 'active'"
-      [class.client-card__status--inactive]="client().status === 'inactive'"
-    >{{ client().status }}</span>
   </div>
+
+  <span
+    class="client-card__status"
+    [class.client-card__status--active]="client().status === 'active'"
+    [class.client-card__status--inactive]="client().status !== 'active'"
+  >{{ client().status }}</span>
 
   <div class="client-card__menu-wrap">
     <button

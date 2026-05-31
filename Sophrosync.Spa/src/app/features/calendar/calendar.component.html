@@ -1,15 +1,39 @@
 <div class="calendar-page">
 
-  <div class="calendar-page__header">
-    <h1 class="calendar-page__title">Calendar</h1>
-    <button
-      class="calendar-page__btn-schedule"
-      type="button"
-      (click)="showScheduleModal.set(true)"
-      aria-label="Schedule new appointment"
-    >
-      + Schedule
-    </button>
+  <!-- Editorial hero -->
+  <div class="calendar-page__hero">
+    <div class="calendar-page__hero-row">
+      <div>
+        <p class="calendar-page__category">Schedule</p>
+        <h1 class="calendar-page__title">Practice Calendar</h1>
+      </div>
+      <button
+        class="calendar-page__btn-schedule"
+        type="button"
+        (click)="showScheduleModal.set(true)"
+        aria-label="Schedule new appointment"
+      >
+        + Schedule
+      </button>
+    </div>
+
+    <!-- Practice insights strip -->
+    <div class="calendar-page__insights" aria-label="Practice insights">
+      <div class="calendar-page__insight">
+        <span class="calendar-page__insight-value">{{ appointmentsThisMonth() }}</span>
+        <span class="calendar-page__insight-label">This month</span>
+      </div>
+      <div class="calendar-page__insight-sep" aria-hidden="true"></div>
+      <div class="calendar-page__insight">
+        <span class="calendar-page__insight-value">{{ appointmentsThisWeek() }}</span>
+        <span class="calendar-page__insight-label">This week</span>
+      </div>
+      <div class="calendar-page__insight-sep" aria-hidden="true"></div>
+      <div class="calendar-page__insight">
+        <span class="calendar-page__insight-value">{{ nextAppointmentLabel() }}</span>
+        <span class="calendar-page__insight-label">Next session</span>
+      </div>
+    </div>
   </div>
 
   <div class="calendar-page__nav" aria-label="Month navigation">

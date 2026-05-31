@@ -60,6 +60,38 @@ export class CalendarComponent implements OnInit {
     this.appointments().map(dto => this.toAppointment(dto))
   );
 
+  readonly appointmentsThisMonth = computed(() => {
+    const { month, year } = this.currentMonth();
+    return this.appointments().filter(a => {
+      const d = new Date(a.scheduledAt);
+      return d.getMonth() === month && d.getFullYear() === year;
+    }).length;
+  });
+
+  readonly appointmentsThisWeek = computed(() => {
+    const today = new Date();
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+    monday.setHours(0, 0, 0, 0);
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    sunday.setHours(23, 59, 59, 999);
+    return this.appointments().filter(a => {
+      const d = new Date(a.scheduledAt);
+      return d >= monday && d <= sunday;
+    }).length;
+  });
+
+  readonly nextAppointmentLabel = computed(() => {
+    const now = new Date();
+    const next = this.appointments()
+      .filter(a => new Date(a.scheduledAt) >= now)
+      .sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime())[0];
+    if (!next) return '—';
+    const d = new Date(next.scheduledAt);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  });
+
   ngOnInit(): void {
     Promise.all([
       this.loadCurrentMonthPromise(),

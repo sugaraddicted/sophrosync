@@ -3,11 +3,25 @@
 .calendar-page {
   max-width: 1280px;
 
-  &__header {
+  &__hero {
+    margin-bottom: 2rem;
+  }
+
+  &__hero-row {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
+    gap: 1rem;
     margin-bottom: 1.5rem;
+  }
+
+  &__category {
+    margin: 0 0 0.375rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-on-surface-variant);
   }
 
   &__title {
@@ -19,6 +33,51 @@
     line-height: 1.1;
     letter-spacing: -0.02em;
     color: var(--color-on-surface);
+  }
+
+  &__insights {
+    display: flex;
+    align-items: center;
+    background: var(--color-surface-container-lowest);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-float);
+    padding: 1.25rem 2rem;
+    width: fit-content;
+    gap: 0;
+  }
+
+  &__insight {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0 2rem;
+
+    &:first-child { padding-left: 0; }
+    &:last-child { padding-right: 0; }
+  }
+
+  &__insight-value {
+    font-family: var(--font-headline);
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--color-on-surface);
+    line-height: 1;
+  }
+
+  &__insight-label {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-on-surface-variant);
+  }
+
+  &__insight-sep {
+    width: 1px;
+    height: 2rem;
+    background: var(--color-outline-variant);
+    opacity: 0.4;
+    flex-shrink: 0;
   }
 
   &__btn-schedule {
