@@ -85,6 +85,30 @@
     }
   }
 
+  // ── Notification wrap & badge ────────────────────────────────────────
+  &__notif-wrap {
+    position: relative;
+  }
+
+  &__badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    background: var(--color-error);
+    color: var(--color-on-error);
+    border-radius: 999px;
+    font-size: 0.625rem;
+    font-weight: 700;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
   // ── Avatar ──────────────────────────────────────────────────────────
   &__avatar {
     width: 34px;

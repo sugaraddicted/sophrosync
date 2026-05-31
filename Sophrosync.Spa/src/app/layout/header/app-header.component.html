@@ -15,13 +15,26 @@
 
   <div class="top-header__right">
     <!-- Notifications -->
-    <button
-      class="top-header__icon-btn"
-      type="button"
-      aria-label="Notifications"
-    >
-      <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
-    </button>
+    <div class="top-header__notif-wrap">
+      <button
+        class="top-header__icon-btn"
+        type="button"
+        [attr.aria-label]="'Notifications' + (unreadCount() > 0 ? ', ' + unreadCount() + ' unread' : '')"
+        [attr.aria-expanded]="isPanelOpen()"
+        (click)="togglePanel()"
+      >
+        <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
+        @if (unreadCount() > 0) {
+          <span class="top-header__badge" aria-hidden="true">
+            {{ unreadCount() > 99 ? '99+' : unreadCount() }}
+          </span>
+        }
+      </button>
+
+      @if (isPanelOpen()) {
+        <app-notification-panel (closed)="closePanel()" />
+      }
+    </div>
 
     <!-- Profile avatar -->
     <button class="top-header__avatar" type="button" aria-label="Profile menu">
