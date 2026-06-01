@@ -21,6 +21,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IConsentTemplateRepository, ConsentTemplateRepository>();
         services.AddScoped<IConsentRequestRepository, ConsentRequestRepository>();
         services.AddScoped<IConsentRecordRepository, ConsentRecordRepository>();
+        services.AddScoped<IConsentDocumentRepository, ConsentDocumentRepository>();
 
         return services;
     }

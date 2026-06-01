@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Sophrosync.Consent.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using Sophrosync.Consent.Infrastructure.Persistence;
 namespace Sophrosync.Consent.Infrastructure.Migrations
 {
     [DbContext(typeof(ConsentDbContext))]
-    partial class ConsentDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260601160737_AddConsentDocuments")]
+    partial class AddConsentDocuments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

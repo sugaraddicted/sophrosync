@@ -37,4 +37,16 @@ export class ConsentService {
   revokeRequest(id: string): Observable<void> {
     return this.http.post<void>(`${this.base}/consent-requests/${id}/revoke`, {});
   }
+
+  attachDocument(recordId: string, file: File): Observable<{ id: string }> {
+    const form = new FormData();
+    form.append('file', file, file.name);
+    return this.http.post<{ id: string }>(
+      `${this.base}/consent-records/${recordId}/document`, form
+    );
+  }
+
+  getDocumentUrl(recordId: string): string {
+    return `${this.base}/consent-records/${recordId}/document`;
+  }
 }

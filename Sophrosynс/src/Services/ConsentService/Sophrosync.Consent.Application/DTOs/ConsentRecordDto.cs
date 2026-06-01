@@ -10,4 +10,5 @@ public sealed record ConsentRecordDto(
     ConsentPurpose Purpose,
     ConsentAction Action,
     int TemplateVersion,
-    DateTime CreatedAt);
+    DateTime CreatedAt,
+    string? DocumentFileName = null);

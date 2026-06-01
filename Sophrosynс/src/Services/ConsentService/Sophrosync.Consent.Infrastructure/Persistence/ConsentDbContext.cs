@@ -11,6 +11,7 @@ public sealed class ConsentDbContext(
     public DbSet<ConsentTemplate> ConsentTemplates => Set<ConsentTemplate>();
     public DbSet<ConsentRequest> ConsentRequests => Set<ConsentRequest>();
     public DbSet<ConsentRecord> ConsentRecords => Set<ConsentRecord>();
+    public DbSet<ConsentDocument> ConsentDocuments => Set<ConsentDocument>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -22,6 +23,8 @@ public sealed class ConsentDbContext(
             .HasQueryFilter(e => e.TenantId == currentTenant.Id);
         modelBuilder.Entity<ConsentRecord>()
             .HasQueryFilter(e => e.TenantId == currentTenant.Id);
+        modelBuilder.Entity<ConsentDocument>()
+            .HasQueryFilter(d => d.TenantId == currentTenant.Id);
 
         base.OnModelCreating(modelBuilder);
     }

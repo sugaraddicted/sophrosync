@@ -41,6 +41,7 @@ export interface ConsentRecordDto {
   action: ConsentAction;
   templateVersion: number;
   createdAt: string;
+  documentFileName: string | null;
 }
 
 export interface IssueConsentRequestPayload {
