@@ -1,13 +1,131 @@
-<div class="feature-page">
-  <div class="feature-page__hero">
-    <p class="feature-page__date-label">Configuration</p>
-    <h1 class="feature-page__headline">Settings.</h1>
-    <p class="feature-page__subtitle">Manage your practice preferences and account configuration.</p>
+<div class="settings">
+
+  <!-- Hero — preserve existing structure -->
+  <div class="settings__hero">
+    <p class="settings__category">Configuration</p>
+    <h1 class="settings__headline">Settings.</h1>
+    <p class="settings__subtitle">Manage your account profile and notification preferences.</p>
   </div>
 
-  <div class="feature-page__placeholder">
-    <span class="material-symbols-outlined feature-page__placeholder-icon" aria-hidden="true">settings</span>
-    <p class="feature-page__placeholder-text">Settings panel coming soon.</p>
-    <p class="feature-page__placeholder-hint">Profile, billing, notification preferences, and integrations.</p>
-  </div>
+  <!-- Profile Section -->
+  <section class="settings__section" aria-labelledby="profile-heading">
+    <h2 class="settings__section-title" id="profile-heading">Profile</h2>
+
+    @if (isLoadingProfile()) {
+      <div class="settings__loading" role="status" aria-label="Loading profile">
+        <div class="settings__skeleton"></div>
+        <div class="settings__skeleton settings__skeleton--short"></div>
+      </div>
+    } @else if (profile(); as p) {
+      <form class="settings__form" [formGroup]="profileForm" (ngSubmit)="saveProfile()" novalidate>
+
+        <div class="settings__field-row">
+          <div class="settings__field">
+            <label class="settings__label" for="firstName">First name</label>
+            <input
+              id="firstName"
+              class="settings__input"
+              [class.settings__input--error]="profileForm.controls.firstName.invalid && profileForm.controls.firstName.touched"
+              type="text"
+              formControlName="firstName"
+              autocomplete="given-name"
+            />
+            @if (profileForm.controls.firstName.invalid && profileForm.controls.firstName.touched) {
+              <p class="settings__field-error">First name is required.</p>
+            }
+          </div>
+          <div class="settings__field">
+            <label class="settings__label" for="lastName">Last name</label>
+            <input
+              id="lastName"
+              class="settings__input"
+              [class.settings__input--error]="profileForm.controls.lastName.invalid && profileForm.controls.lastName.touched"
+              type="text"
+              formControlName="lastName"
+              autocomplete="family-name"
+            />
+            @if (profileForm.controls.lastName.invalid && profileForm.controls.lastName.touched) {
+              <p class="settings__field-error">Last name is required.</p>
+            }
+          </div>
+        </div>
+
+        <div class="settings__field">
+          <label class="settings__label">Email</label>
+          <input class="settings__input settings__input--readonly" type="email" [value]="p.email" readonly tabindex="-1" />
+        </div>
+
+        <div class="settings__field">
+          <label class="settings__label">Role</label>
+          <span class="settings__role-badge">{{ p.role }}</span>
+        </div>
+
+        <div class="settings__form-actions">
+          <button
+            class="settings__btn settings__btn--primary"
+            type="submit"
+            [disabled]="isSavingProfile() || profileForm.invalid"
+          >{{ isSavingProfile() ? 'Saving…' : 'Save Changes' }}</button>
+        </div>
+
+      </form>
+    }
+  </section>
+
+  <!-- Notification Preferences Section -->
+  <section class="settings__section" aria-labelledby="notif-heading">
+    <h2 class="settings__section-title" id="notif-heading">Notification Preferences</h2>
+
+    <form class="settings__prefs-form" [formGroup]="prefsForm" novalidate>
+
+      <div class="settings__toggle-row">
+        <div class="settings__toggle-info">
+          <span class="settings__toggle-label">In-app notifications</span>
+          <span class="settings__toggle-hint">Show alerts inside the application</span>
+        </div>
+        <label class="settings__toggle-switch" aria-label="In-app notifications">
+          <input type="checkbox" formControlName="inAppEnabled" (change)="savePreferences()" />
+          <span class="settings__toggle-track"></span>
+        </label>
+      </div>
+
+      <div class="settings__toggle-row">
+        <div class="settings__toggle-info">
+          <span class="settings__toggle-label">Email notifications</span>
+          <span class="settings__toggle-hint">Receive important alerts by email</span>
+        </div>
+        <label class="settings__toggle-switch" aria-label="Email notifications">
+          <input type="checkbox" formControlName="emailEnabled" (change)="savePreferences()" />
+          <span class="settings__toggle-track"></span>
+        </label>
+      </div>
+
+      @if (prefsForm.controls.emailEnabled.value) {
+        <div class="settings__field settings__field--indented">
+          <label class="settings__label" for="emailAddress">Notification email address</label>
+          <input
+            id="emailAddress"
+            class="settings__input"
+            type="email"
+            formControlName="emailAddress"
+            placeholder="your@email.com"
+            autocomplete="email"
+            (blur)="savePreferences()"
+          />
+        </div>
+      }
+
+    </form>
+  </section>
+
+  <!-- Toast -->
+  @if (toast(); as t) {
+    <div
+      class="settings__toast"
+      [class.settings__toast--error]="t.kind === 'error'"
+      role="status"
+      aria-live="polite"
+    >{{ t.message }}</div>
+  }
+
 </div>

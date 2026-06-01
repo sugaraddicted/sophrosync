@@ -89,6 +89,43 @@ public sealed class KeycloakAdminService : IKeycloakAdminService
             response.EnsureSuccessStatusCode();
     }
 
+    public async Task UpdateUserAsync(Guid keycloakUserId, string firstName, string lastName, CancellationToken ct)
+    {
+        var client = _httpClientFactory.CreateClient("keycloak-admin");
+        var adminToken = await GetAdminTokenAsync(client, ct);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
+
+        var payload = new { firstName, lastName };
+        var response = await client.PutAsync(
+            $"/admin/realms/{_realm}/users/{keycloakUserId}",
+            new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json"),
+            ct);
+
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task<(string Email, string FirstName, string LastName)> GetUserAsync(Guid keycloakUserId, CancellationToken ct)
+    {
+        var client = _httpClientFactory.CreateClient("keycloak-admin");
+        var adminToken = await GetAdminTokenAsync(client, ct);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
+
+        var response = await client.GetAsync(
+            $"/admin/realms/{_realm}/users/{keycloakUserId}", ct);
+        response.EnsureSuccessStatusCode();
+
+        var json = await response.Content.ReadAsStringAsync(ct);
+        using var doc = JsonDocument.Parse(json);
+        var root = doc.RootElement;
+
+        var email = root.GetProperty("email").GetString()
+            ?? throw new InvalidOperationException("Keycloak user has no email.");
+        var firstName = root.TryGetProperty("firstName", out var fn) ? fn.GetString() ?? string.Empty : string.Empty;
+        var lastName = root.TryGetProperty("lastName", out var ln) ? ln.GetString() ?? string.Empty : string.Empty;
+
+        return (email, firstName, lastName);
+    }
+
     private async Task<string> GetAdminTokenAsync(HttpClient client, CancellationToken ct)
     {
         var tokenPayload = new FormUrlEncodedContent(new[]

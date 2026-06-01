@@ -1,0 +1,40 @@
+<div class="notif-panel" role="dialog" aria-label="Notifications">
+  <div class="notif-panel__header">
+    <span class="notif-panel__title">Notifications</span>
+    <button class="notif-panel__action-btn" type="button" (click)="load()" aria-label="Refresh">
+      <span class="material-symbols-outlined">refresh</span>
+    </button>
+    <button class="notif-panel__action-btn" type="button" (click)="closed.emit()" aria-label="Close notifications">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+
+  @if (isLoading() && notifications().length === 0) {
+    <div class="notif-panel__loading" role="status">Loading…</div>
+  } @else if (notifications().length === 0) {
+    <div class="notif-panel__empty">
+      <span class="material-symbols-outlined notif-panel__empty-icon">notifications_off</span>
+      <p>No notifications</p>
+    </div>
+  } @else {
+    <ul class="notif-panel__list" role="list">
+      @for (n of notifications(); track n.id) {
+        <li class="notif-panel__item" [class.notif-panel__item--unread]="n.status !== 'Dismissed'">
+          <div class="notif-panel__item-top">
+            <span class="notif-panel__type-chip">{{ n.type }}</span>
+            <span class="notif-panel__time">{{ relativeTime(n.createdAt) }}</span>
+            <button
+              class="notif-panel__dismiss-btn"
+              type="button"
+              (click)="dismiss(n.id)"
+              [attr.aria-label]="'Dismiss: ' + n.subject"
+            >
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+          <p class="notif-panel__subject">{{ n.subject }}</p>
+        </li>
+      }
+    </ul>
+  }
+</div>

@@ -16,6 +16,13 @@ public sealed class UserProfile : Entity
 
     private UserProfile() { }
 
+    public void UpdateName(string firstName, string lastName)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        TouchUpdatedAt(DateTime.UtcNow);
+    }
+
     public static UserProfile Create(
         Guid tenantId,
         Guid keycloakUserId,
