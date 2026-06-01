@@ -1,0 +1,151 @@
+<div class="reports-page">
+
+  <!-- Header: title + date range controls -->
+  <div class="reports-page__header">
+    <h2 class="reports-page__heading">Practice Reports</h2>
+
+    <div class="reports-page__controls" role="search" aria-label="Report date range">
+      <label class="reports-page__date-label" for="reports-from">From</label>
+      <input
+        id="reports-from"
+        class="reports-page__date-input"
+        type="date"
+        [value]="fromDateInput()"
+        (change)="onFromChange($any($event.target).value)"
+        aria-label="Report start date"
+      />
+
+      <label class="reports-page__date-label" for="reports-to">To</label>
+      <input
+        id="reports-to"
+        class="reports-page__date-input"
+        type="date"
+        [value]="toDateInput()"
+        (change)="onToChange($any($event.target).value)"
+        aria-label="Report end date"
+      />
+
+      <button
+        class="reports-page__refresh-btn"
+        type="button"
+        (click)="loadData()"
+        [disabled]="isLoading()"
+        aria-label="Refresh reports"
+      >
+        <span class="material-symbols-outlined" aria-hidden="true">refresh</span>
+        Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Period display -->
+  <p class="reports-page__period">
+    <span class="material-symbols-outlined reports-page__period-icon" aria-hidden="true">calendar_month</span>
+    Showing data for <strong>{{ formattedPeriod() }}</strong>
+  </p>
+
+  <!-- Loading skeleton -->
+  @if (isLoading()) {
+    <div class="reports-page__skeleton-grid" aria-busy="true" aria-label="Loading report data">
+      @for (item of [1, 2, 3, 4]; track item) {
+        <div class="reports-page__skeleton" aria-hidden="true"></div>
+      }
+    </div>
+  }
+
+  <!-- Error banner -->
+  @if (!isLoading() && loadError()) {
+    <div class="reports-page__error" role="alert">
+      <span class="material-symbols-outlined reports-page__error-icon" aria-hidden="true">error_outline</span>
+      <span>{{ loadError() }}</span>
+      <button
+        class="reports-page__retry-btn"
+        type="button"
+        (click)="loadData()"
+        aria-label="Retry loading reports"
+      >Retry</button>
+    </div>
+  }
+
+  <!-- Main content (shown once loaded and no error) -->
+  @if (!isLoading() && !loadError()) {
+
+    <!-- Stat cards grid -->
+    <section aria-label="Summary statistics">
+      <div class="reports-page__stat-grid">
+        <app-stat-card
+          label="Total Appointments"
+          [value]="appointmentSummary()?.totalScheduled ?? '—'"
+          icon="calendar_today"
+          subLabel="Scheduled this period"
+        />
+        <app-stat-card
+          label="Completed"
+          [value]="appointmentSummary()?.totalCompleted ?? '—'"
+          icon="check_circle"
+          subLabel="Sessions held"
+        />
+        <app-stat-card
+          label="Note Completion Rate"
+          [value]="noteCompletionPercent()"
+          icon="description"
+          subLabel="Notes created vs. appointments"
+        />
+        <app-stat-card
+          label="Notes Overdue"
+          [value]="noteCompletion()?.notesOverdue ?? '—'"
+          icon="assignment_late"
+          subLabel="Require attention"
+        />
+      </div>
+    </section>
+
+    <!-- Practice analytics — admin/supervisor only -->
+    @if (isAdminOrSupervisor() && practiceAnalytics()) {
+      <section class="reports-page__analytics-section" aria-label="Practice analytics">
+        <h3 class="reports-page__section-heading">Practice Analytics</h3>
+        <div class="reports-page__stat-grid">
+          <app-stat-card
+            label="Cancellation Rate"
+            [value]="(practiceAnalytics()!.cancellationRate * 100).toFixed(1) + '%'"
+            icon="event_busy"
+            subLabel="Of total scheduled"
+          />
+          <app-stat-card
+            label="No-Show Rate"
+            [value]="(practiceAnalytics()!.noShowRate * 100).toFixed(1) + '%'"
+            icon="person_off"
+            subLabel="Of total scheduled"
+          />
+          <app-stat-card
+            label="New Clients"
+            [value]="practiceAnalytics()!.newClientsOnboarded"
+            icon="person_add"
+            subLabel="Onboarded this period"
+          />
+          <app-stat-card
+            label="Active Therapists"
+            [value]="practiceAnalytics()!.activeTherapists"
+            icon="group"
+            subLabel="With appointments"
+          />
+        </div>
+      </section>
+    }
+
+    <!-- Info banner for non-admin roles -->
+    @if (!isAdminOrSupervisor()) {
+      <div class="reports-page__info-banner" role="note" aria-label="Role-based access notice">
+        <span class="material-symbols-outlined reports-page__info-icon" aria-hidden="true">info</span>
+        <span>Full practice analytics are available to admin and supervisor roles.</span>
+      </div>
+    }
+
+    <!-- Appointment breakdown table -->
+    <section class="reports-page__table-section" aria-label="Appointment details">
+      <app-appointment-breakdown-table [summary]="appointmentSummary()" />
+    </section>
+
+  }
+
+</div>

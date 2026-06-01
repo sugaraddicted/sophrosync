@@ -1,0 +1,64 @@
+<div class="modal-backdrop" (click)="onCancel()" aria-hidden="true"></div>
+
+<div
+  class="modal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="issue-request-title"
+>
+  <h2 class="modal__title" id="issue-request-title">Issue Consent Request</h2>
+
+  <form class="modal__form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <div class="modal__field">
+      <label class="modal__label" for="ir-client-id">Client ID</label>
+      <input
+        id="ir-client-id"
+        class="modal__input"
+        type="text"
+        formControlName="clientId"
+        placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+        [class.modal__input--error]="form.controls.clientId.invalid && form.controls.clientId.touched"
+        aria-required="true"
+        autocomplete="off"
+      />
+      <p class="modal__hint">Enter client ID (UUID)</p>
+      @if (form.controls.clientId.invalid && form.controls.clientId.touched) {
+        <p class="modal__error" role="alert">Client ID is required.</p>
+      }
+    </div>
+
+    <div class="modal__field">
+      <label class="modal__label" for="ir-expires-at">Expiry Date</label>
+      <input
+        id="ir-expires-at"
+        class="modal__input"
+        type="date"
+        formControlName="expiresAt"
+        [min]="minDate"
+        [class.modal__input--error]="form.controls.expiresAt.invalid && form.controls.expiresAt.touched"
+        aria-required="true"
+      />
+      @if (form.controls.expiresAt.invalid && form.controls.expiresAt.touched) {
+        <p class="modal__error" role="alert">Expiry date is required.</p>
+      }
+    </div>
+
+    @if (submitError()) {
+      <p class="modal__error modal__error--block" role="alert">{{ submitError() }}</p>
+    }
+
+    <div class="modal__actions">
+      <button
+        class="modal__btn modal__btn--secondary"
+        type="button"
+        (click)="onCancel()"
+        [disabled]="submitting()"
+      >Cancel</button>
+      <button
+        class="modal__btn modal__btn--primary"
+        type="submit"
+        [disabled]="submitting()"
+      >{{ submitting() ? 'Issuing…' : 'Issue Request' }}</button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,68 @@
+<div class="ch-tab__lookup">
+  <label class="ch-tab__lookup-label" for="ch-client-id">Client ID</label>
+  <div class="ch-tab__lookup-row">
+    <input
+      id="ch-client-id"
+      class="ch-tab__lookup-input"
+      type="text"
+      placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+      [ngModel]="clientIdInput()"
+      (ngModelChange)="clientIdInput.set($event)"
+      (keydown.enter)="loadHistory()"
+      aria-label="Client ID"
+      autocomplete="off"
+    />
+    <button
+      class="ch-tab__load-btn"
+      type="button"
+      (click)="loadHistory()"
+      [disabled]="isLoading() || !clientIdInput().trim()"
+    >
+      {{ isLoading() ? 'Loading…' : 'Load' }}
+    </button>
+  </div>
+</div>
+
+@if (loadError()) {
+  <div class="ch-tab__error" role="alert">
+    <p>{{ loadError() }}</p>
+    <button class="ch-tab__retry-btn" type="button" (click)="loadHistory()">Retry</button>
+  </div>
+} @else if (isLoading()) {
+  <div class="ch-tab__skeleton-wrapper" aria-busy="true" aria-label="Loading history">
+    @for (row of [1, 2, 3]; track row) {
+      <div class="ch-tab__skeleton" aria-hidden="true"></div>
+    }
+  </div>
+} @else if (hasLoaded() && records().length === 0) {
+  <div class="ch-tab__empty" role="status">
+    <p>No consent history found for this client.</p>
+  </div>
+} @else if (hasLoaded()) {
+  <div class="ch-tab__table-wrap">
+    <table class="ch-tab__table" aria-label="Consent history">
+      <thead>
+        <tr>
+          <th class="ch-tab__th">Purpose</th>
+          <th class="ch-tab__th">Action</th>
+          <th class="ch-tab__th">Template Version</th>
+          <th class="ch-tab__th">Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (record of records(); track record.id) {
+          <tr class="ch-tab__row">
+            <td class="ch-tab__td">{{ record.purpose }}</td>
+            <td class="ch-tab__td">
+              <span class="ch-tab__badge ch-tab__badge--{{ record.action.toLowerCase() }}">
+                {{ record.action }}
+              </span>
+            </td>
+            <td class="ch-tab__td">v{{ record.templateVersion }}</td>
+            <td class="ch-tab__td">{{ formatDate(record.createdAt) }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

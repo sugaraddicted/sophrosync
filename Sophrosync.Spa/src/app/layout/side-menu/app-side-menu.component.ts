@@ -25,6 +25,8 @@ export class AppSideMenuComponent {
     { label: 'Clients',   path: '/clients',    icon: 'group' },
     { label: 'Calendar',  path: '/calendar',   icon: 'calendar_today' },
     { label: 'Notes',     path: '/notes',      icon: 'edit_note' },
+    { label: 'Consent',   path: '/consent',    icon: 'policy' },
+    { label: 'Reports',   path: '/reports',    icon: 'bar_chart' },
     { label: 'Settings',  path: '/settings',   icon: 'settings' },
   ];
 
