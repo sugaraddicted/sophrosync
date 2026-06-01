@@ -1,10 +1,13 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using Serilog;
 using Sophrosync.Reporting.Application.BackgroundJobs;
 using Sophrosync.Reporting.Infrastructure;
+using Sophrosync.Reporting.Infrastructure.Persistence;
 using Sophrosync.SharedKernel.Abstractions;
 using Sophrosync.SharedKernel.Behaviors;
 using Sophrosync.SharedKernel.Services;
@@ -55,6 +58,49 @@ builder.Services.AddHostedService<ReportSchedulerService>();
 
 var app = builder.Build();
 
+app.UseExceptionHandler(exceptionApp => exceptionApp.Run(async context =>
+{
+    var error = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+    if (error is ValidationException ve)
+    {
+        context.Response.StatusCode = StatusCodes.Status400BadRequest;
+        await context.Response.WriteAsJsonAsync(new
+        {
+            title = "Validation failed",
+            status = 400,
+            errors = ve.Errors.Select(e => e.ErrorMessage),
+        });
+    }
+    else if (error is UnauthorizedAccessException)
+    {
+        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(new { error = error.Message });
+    }
+    else if (error is KeyNotFoundException)
+    {
+        context.Response.StatusCode = StatusCodes.Status404NotFound;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(new { error = error.Message });
+    }
+    else if (app.Environment.IsDevelopment())
+    {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(new
+        {
+            title = error?.GetType().FullName ?? "UnknownError",
+            detail = error?.Message,
+            innerException = error?.InnerException?.Message,
+            stackTrace = error?.StackTrace,
+        });
+    }
+    else
+    {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+    }
+}));
+
 app.UseSerilogRequestLogging();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -65,6 +111,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.MapScalarApiReference(options =>
         options.WithOpenApiRoutePattern("/swagger/v1/swagger.json"));
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ReportingDbContext>();
+    await db.Database.MigrateAsync();
 }
 
 app.Run();
