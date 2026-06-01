@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Sophrosync.Notifications.Application.Commands.SetTenantDefaults;
 using Sophrosync.Notifications.Application.Commands.UpdatePreference;
 using Sophrosync.Notifications.Application.Queries.GetPreference;
+using Sophrosync.Notifications.Application.DTOs;
+using Sophrosync.Notifications.Domain.Enums;
 using Sophrosync.SharedKernel.Security;
 
 namespace Sophrosync.Notifications.API.Controllers;
@@ -18,8 +20,10 @@ public sealed class NotificationPreferencesController(IMediator mediator) : Cont
     {
         var tenantId = User.GetTenantId();
         var userId = User.GetUserId();
-        var result = await mediator.Send(new GetNotificationPreferenceQuery(tenantId, userId), ct);
-        return result is null ? NotFound() : Ok(result);
+        var result = await mediator.Send(new GetNotificationPreferenceQuery(tenantId, userId), ct)
+            ?? new NotificationPreferenceDto(Guid.Empty, tenantId, userId, NotificationChannel.InApp,
+                EmailEnabled: false, InAppEnabled: true, SmsEnabled: false, EmailAddress: null);
+        return Ok(result);
     }
 
     [HttpPut]

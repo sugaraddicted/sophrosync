@@ -23,6 +23,18 @@
     "changeOrigin": true,
     "logLevel": "debug"
   },
+  "/api/notifications": {
+    "target": "http://localhost:5007",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/api/notification-preferences": {
+    "target": "http://localhost:5007",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
   "/api": {
     "target": "http://localhost:60228",
     "secure": false,

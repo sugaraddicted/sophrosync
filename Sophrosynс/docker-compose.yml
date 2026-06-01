@@ -56,10 +56,15 @@ services:
   # ── Application services (opt-in via profiles) ───────────────────────────────
   #
   # Usage:
-  #   docker compose --profile clients up -d      # run clients-service in Docker
-  #   docker compose --profile schedule up -d     # run schedule-service in Docker
-  #   docker compose --profile gateway up -d      # run gateway in Docker
-  #   docker compose --profile services up -d     # run all services in Docker
+  #   docker compose --profile clients       up -d   # ClientService (5001)
+  #   docker compose --profile identity      up -d   # IdentityService (5005)
+  #   docker compose --profile schedule      up -d   # ScheduleService (5002)
+  #   docker compose --profile notes         up -d   # NotesService (5003)
+  #   docker compose --profile consent       up -d   # ConsentService (5006)
+  #   docker compose --profile notifications up -d   # NotificationService (5007)
+  #   docker compose --profile reporting     up -d   # ReportingService (5008)
+  #   docker compose --profile gateway       up -d   # YARP Gateway (5000)
+  #   docker compose --profile services      up -d   # all of the above
   #
   # When debugging a service in VS, simply omit its profile — it runs on the
   # same host port so the SPA proxy and other services reach it identically.
