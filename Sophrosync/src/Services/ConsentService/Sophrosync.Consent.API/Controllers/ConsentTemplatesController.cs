@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sophrosync.Consent.Application.Commands.CreateConsentTemplate;
@@ -26,7 +26,7 @@ public sealed class ConsentTemplatesController(IMediator mediator) : ControllerB
     }
 
     [HttpPost]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin,practice-admin")]
     public async Task<IActionResult> Create([FromBody] CreateConsentTemplateCommand command, CancellationToken ct = default)
     {
         var id = await mediator.Send(command, ct);
@@ -34,7 +34,7 @@ public sealed class ConsentTemplatesController(IMediator mediator) : ControllerB
     }
 
     [HttpPost("{id:guid}/publish")]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin,practice-admin")]
     public async Task<IActionResult> Publish(Guid id, CancellationToken ct = default)
     {
         await mediator.Send(new PublishConsentTemplateCommand(id), ct);
@@ -42,7 +42,7 @@ public sealed class ConsentTemplatesController(IMediator mediator) : ControllerB
     }
 
     [HttpPost("{id:guid}/retire")]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin,practice-admin")]
     public async Task<IActionResult> Retire(Guid id, CancellationToken ct = default)
     {
         await mediator.Send(new RetireConsentTemplateCommand(id), ct);

@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sophrosync.Consent.Application.Commands.IssueConsentRequest;
@@ -48,7 +48,7 @@ public sealed class ConsentRequestsController(IMediator mediator) : ControllerBa
     }
 
     [HttpPost("{id:guid}/revoke")]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin,practice-admin")]
     public async Task<IActionResult> Revoke(Guid id, CancellationToken ct = default)
     {
         await mediator.Send(new RevokeConsentRequestCommand(id), ct);

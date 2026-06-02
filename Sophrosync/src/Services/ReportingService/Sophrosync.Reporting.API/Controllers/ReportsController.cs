@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sophrosync.Reporting.Application.Queries.GetAppointmentSummary;
@@ -25,7 +25,7 @@ public sealed class ReportsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("practice-analytics")]
-    [Authorize(Roles = "admin,supervisor")]
+    [Authorize(Roles = "admin,supervisor,practice-admin")]
     public async Task<IActionResult> GetPracticeAnalytics(
         [FromQuery] DateTime from, [FromQuery] DateTime to, CancellationToken ct = default)
     {

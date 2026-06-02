@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sophrosync.Reporting.Application.Commands.CreateReportDefinition;
@@ -15,7 +15,7 @@ namespace Sophrosync.Reporting.API.Controllers;
 public sealed class ReportDefinitionsController(IMediator mediator) : ControllerBase
 {
     [HttpPost("definitions")]
-    [Authorize(Roles = "admin,supervisor")]
+    [Authorize(Roles = "admin,supervisor,practice-admin")]
     public async Task<IActionResult> Create(
         [FromBody] CreateReportDefinitionCommand command, CancellationToken ct = default)
     {
@@ -45,7 +45,7 @@ public sealed class ReportDefinitionsController(IMediator mediator) : Controller
     }
 
     [HttpDelete("runs/{runId:guid}")]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin,practice-admin")]
     public async Task<IActionResult> DeleteRun(Guid runId, CancellationToken ct = default)
     {
         await mediator.Send(new DeleteReportRunCommand(runId), ct);

@@ -1,4 +1,4 @@
-{
+﻿{
   "realm": "sophrosync",
   "enabled": true,
   "sslRequired": "none",
@@ -16,7 +16,8 @@
       { "name": "admin",      "description": "Full platform access" },
       { "name": "supervisor", "description": "Supervisor access" },
       { "name": "therapist",  "description": "Therapist access" },
-      { "name": "client",     "description": "End-client access" }
+      { "name": "client",     "description": "End-client access" },
+      { "name": "practice-admin", "description": "Practice owner — manages templates, consent, and notifications for their tenant" }
     ]
   },
   "clients": [
@@ -122,7 +123,7 @@
       "credentials": [
         { "type": "password", "value": "therapist", "temporary": false }
       ],
-      "realmRoles": [ "therapist" ],
+      "realmRoles": [ "therapist", "practice-admin" ],
       "attributes": {
         "tenant_id": [ "11111111-1111-1111-1111-111111111111" ]
       }

@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sophrosync.Notifications.Application.Commands.SetTenantDefaults;
@@ -35,7 +35,7 @@ public sealed class NotificationPreferencesController(IMediator mediator) : Cont
     }
 
     [HttpPut("tenant-defaults")]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin,practice-admin")]
     public async Task<IActionResult> SetTenantDefaults(
         [FromBody] SetTenantNotificationDefaultsCommand command, CancellationToken ct = default)
     {

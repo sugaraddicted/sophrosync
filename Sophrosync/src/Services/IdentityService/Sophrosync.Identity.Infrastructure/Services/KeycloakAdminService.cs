@@ -1,4 +1,4 @@
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
@@ -69,8 +69,9 @@ public sealed class KeycloakAdminService : IKeycloakAdminService
             ?? throw new InvalidOperationException("Keycloak did not return a user Location header.");
         var keycloakUserId = Guid.Parse(location.Segments[^1]);
 
-        // Assign therapist realm role
+        // Assign roles: practice founder gets therapist + practice-admin
         await AssignRealmRoleAsync(client, keycloakUserId, "therapist", ct);
+        await AssignRealmRoleAsync(client, keycloakUserId, "practice-admin", ct);
 
         return keycloakUserId;
     }
@@ -84,7 +85,7 @@ public sealed class KeycloakAdminService : IKeycloakAdminService
         var response = await client.DeleteAsync(
             $"/admin/realms/{_realm}/users/{keycloakUserId}", ct);
 
-        // 404 means user already gone — treat as success
+        // 404 means user already gone â€” treat as success
         if (response.StatusCode != System.Net.HttpStatusCode.NotFound)
             response.EnsureSuccessStatusCode();
     }
