@@ -24,23 +24,21 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IReportDefinitionRepository, ReportDefinitionRepository>();
         services.AddScoped<IReportRunRepository, ReportRunRepository>();
 
-        var policy = ResiliencePolicy.GetRetryWithCircuitBreaker();
-
         services.AddHttpClient<IScheduleServiceClient, ScheduleServiceClient>(client =>
                 client.BaseAddress = new Uri(configuration["ServiceUrls:ScheduleService"]!))
-            .AddPolicyHandler(policy);
+            .AddPolicyHandler(ResiliencePolicy.GetRetryWithCircuitBreaker());
 
         services.AddHttpClient<INotesServiceClient, NotesServiceClient>(client =>
                 client.BaseAddress = new Uri(configuration["ServiceUrls:NotesService"]!))
-            .AddPolicyHandler(policy);
+            .AddPolicyHandler(ResiliencePolicy.GetRetryWithCircuitBreaker());
 
         services.AddHttpClient<IClientServiceClient, ClientServiceClient>(client =>
                 client.BaseAddress = new Uri(configuration["ServiceUrls:ClientService"]!))
-            .AddPolicyHandler(policy);
+            .AddPolicyHandler(ResiliencePolicy.GetRetryWithCircuitBreaker());
 
         services.AddHttpClient<IConsentServiceClient, ConsentServiceClient>(client =>
                 client.BaseAddress = new Uri(configuration["ServiceUrls:ConsentService"]!))
-            .AddPolicyHandler(policy);
+            .AddPolicyHandler(ResiliencePolicy.GetRetryWithCircuitBreaker());
 
         return services;
     }

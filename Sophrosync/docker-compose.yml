@@ -1,6 +1,6 @@
-services:
+﻿services:
 
-  # ── Infrastructure (always up) ───────────────────────────────────────────────
+  # â”€â”€ Infrastructure (always up) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   postgres:
     image: postgres:16-alpine
@@ -53,7 +53,7 @@ services:
       - "1025:1025"
       - "8025:8025"
 
-  # ── Application services (opt-in via profiles) ───────────────────────────────
+  # â”€â”€ Application services (opt-in via profiles) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   #
   # Usage:
   #   docker compose --profile clients       up -d   # ClientService (5001)
@@ -66,7 +66,7 @@ services:
   #   docker compose --profile gateway       up -d   # YARP Gateway (5000)
   #   docker compose --profile services      up -d   # all of the above
   #
-  # When debugging a service in VS, simply omit its profile — it runs on the
+  # When debugging a service in VS, simply omit its profile â€” it runs on the
   # same host port so the SPA proxy and other services reach it identically.
 
   clients-service:
@@ -187,6 +187,10 @@ services:
       ConnectionStrings__ReportingDb: "Host=postgres;Port=5432;Database=sophrosync_reporting;Username=svc_reporting;Password=${REPORTING_DB_PASSWORD}"
       Keycloak__Authority: "http://keycloak:8080/realms/sophrosync"
       Keycloak__Audience: "sophrosync-gateway"
+      ServiceUrls__ClientService: "http://clients-service:8080/"
+      ServiceUrls__ScheduleService: "http://schedule-service:8080/"
+      ServiceUrls__NotesService: "http://notes-service:8080/"
+      ServiceUrls__ConsentService: "http://consent-service:8080/"
     depends_on:
       postgres:
         condition: service_healthy
