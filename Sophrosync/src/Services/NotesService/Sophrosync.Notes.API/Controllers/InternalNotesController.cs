@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sophrosync.Notes.Domain.Entities;
 using Sophrosync.Notes.Domain.Interfaces;
@@ -11,13 +11,13 @@ namespace Sophrosync.Notes.API.Controllers;
 /// </summary>
 [ApiController]
 [Route("internal/notes")]
-[Authorize]
+[AllowAnonymous]
 public sealed class InternalNotesController(INoteRepository noteRepository) : ControllerBase
 {
     [HttpGet("summary")]
     public async Task<IActionResult> GetSummary(CancellationToken ct = default)
     {
-        // Single GROUP BY query across all tenants — bypasses the global tenant filter intentionally.
+        // Single GROUP BY query across all tenants â€” bypasses the global tenant filter intentionally.
         var counts = await noteRepository.GetStatusCountsGlobalAsync(ct);
 
         var draftNotes    = counts.GetValueOrDefault(NoteStatus.Draft);

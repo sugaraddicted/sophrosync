@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sophrosync.Consent.Application.Queries.GetConsentAuditSummary;
@@ -8,12 +8,12 @@ using Sophrosync.Consent.Domain.Enums;
 namespace Sophrosync.Consent.API.Controllers;
 
 /// <summary>
-/// Internal endpoint — called by other services to check consent status.
+/// Internal endpoint â€” called by other services to check consent status.
 /// Blocked from public access by YARP gateway.
 /// </summary>
 [ApiController]
 [Route("internal/consent")]
-[Authorize]
+[AllowAnonymous]
 public sealed class InternalConsentController(IMediator mediator) : ControllerBase
 {
     [HttpGet("status")]

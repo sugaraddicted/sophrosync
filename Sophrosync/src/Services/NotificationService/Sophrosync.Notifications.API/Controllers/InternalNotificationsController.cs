@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sophrosync.Notifications.Application.Commands.SendNotification;
@@ -6,12 +6,12 @@ using Sophrosync.Notifications.Application.Commands.SendNotification;
 namespace Sophrosync.Notifications.API.Controllers;
 
 /// <summary>
-/// Internal endpoint — blocked from public access by YARP gateway.
+/// Internal endpoint â€” blocked from public access by YARP gateway.
 /// Used by ScheduleService, ClientService, NotesService, ConsentService.
 /// </summary>
 [ApiController]
 [Route("internal/notifications")]
-[Authorize]
+[AllowAnonymous]
 public sealed class InternalNotificationsController(IMediator mediator) : ControllerBase
 {
     [HttpPost("send")]

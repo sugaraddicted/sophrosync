@@ -1,16 +1,16 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Sophrosync.Clients.API.Controllers;
 
 /// <summary>
 /// Internal endpoint consumed by ReportingService.
-/// Stub — returns placeholder data until ClientService is fully implemented.
+/// Stub â€” returns placeholder data until ClientService is fully implemented.
 /// Blocked from public access by YARP gateway.
 /// </summary>
 [ApiController]
 [Route("internal/clients")]
-[Authorize]
+[AllowAnonymous]
 public sealed class InternalClientsController : ControllerBase
 {
     [HttpGet("summary")]

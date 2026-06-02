@@ -1,16 +1,16 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Sophrosync.Schedule.API.Controllers;
 
 /// <summary>
 /// Internal endpoint consumed by ReportingService.
-/// Stub — returns placeholder data until ScheduleService is fully implemented.
+/// Stub â€” returns placeholder data until ScheduleService is fully implemented.
 /// Blocked from public access by YARP gateway.
 /// </summary>
 [ApiController]
 [Route("internal/appointments")]
-[Authorize]
+[AllowAnonymous]
 public sealed class InternalAppointmentsController : ControllerBase
 {
     [HttpGet("summary")]
