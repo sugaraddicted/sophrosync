@@ -11,20 +11,20 @@
     <!-- Practice stats strip -->
     <div class="dashboard__stats">
       <div class="dashboard__stat">
-        <span class="dashboard__stat-value">{{ weeklyHoursPercent }}</span>
+        <span class="dashboard__stat-value">{{ weeklyHoursPercent() }}</span>
         <span class="dashboard__stat-unit">%</span>
         <span class="dashboard__stat-label">Weekly target</span>
       </div>
       <div class="dashboard__stat-sep" aria-hidden="true"></div>
       <div class="dashboard__stat">
-        <span class="dashboard__stat-value">{{ upcomingSessions().length }}</span>
+        <span class="dashboard__stat-value">{{ appointmentsToday() }}</span>
         <span class="dashboard__stat-unit"></span>
         <span class="dashboard__stat-label">Sessions today</span>
       </div>
       <div class="dashboard__stat-sep" aria-hidden="true"></div>
       <div class="dashboard__stat">
-        <span class="dashboard__stat-value">94</span>
-        <span class="dashboard__stat-unit">%</span>
+        <span class="dashboard__stat-value">{{ retentionPercent() ?? '—' }}</span>
+        <span class="dashboard__stat-unit" [class.hidden]="retentionPercent() === null">%</span>
         <span class="dashboard__stat-label">Retention rate</span>
       </div>
     </div>
@@ -117,26 +117,26 @@
         <div class="velocity-stat">
           <div class="velocity-stat__row">
             <span class="velocity-stat__label">Weekly hours</span>
-            <span class="velocity-stat__value">{{ weeklyHoursPercent }}%</span>
+            <span class="velocity-stat__value">{{ weeklyHoursPercent() }}%</span>
           </div>
-          <div class="velocity-bar" role="progressbar" [attr.aria-valuenow]="weeklyHoursPercent" aria-valuemin="0" aria-valuemax="100">
-            <div class="velocity-bar__fill" [style.width.%]="weeklyHoursPercent"></div>
+          <div class="velocity-bar" role="progressbar" [attr.aria-valuenow]="weeklyHoursPercent()" aria-valuemin="0" aria-valuemax="100">
+            <div class="velocity-bar__fill" [style.width.%]="weeklyHoursPercent()"></div>
           </div>
         </div>
 
         <div class="velocity-stat">
           <div class="velocity-stat__row">
             <span class="velocity-stat__label">Monthly target</span>
-            <span class="velocity-stat__value">{{ monthlyTargetPercent }}%</span>
+            <span class="velocity-stat__value">{{ monthlyTargetPercent() }}%</span>
           </div>
-          <div class="velocity-bar" role="progressbar" [attr.aria-valuenow]="monthlyTargetPercent" aria-valuemin="0" aria-valuemax="100">
-            <div class="velocity-bar__fill" [style.width.%]="monthlyTargetPercent"></div>
+          <div class="velocity-bar" role="progressbar" [attr.aria-valuenow]="monthlyTargetPercent()" aria-valuemin="0" aria-valuemax="100">
+            <div class="velocity-bar__fill" [style.width.%]="monthlyTargetPercent()"></div>
           </div>
         </div>
 
         <div class="velocity-revenue">
           <span class="velocity-revenue__label">Revenue projection</span>
-          <span class="velocity-revenue__value">$4,200</span>
+          <span class="velocity-revenue__value">N/A</span>
         </div>
       </div>
 
@@ -158,15 +158,17 @@
         <h2 class="dashboard__section-title">Patient retention</h2>
         <div class="retention-stats">
           <div class="retention-stat">
-            <span class="retention-stat__num">94%</span>
+            <span class="retention-stat__num">
+              {{ retentionPercent() !== null ? retentionPercent() + '%' : '—' }}
+            </span>
             <span class="retention-stat__label">Retention rate</span>
           </div>
           <div class="retention-stat">
-            <span class="retention-stat__num">18</span>
+            <span class="retention-stat__num">{{ activeClientsCount() }}</span>
             <span class="retention-stat__label">Active clients</span>
           </div>
           <div class="retention-stat">
-            <span class="retention-stat__num">3.2</span>
+            <span class="retention-stat__num">{{ avgEngagementMonths }}</span>
             <span class="retention-stat__label">Avg months</span>
           </div>
         </div>
