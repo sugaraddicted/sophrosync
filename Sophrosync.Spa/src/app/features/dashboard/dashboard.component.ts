@@ -78,7 +78,7 @@ export class DashboardComponent implements OnInit {
   private readonly clients = signal<ClientDto[]>([]);
   private readonly appointmentSummary = signal<AppointmentSummaryDto | null>(null);
 
-  // Derived: sessions in the current ISO week (Monâ€“Sun)
+  // Derived: sessions in the current ISO week (Mon-Sun)
   protected readonly appointmentsThisWeek = computed(() => {
     const monday = this.getMondayOfCurrentWeek();
     const sundayEnd = new Date(monday);
@@ -132,8 +132,8 @@ export class DashboardComponent implements OnInit {
   // Active clients count
   protected readonly activeClientsCount = computed(() => this.clients().length);
 
-  // Avg engagement months â€” ClientDto has no createdAt, so always 'â€”'
-  protected readonly avgEngagementMonths = 'â€”';
+  // Avg engagement months - ClientDto has no createdAt, so always '-'
+  protected readonly avgEngagementMonths = '-';
 
   // Notes not locked, created > 14 days ago
   protected readonly overdueNotes = signal<Note[]>([]);
