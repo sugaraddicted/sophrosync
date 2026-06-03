@@ -110,10 +110,18 @@
             formControlName="emailAddress"
             placeholder="your@email.com"
             autocomplete="email"
-            (blur)="savePreferences()"
           />
         </div>
       }
+
+      <div class="settings__form-actions">
+        <button
+          class="settings__btn settings__btn--primary"
+          type="button"
+          [disabled]="isSavingPrefs()"
+          (click)="savePreferences()"
+        >{{ isSavingPrefs() ? 'Saving…' : 'Save Preferences' }}</button>
+      </div>
 
     </form>
   </section>

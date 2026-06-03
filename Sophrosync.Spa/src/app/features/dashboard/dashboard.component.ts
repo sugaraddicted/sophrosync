@@ -193,10 +193,11 @@ export class DashboardComponent implements OnInit {
         );
         this.weekDays.set(this.buildWeekDays(activeDayStrings));
 
+        const todayStr = now.toDateString();
         const upcoming = appts
           .filter(a =>
             (a.status === 'Scheduled' || a.status === 'Confirmed') &&
-            new Date(a.scheduledAt) >= now
+            new Date(a.scheduledAt).toDateString() === todayStr
           )
           .sort((a, b) => a.scheduledAt.localeCompare(b.scheduledAt))
           .slice(0, 5)

@@ -125,6 +125,14 @@ export class AuthService {
     this.isAuthenticated.set(true);
   }
 
+  /** Patches the userProfile signal with an updated display name after a profile save. */
+  updateDisplayName(firstName: string, lastName: string): void {
+    const current = this.userProfile();
+    if (current) {
+      this.userProfile.set({ ...current, firstName, lastName });
+    }
+  }
+
   private decodeJwt(token: string): JwtPayload {
     const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
     return JSON.parse(atob(base64));
