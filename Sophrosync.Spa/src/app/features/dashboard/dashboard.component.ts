@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -7,7 +7,10 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
+import { NotesService } from '../notes/notes.service';
+import { Note } from '../notes/models/note.model';
 import { AppointmentsCalendarComponent } from './appointments-calendar/appointments-calendar.component';
 import { NextSessionCardComponent } from './next-session-card/next-session-card.component';
 import { AppointmentsService, AppointmentDto } from './appointments.service';
@@ -42,9 +45,11 @@ interface UpcomingSession {
 })
 export class DashboardComponent implements OnInit {
   protected readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
   private readonly appointmentsService = inject(AppointmentsService);
   private readonly clientsService = inject(ClientsService);
   private readonly reportsService = inject(ReportsService);
+  private readonly notesService = inject(NotesService);
   private readonly cdr = inject(ChangeDetectorRef);
 
   protected readonly profile = this.auth.userProfile;
@@ -70,7 +75,7 @@ export class DashboardComponent implements OnInit {
   private readonly clients = signal<ClientDto[]>([]);
   private readonly appointmentSummary = signal<AppointmentSummaryDto | null>(null);
 
-  // Derived: sessions in the current ISO week (Mon–Sun)
+  // Derived: sessions in the current ISO week (Monâ€“Sun)
   protected readonly appointmentsThisWeek = computed(() => {
     const monday = this.getMondayOfCurrentWeek();
     const sundayEnd = new Date(monday);
@@ -122,8 +127,16 @@ export class DashboardComponent implements OnInit {
   // Active clients count
   protected readonly activeClientsCount = computed(() => this.clients().length);
 
-  // Avg engagement months — ClientDto has no createdAt, so always '—'
-  protected readonly avgEngagementMonths = '—';
+  // Avg engagement months â€” ClientDto has no createdAt, so always 'â€”'
+  protected readonly avgEngagementMonths = 'â€”';
+
+  // Notes not locked, created > 14 days ago
+  protected readonly overdueNotes = signal<Note[]>([]);
+
+  // Current month label for Practice Velocity subtitle
+  protected readonly currentMonthLabel = computed(() => {
+    return new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  });
 
   private static readonly AVATAR_COLORS = [
     '#546253', '#6b5b5b', '#5f5f5f', '#4a6b6b', '#5b4a6b', '#6b6b4a',
@@ -149,8 +162,9 @@ export class DashboardComponent implements OnInit {
       this.clientsService.getAll(),
       firstValueFrom(this.reportsService.getAppointmentSummary(startOfMonth, endOfMonth))
         .catch(() => null),
+      firstValueFrom(this.notesService.getNotes()).catch(() => [] as Note[]),
     ])
-      .then(([appts, loadedClients, summary]) => {
+      .then(([appts, loadedClients, summary, notes]) => {
         // Populate raw signals so computed() signals derive live values
         this.appointments.set(appts);
         this.clients.set(loadedClients);
@@ -181,9 +195,25 @@ export class DashboardComponent implements OnInit {
           .slice(0, 5)
           .map(a => this.toUpcomingSession(a, clientMap));
         this.upcomingSessions.set(upcoming);
+
+        const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+        const overdue = (notes as Note[]).filter(n =>
+          (n.status === 'Draft' || n.status === 'Signed' || n.status === 'PendingCoSign') &&
+          new Date(n.createdAt) < fourteenDaysAgo
+        );
+        this.overdueNotes.set(overdue);
       })
       .catch(() => { /* silent */ })
       .finally(() => { this.sessionsLoading.set(false); this.cdr.markForCheck(); });
+  }
+
+  protected onWeekDayClick(): void {
+    this.router.navigate(['/calendar']);
+  }
+
+  protected isUrgentNote(note: Note): boolean {
+    const seventyTwoHoursAgo = new Date(Date.now() - 72 * 60 * 60 * 1000);
+    return new Date(note.updatedAt) < seventyTwoHoursAgo;
   }
 
   private getMondayOfCurrentWeek(): Date {
