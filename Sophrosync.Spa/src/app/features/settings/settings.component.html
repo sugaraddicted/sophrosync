@@ -118,6 +118,54 @@
     </form>
   </section>
 
+  <!-- Practice Targets Section -->
+  <section class="settings__section" aria-labelledby="targets-heading">
+    <h2 class="settings__section-title" id="targets-heading">Practice Targets</h2>
+    <p class="settings__section-hint">Used to calculate progress bars on the dashboard velocity card.</p>
+
+    <form class="settings__form" [formGroup]="targetsForm" (ngSubmit)="saveTargets()" novalidate>
+      <div class="settings__field-row">
+        <div class="settings__field">
+          <label class="settings__label" for="weeklyTarget">Weekly session target</label>
+          <input
+            id="weeklyTarget"
+            class="settings__input"
+            [class.settings__input--error]="targetsForm.controls.weeklySessionTarget.invalid && targetsForm.controls.weeklySessionTarget.touched"
+            type="number"
+            min="1"
+            max="100"
+            formControlName="weeklySessionTarget"
+          />
+          @if (targetsForm.controls.weeklySessionTarget.invalid && targetsForm.controls.weeklySessionTarget.touched) {
+            <p class="settings__field-error">Enter a number between 1 and 100.</p>
+          }
+        </div>
+        <div class="settings__field">
+          <label class="settings__label" for="monthlyTarget">Monthly session target</label>
+          <input
+            id="monthlyTarget"
+            class="settings__input"
+            [class.settings__input--error]="targetsForm.controls.monthlySessionTarget.invalid && targetsForm.controls.monthlySessionTarget.touched"
+            type="number"
+            min="1"
+            max="500"
+            formControlName="monthlySessionTarget"
+          />
+          @if (targetsForm.controls.monthlySessionTarget.invalid && targetsForm.controls.monthlySessionTarget.touched) {
+            <p class="settings__field-error">Enter a number between 1 and 500.</p>
+          }
+        </div>
+      </div>
+      <div class="settings__form-actions">
+        <button
+          class="settings__btn settings__btn--primary"
+          type="submit"
+          [disabled]="targetsForm.invalid"
+        >Save Targets</button>
+      </div>
+    </form>
+  </section>
+
   <!-- Toast -->
   @if (toast(); as t) {
     <div

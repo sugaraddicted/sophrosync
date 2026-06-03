@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { NotesService } from '../notes/notes.service';
 import { Note } from '../notes/models/note.model';
+import { SettingsService } from '../settings/settings.service';
 import { AppointmentsCalendarComponent } from './appointments-calendar/appointments-calendar.component';
 import { NextSessionCardComponent } from './next-session-card/next-session-card.component';
 import { AppointmentsService, AppointmentDto } from './appointments.service';
@@ -50,6 +51,7 @@ export class DashboardComponent implements OnInit {
   private readonly clientsService = inject(ClientsService);
   private readonly reportsService = inject(ReportsService);
   private readonly notesService = inject(NotesService);
+  private readonly settingsService = inject(SettingsService);
   private readonly cdr = inject(ChangeDetectorRef);
 
   protected readonly profile = this.auth.userProfile;
@@ -104,14 +106,16 @@ export class DashboardComponent implements OnInit {
     ).length;
   });
 
-  // Progress toward weekly target of 5 sessions
+  private readonly practiceTargets = this.settingsService.getPracticeTargets();
+
+  // Progress toward configurable weekly target (default 5)
   protected readonly weeklyHoursPercent = computed(() =>
-    Math.min(100, Math.round(this.appointmentsThisWeek() / 5 * 100))
+    Math.min(100, Math.round(this.appointmentsThisWeek() / this.practiceTargets.weeklySessionTarget * 100))
   );
 
-  // Progress toward monthly target of 20 sessions
+  // Progress toward configurable monthly target (default 20)
   protected readonly monthlyTargetPercent = computed(() =>
-    Math.min(100, Math.round(this.appointmentsThisMonth() / 20 * 100))
+    Math.min(100, Math.round(this.appointmentsThisMonth() / this.practiceTargets.monthlySessionTarget * 100))
   );
 
   // Retention proxy: completion rate derived from AppointmentSummaryDto

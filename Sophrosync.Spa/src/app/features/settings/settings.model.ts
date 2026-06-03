@@ -5,6 +5,16 @@ export interface ProfileDto {
   role: string;
 }
 
+export interface PracticeTargets {
+  weeklySessionTarget: number;
+  monthlySessionTarget: number;
+}
+
+export const DEFAULT_PRACTICE_TARGETS: PracticeTargets = {
+  weeklySessionTarget: 5,
+  monthlySessionTarget: 20,
+};
+
 export interface NotificationPreferenceDto {
   id: string;
   tenantId: string;
