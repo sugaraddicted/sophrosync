@@ -6,9 +6,9 @@ namespace Sophrosync.Notes.Infrastructure.Persistence;
 
 /// <summary>
 /// Design-time factory used exclusively by EF Core tooling (migrations, scaffolding).
-/// Provides a stub <see cref="ICurrentTenant"/> so the DbContext can be instantiated
-/// without a live HTTP request context.
-/// Never used at runtime — runtime DI uses the registered <see cref="ICurrentTenant"/> service.
+/// Provides stub implementations of <see cref="ICurrentTenant"/> and <see cref="ICurrentUser"/>
+/// so the DbContext can be instantiated without a live HTTP request context.
+/// Never used at runtime — runtime DI uses the registered services.
 /// </summary>
 public sealed class NotesDbContextFactory : IDesignTimeDbContextFactory<NotesDbContext>
 {
@@ -21,14 +21,14 @@ public sealed class NotesDbContextFactory : IDesignTimeDbContextFactory<NotesDbC
 
         optionsBuilder.UseNpgsql(connectionString);
 
-        var encKey = Environment.GetEnvironmentVariable("Encryption__NotesKey")
+        var masterKey = Environment.GetEnvironmentVariable("Encryption__MasterKey")
             ?? "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
 
         return new NotesDbContext(
             optionsBuilder.Options,
             new DesignTimeTenant(),
             new DesignTimeUser(),
-            new NotesEncryptionOptions(encKey));
+            new NotesEncryptionOptions(masterKey));
     }
 
     /// <summary>Stub tenant for EF Core design-time tooling.</summary>

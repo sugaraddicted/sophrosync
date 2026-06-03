@@ -2,32 +2,32 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Sophrosync.SharedKernel.Abstractions;
 
-namespace Sophrosync.Clients.Infrastructure.Persistence;
+namespace Sophrosync.Consent.Infrastructure.Persistence;
 
 /// <summary>
 /// Design-time factory used exclusively by EF Core tooling (migrations, scaffolding).
 /// Provides a stub <see cref="ICurrentTenant"/> so the DbContext can be instantiated
 /// without a live HTTP request context.
-/// Never used at runtime — runtime DI uses the registered <see cref="ICurrentTenant"/> service.
+/// Never used at runtime — runtime DI uses the registered services.
 /// </summary>
-public sealed class ClientsDbContextFactory : IDesignTimeDbContextFactory<ClientsDbContext>
+public sealed class ConsentDbContextFactory : IDesignTimeDbContextFactory<ConsentDbContext>
 {
-    public ClientsDbContext CreateDbContext(string[] args)
+    public ConsentDbContext CreateDbContext(string[] args)
     {
-        var optionsBuilder = new DbContextOptionsBuilder<ClientsDbContext>();
+        var optionsBuilder = new DbContextOptionsBuilder<ConsentDbContext>();
 
-        var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__ClientsDb")
-            ?? "Host=localhost;Port=5432;Database=sophrosync_clients;Username=svc_clients;Password=clients_dev_pw";
+        var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__ConsentDb")
+            ?? "Host=localhost;Port=5432;Database=sophrosync_consent;Username=svc_consent;Password=consent_dev_pw";
 
         optionsBuilder.UseNpgsql(connectionString);
 
         var masterKey = Environment.GetEnvironmentVariable("Encryption__MasterKey")
             ?? "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
 
-        return new ClientsDbContext(
+        return new ConsentDbContext(
             optionsBuilder.Options,
             new DesignTimeTenant(),
-            new ClientsEncryptionOptions(masterKey));
+            new ConsentEncryptionOptions(masterKey));
     }
 
     /// <summary>
