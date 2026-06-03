@@ -95,7 +95,7 @@
           <span class="settings__toggle-hint">Receive important alerts by email</span>
         </div>
         <label class="settings__toggle-switch" aria-label="Email notifications">
-          <input type="checkbox" formControlName="emailEnabled" (change)="savePreferences()" />
+          <input type="checkbox" formControlName="emailEnabled" (change)="onEmailToggleChange()" />
           <span class="settings__toggle-track"></span>
         </label>
       </div>

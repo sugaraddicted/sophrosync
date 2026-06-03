@@ -17,6 +17,8 @@ export class MonthGridComponent {
 
   readonly dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
+  private readonly todayStr = new Date().toDateString();
+
   readonly leadingBlanks = computed(() => {
     const firstDay = new Date(this.year(), this.month(), 1).getDay();
     return Array((firstDay + 6) % 7).fill(null);
@@ -36,6 +38,10 @@ export class MonthGridComponent {
     }
     return map;
   });
+
+  isToday(day: number): boolean {
+    return new Date(this.year(), this.month(), day).toDateString() === this.todayStr;
+  }
 
   onApptClick(event: Event, appt: Appointment): void {
     event.stopPropagation();

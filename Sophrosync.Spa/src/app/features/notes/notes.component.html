@@ -18,7 +18,7 @@
     >
       <option value="">All statuses</option>
       @for (s of statusOptions; track s) {
-        <option [value]="s">{{ s }}</option>
+        <option [value]="s">{{ statusLabel(s) }}</option>
       }
     </select>
 

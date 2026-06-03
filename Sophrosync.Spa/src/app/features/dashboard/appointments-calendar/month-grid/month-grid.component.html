@@ -10,6 +10,7 @@
       <div
         class="month-card__cell"
         [class.month-card__cell--has-appt]="dayMap().has(day)"
+        [class.month-card__cell--today]="isToday(day)"
         (click)="dayClicked.emit(day)"
         role="button"
         [attr.aria-label]="'Day ' + day"

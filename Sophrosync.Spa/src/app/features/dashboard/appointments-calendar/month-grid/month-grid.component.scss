@@ -30,6 +30,19 @@
     &--has-appt {
       background: var(--color-surface-container-lowest);
     }
+
+    &--today {
+      background: var(--color-primary-fixed);
+
+      .month-card__day-num {
+        color: var(--color-on-primary-fixed);
+        font-weight: 700;
+      }
+    }
+
+    &--today#{&}--has-appt {
+      background: var(--color-primary-fixed);
+    }
   }
 
   &__day-num {
