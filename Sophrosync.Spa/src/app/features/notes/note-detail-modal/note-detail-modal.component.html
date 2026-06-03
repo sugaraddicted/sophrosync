@@ -7,8 +7,10 @@
       <div class="modal__meta">
         <span class="modal__badge modal__badge--{{ note().status | lowercase }}">{{ note().status }}</span>
         <span class="modal__type">{{ note().type }}</span>
-        <span class="modal__dot" aria-hidden="true">·</span>
-        <span class="modal__date">{{ formatDate(note().sessionDate) }}</span>
+        @if (clientName()) {
+          <span class="modal__dot" aria-hidden="true">·</span>
+          <span class="modal__client">{{ clientName() }}</span>
+        }
       </div>
     </div>
     <button class="modal__close" type="button" (click)="onClose()" aria-label="Close">

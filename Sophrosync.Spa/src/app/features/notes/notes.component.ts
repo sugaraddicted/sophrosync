@@ -13,6 +13,7 @@ import { NotesService } from './notes.service';
 import { Note, NoteStatus, NoteType } from './models/note.model';
 import { NoteFormModalComponent, NoteFormResult } from './note-form-modal/note-form-modal.component';
 import { NoteDetailModalComponent, NoteAction } from './note-detail-modal/note-detail-modal.component';
+import { ClientsService } from '../clients/clients.service';
 
 type Toast = { message: string; kind: 'success' | 'error' };
 
@@ -25,7 +26,9 @@ type Toast = { message: string; kind: 'success' | 'error' };
 })
 export class NotesComponent implements OnInit {
   private readonly notesService = inject(NotesService);
+  private readonly clientsService = inject(ClientsService);
 
+  protected readonly clientNames = signal<Map<string, string>>(new Map());
   protected readonly notes = signal<Note[]>([]);
   protected readonly isLoading = signal(true);
   protected readonly loadError = signal<string | null>(null);
@@ -57,6 +60,13 @@ export class NotesComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadNotes();
+    this.clientsService.getAll().then(clients =>
+      this.clientNames.set(new Map(clients.map(c => [c.id, c.name])))
+    );
+  }
+
+  protected clientName(id: string): string {
+    return this.clientNames().get(id) ?? id.substring(0, 8) + '…';
   }
 
   protected loadNotes(): void {

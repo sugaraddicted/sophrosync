@@ -65,9 +65,11 @@
               <span class="notes-page__badge notes-page__badge--{{ note.status.toLowerCase() }}">{{ note.status }}</span>
             </div>
             <div class="notes-page__card-meta">
+              <span class="notes-page__card-client">{{ clientName(note.clientId) }}</span>
+              <span class="notes-page__card-dot" aria-hidden="true">·</span>
               <span class="notes-page__card-type">{{ note.type }}</span>
               <span class="notes-page__card-dot" aria-hidden="true">·</span>
-              <span class="notes-page__card-date">{{ formatDate(note.sessionDate) }}</span>
+              <span class="notes-page__card-date">{{ formatDate(note.createdAt) }}</span>
               <span class="notes-page__card-dot" aria-hidden="true">·</span>
               <span class="notes-page__card-author">{{ note.authorFullName }}</span>
             </div>
@@ -89,6 +91,7 @@
 @if (selectedNote(); as activeNote) {
   <app-note-detail-modal
     [note]="activeNote"
+    [clientName]="clientName(activeNote.clientId)"
     (actionRequested)="onNoteAction(activeNote, $event)"
     (closed)="closeDetail()"
   />

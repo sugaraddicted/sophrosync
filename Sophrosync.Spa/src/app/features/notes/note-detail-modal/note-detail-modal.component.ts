@@ -5,6 +5,7 @@ import {
   output,
   signal,
 } from '@angular/core';
+
 import { LowerCasePipe } from '@angular/common';
 import { Note } from '../models/note.model';
 
@@ -19,6 +20,7 @@ export type NoteAction = 'edit' | 'sign' | 'lock' | 'request-cosign' | 'amend' |
 })
 export class NoteDetailModalComponent {
   readonly note = input.required<Note>();
+  readonly clientName = input<string>('');
 
   readonly actionRequested = output<NoteAction>();
   readonly closed = output<void>();
