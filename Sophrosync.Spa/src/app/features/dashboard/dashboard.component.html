@@ -23,7 +23,7 @@
       </div>
       <div class="dashboard__stat-sep" aria-hidden="true"></div>
       <div class="dashboard__stat">
-        <span class="dashboard__stat-value">{{ retentionPercent() ?? 'â€”' }}</span>
+        <span class="dashboard__stat-value">{{ retentionPercent() ?? '-' }}</span>
         <span class="dashboard__stat-unit" [class.hidden]="retentionPercent() === null">%</span>
         <span class="dashboard__stat-label">Retention rate</span>
       </div>
@@ -149,7 +149,7 @@
         <h2 class="dashboard__section-title">Internal reflections</h2>
         <textarea
           class="reflections__textarea"
-          placeholder="Capture thoughts, clinical notes-to-self, or observationsâ€¦"
+          placeholder="Capture thoughts, clinical notes-to-self, or observations..."
           rows="5"
           aria-label="Internal reflections"
           [value]="reflectionText()"
@@ -184,7 +184,7 @@
         <div class="retention-stats">
           <div class="retention-stat">
             <span class="retention-stat__num">
-              {{ retentionPercent() !== null ? retentionPercent() + '%' : 'â€”' }}
+              {{ retentionPercent() !== null ? retentionPercent() + '%' : '-' }}
             </span>
             <span class="retention-stat__label">Retention rate</span>
           </div>
