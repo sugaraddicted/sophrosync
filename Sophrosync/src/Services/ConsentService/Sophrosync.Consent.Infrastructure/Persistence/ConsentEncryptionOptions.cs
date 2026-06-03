@@ -1,12 +1,12 @@
-namespace Sophrosync.Clients.Infrastructure.Persistence;
+namespace Sophrosync.Consent.Infrastructure.Persistence;
 
 /// <summary>
 /// Carries the AES-256-GCM master key used to derive per-tenant keys for PHI fields
-/// in the Clients database via HKDF (SHA-256).
-/// Registered as a singleton so <see cref="ClientsDbContext"/> can access it during
+/// in the Consent database via HKDF (SHA-256).
+/// Registered as a singleton so <see cref="ConsentDbContext"/> can access it during
 /// <c>OnModelCreating</c> without depending on <c>IConfiguration</c> directly.
 /// </summary>
-public sealed class ClientsEncryptionOptions
+public sealed class ConsentEncryptionOptions
 {
     /// <summary>
     /// Base64-encoded 32-byte AES master key. Sourced from <c>Encryption:MasterKey</c> configuration.
@@ -17,7 +17,7 @@ public sealed class ClientsEncryptionOptions
     /// </summary>
     public string MasterKey { get; }
 
-    public ClientsEncryptionOptions(string masterKey)
+    public ConsentEncryptionOptions(string masterKey)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(masterKey);
         MasterKey = masterKey;

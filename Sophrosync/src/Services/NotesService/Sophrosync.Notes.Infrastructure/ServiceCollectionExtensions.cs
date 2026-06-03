@@ -13,16 +13,16 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var encryptionKey = configuration["Encryption:NotesKey"]
-            ?? throw new InvalidOperationException("Encryption:NotesKey configuration value is required.");
+        var masterKey = configuration["Encryption:MasterKey"]
+            ?? throw new InvalidOperationException("Encryption:MasterKey configuration value is required.");
 
         services.AddDbContext<NotesDbContext>((sp, options) =>
             options.UseNpgsql(configuration.GetConnectionString("NotesDb")));
 
-        // Make the encryption key available to NotesDbContext via DI so it can construct
-        // NoteConfiguration(encryptionKey) explicitly rather than relying on
-        // ApplyConfigurationsFromAssembly (which calls the parameterless constructor with placeholder key).
-        services.AddSingleton(new NotesEncryptionOptions(encryptionKey));
+        // Make the master key available to NotesDbContext via DI. The DbContext derives a
+        // per-tenant key from this at construction time (HKDF-SHA256, tenant GUID as info)
+        // so each tenant's PHI is protected by a distinct AES-256-GCM key.
+        services.AddSingleton(new NotesEncryptionOptions(masterKey));
 
         services.AddScoped<INoteRepository, NoteRepository>();
 
