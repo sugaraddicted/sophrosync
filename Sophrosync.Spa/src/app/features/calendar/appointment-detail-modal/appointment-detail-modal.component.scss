@@ -119,6 +119,12 @@
     }
   }
 
+  &__divider {
+    border: none;
+    border-top: 1px solid var(--color-outline-variant);
+    margin: 0.75rem 0 0;
+  }
+
   &__actions {
     display: flex;
     flex-wrap: wrap;

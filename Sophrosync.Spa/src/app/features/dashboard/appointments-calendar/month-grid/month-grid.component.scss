@@ -49,6 +49,23 @@
     border-left: 2px solid var(--color-primary);
     padding: 2px 4px;
     overflow: hidden;
+
+    &--no-note {
+      background: rgba(220, 38, 38, 0.10);
+      border-left-color: #dc2626;
+    }
+    &--draft {
+      background: rgba(251, 191, 36, 0.15);
+      border-left-color: #f59e0b;
+    }
+    &--signed {
+      background: rgba(59, 130, 246, 0.12);
+      border-left-color: #3b82f6;
+    }
+    &--locked {
+      background: rgba(16, 185, 129, 0.12);
+      border-left-color: #10b981;
+    }
   }
 
   &__bar-time {

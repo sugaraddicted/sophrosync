@@ -103,6 +103,16 @@
     </div>
   }
 
+  <!-- Session note editor -->
+  @if (!pendingAction()) {
+    <hr class="modal__divider" />
+    <app-appointment-note-editor
+      [appointmentId]="appointment().id"
+      [clientId]="appointment().clientId"
+      [sessionDate]="appointment().scheduledAt"
+    />
+  }
+
   <!-- Inline reschedule form -->
   @if (pendingAction() === 'reschedule') {
     <div class="modal__inline-form">
