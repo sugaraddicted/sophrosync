@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { NotificationPreferenceDto, PracticeTargets, DEFAULT_PRACTICE_TARGETS, ProfileDto } from './settings.model';
+import { NotificationPreferenceDto, PracticeTargets, ProfileDto } from './settings.model';
 
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
@@ -26,18 +26,11 @@ export class SettingsService {
     return this.http.put<void>(this.prefsBase, prefs);
   }
 
-  private static readonly TARGETS_KEY = 'sophrosync_practice_targets';
-
-  getPracticeTargets(): PracticeTargets {
-    try {
-      const raw = localStorage.getItem(SettingsService.TARGETS_KEY);
-      return raw ? { ...DEFAULT_PRACTICE_TARGETS, ...JSON.parse(raw) } : { ...DEFAULT_PRACTICE_TARGETS };
-    } catch {
-      return { ...DEFAULT_PRACTICE_TARGETS };
-    }
+  getPracticeTargets(): Observable<PracticeTargets> {
+    return this.http.get<PracticeTargets>(`${this.identityBase}/practice-settings`);
   }
 
-  savePracticeTargets(targets: PracticeTargets): void {
-    localStorage.setItem(SettingsService.TARGETS_KEY, JSON.stringify(targets));
+  savePracticeTargets(targets: PracticeTargets): Observable<void> {
+    return this.http.put<void>(`${this.identityBase}/practice-settings`, targets);
   }
 }

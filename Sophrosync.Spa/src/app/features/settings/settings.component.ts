@@ -48,6 +48,7 @@ export class SettingsComponent implements OnInit {
     weeklySessionTarget:  new FormControl(5,  { nonNullable: true, validators: [Validators.required, Validators.min(1), Validators.max(100)] }),
     monthlySessionTarget: new FormControl(20, { nonNullable: true, validators: [Validators.required, Validators.min(1), Validators.max(500)] }),
   });
+  protected readonly isLoadingTargets = signal(false);
   protected readonly isSavingTargets = signal(false);
 
   protected readonly toast = signal<Toast | null>(null);
@@ -56,8 +57,15 @@ export class SettingsComponent implements OnInit {
   ngOnInit(): void {
     this.loadProfile();
     this.loadPreferences();
-    const targets = this.svc.getPracticeTargets();
-    this.targetsForm.patchValue(targets);
+    this.loadTargets();
+  }
+
+  protected loadTargets(): void {
+    this.isLoadingTargets.set(true);
+    this.svc.getPracticeTargets().pipe(finalize(() => this.isLoadingTargets.set(false))).subscribe({
+      next: t => this.targetsForm.patchValue(t),
+      error: () => this.showToast('Failed to load practice targets.', 'error'),
+    });
   }
 
   protected loadProfile(): void {
@@ -120,10 +128,12 @@ export class SettingsComponent implements OnInit {
   protected saveTargets(): void {
     if (this.targetsForm.invalid) { this.targetsForm.markAllAsTouched(); return; }
     this.isSavingTargets.set(true);
-    const targets: PracticeTargets = this.targetsForm.getRawValue();
-    this.svc.savePracticeTargets(targets);
-    this.isSavingTargets.set(false);
-    this.showToast('Practice targets saved.', 'success');
+    this.svc.savePracticeTargets(this.targetsForm.getRawValue()).pipe(
+      finalize(() => this.isSavingTargets.set(false))
+    ).subscribe({
+      next: () => this.showToast('Practice targets saved.', 'success'),
+      error: () => this.showToast('Failed to save targets.', 'error'),
+    });
   }
 
   private showToast(message: string, kind: 'success' | 'error'): void {

@@ -12,6 +12,7 @@ import { AuthService } from '../../core/auth/auth.service';
 import { NotesService } from '../notes/notes.service';
 import { Note } from '../notes/models/note.model';
 import { SettingsService } from '../settings/settings.service';
+import { PracticeTargets, DEFAULT_PRACTICE_TARGETS } from '../settings/settings.model';
 import { AppointmentsCalendarComponent } from './appointments-calendar/appointments-calendar.component';
 import { NextSessionCardComponent } from './next-session-card/next-session-card.component';
 import { AppointmentsService, AppointmentDto } from './appointments.service';
@@ -106,16 +107,16 @@ export class DashboardComponent implements OnInit {
     ).length;
   });
 
-  private readonly practiceTargets = this.settingsService.getPracticeTargets();
+  private readonly practiceTargets = signal<PracticeTargets>(DEFAULT_PRACTICE_TARGETS);
 
-  // Progress toward configurable weekly target (default 5)
+  // Progress toward configurable weekly target
   protected readonly weeklyHoursPercent = computed(() =>
-    Math.min(100, Math.round(this.appointmentsThisWeek() / this.practiceTargets.weeklySessionTarget * 100))
+    Math.min(100, Math.round(this.appointmentsThisWeek() / this.practiceTargets().weeklySessionTarget * 100))
   );
 
-  // Progress toward configurable monthly target (default 20)
+  // Progress toward configurable monthly target
   protected readonly monthlyTargetPercent = computed(() =>
-    Math.min(100, Math.round(this.appointmentsThisMonth() / this.practiceTargets.monthlySessionTarget * 100))
+    Math.min(100, Math.round(this.appointmentsThisMonth() / this.practiceTargets().monthlySessionTarget * 100))
   );
 
   // Retention proxy: completion rate derived from AppointmentSummaryDto
@@ -167,8 +168,10 @@ export class DashboardComponent implements OnInit {
       firstValueFrom(this.reportsService.getAppointmentSummary(startOfMonth, endOfMonth))
         .catch(() => null),
       firstValueFrom(this.notesService.getNotes()).catch(() => [] as Note[]),
+      firstValueFrom(this.settingsService.getPracticeTargets()).catch(() => DEFAULT_PRACTICE_TARGETS),
     ])
-      .then(([appts, loadedClients, summary, notes]) => {
+      .then(([appts, loadedClients, summary, notes, targets]) => {
+        this.practiceTargets.set(targets as PracticeTargets);
         // Populate raw signals so computed() signals derive live values
         this.appointments.set(appts);
         this.clients.set(loadedClients);
