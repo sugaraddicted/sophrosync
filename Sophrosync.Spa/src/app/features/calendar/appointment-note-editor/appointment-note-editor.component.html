@@ -31,8 +31,8 @@
     <!-- Existing note -->
     <div class="note-editor__header">
       <h4 class="note-editor__heading">Session Note</h4>
-      <span class="note-editor__badge note-editor__badge--{{ status()?.toLowerCase() }}">
-        {{ status() }}
+      <span class="note-editor__badge note-editor__badge--{{ status?.toLowerCase() }}">
+        {{ status }}
       </span>
       @if (saving()) {
         <span class="note-editor__saving">Saving…</span>
