@@ -13,7 +13,7 @@
       <div class="dashboard__stat">
         <span class="dashboard__stat-value">{{ weeklyHoursPercent() }}</span>
         <span class="dashboard__stat-unit">%</span>
-        <span class="dashboard__stat-label">Weekly target</span>
+        <span class="dashboard__stat-label">Weekly progress</span>
       </div>
       <div class="dashboard__stat-sep" aria-hidden="true"></div>
       <div class="dashboard__stat">
@@ -99,7 +99,7 @@
               </li>
             }
             @if (upcomingSessions().length === 0) {
-              <li class="session-row__empty">No upcoming sessions this week.</li>
+              <li class="session-row__empty">No sessions scheduled for today.</li>
             }
           </ul>
         }

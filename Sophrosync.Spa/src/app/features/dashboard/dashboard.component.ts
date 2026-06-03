@@ -132,8 +132,8 @@ export class DashboardComponent implements OnInit {
   // Active clients count
   protected readonly activeClientsCount = computed(() => this.clients().length);
 
-  // Avg engagement months - ClientDto has no createdAt, so always '-'
-  protected readonly avgEngagementMonths = '-';
+  // Avg engagement months - ClientDto has no createdAt, so always 'N/A'
+  protected readonly avgEngagementMonths = 'N/A';
 
   // Notes not locked, created > 14 days ago
   protected readonly overdueNotes = signal<Note[]>([]);

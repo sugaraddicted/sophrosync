@@ -56,6 +56,14 @@ export class NotesComponent implements OnInit {
   protected readonly statusOptions: NoteStatus[] = ['Draft', 'PendingCoSign', 'Signed', 'Locked', 'Amended'];
   protected readonly typeOptions: NoteType[] = ['DAP', 'SOAP', 'FreeForm', 'Intake', 'Treatment', 'Discharge'];
 
+  private static readonly STATUS_LABELS: Partial<Record<NoteStatus, string>> = {
+    PendingCoSign: 'Pending Co-Sign',
+  };
+
+  protected statusLabel(status: NoteStatus): string {
+    return NotesComponent.STATUS_LABELS[status] ?? status;
+  }
+
   @ViewChild(NoteFormModalComponent) private formModal?: NoteFormModalComponent;
 
   ngOnInit(): void {

@@ -102,14 +102,28 @@ export class SettingsComponent implements OnInit {
     this.svc.getPreferences().subscribe({
       next: (p) => {
         this.currentPrefs.set(p);
+        // Pre-populate emailAddress from profile when no saved address is on record
+        const savedAddress = p.emailAddress ?? '';
+        const fallbackEmail = !savedAddress ? (this.profile()?.email ?? '') : savedAddress;
         this.prefsForm.patchValue({
           inAppEnabled: p.inAppEnabled,
           emailEnabled: p.emailEnabled,
-          emailAddress: p.emailAddress ?? '',
+          emailAddress: fallbackEmail,
         });
       },
       error: () => this.showToast('Failed to load notification preferences.', 'error'),
     });
+  }
+
+  protected onEmailToggleChange(): void {
+    const enabled = this.prefsForm.controls.emailEnabled.value;
+    if (enabled && !this.prefsForm.controls.emailAddress.value) {
+      const profileEmail = this.profile()?.email ?? '';
+      if (profileEmail) {
+        this.prefsForm.controls.emailAddress.setValue(profileEmail);
+      }
+    }
+    this.savePreferences();
   }
 
   protected savePreferences(): void {
