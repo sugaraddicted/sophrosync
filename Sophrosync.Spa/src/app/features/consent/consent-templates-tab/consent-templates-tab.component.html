@@ -1,0 +1,73 @@
+@if (isLoading()) {
+  <div class="ct-tab__skeleton-wrapper" aria-busy="true" aria-label="Loading templates">
+    @for (row of [1, 2, 3]; track row) {
+      <div class="ct-tab__skeleton" aria-hidden="true"></div>
+    }
+  </div>
+} @else if (loadError()) {
+  <div class="ct-tab__error" role="alert">
+    <p>{{ loadError() }}</p>
+    <button class="ct-tab__retry-btn" type="button" (click)="loadTemplates()">Retry</button>
+  </div>
+} @else if (publishedTemplates().length === 0) {
+  <div class="ct-tab__empty" role="status">
+    <p>No published consent templates found.</p>
+  </div>
+} @else {
+  <div class="ct-tab__table-wrap">
+    <table class="ct-tab__table" aria-label="Consent templates">
+      <thead>
+        <tr>
+          <th class="ct-tab__th">Title</th>
+          <th class="ct-tab__th">Purpose</th>
+          <th class="ct-tab__th">Version</th>
+          <th class="ct-tab__th">Status</th>
+          <th class="ct-tab__th">Published</th>
+          <th class="ct-tab__th ct-tab__th--action">
+            <span class="sr-only">Actions</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (template of publishedTemplates(); track template.id) {
+          <tr class="ct-tab__row">
+            <td class="ct-tab__td ct-tab__td--title">{{ template.title }}</td>
+            <td class="ct-tab__td">{{ template.purpose }}</td>
+            <td class="ct-tab__td">v{{ template.versionNumber }}</td>
+            <td class="ct-tab__td">
+              <span class="ct-tab__badge ct-tab__badge--{{ template.status.toLowerCase() }}">
+                {{ template.status }}
+              </span>
+            </td>
+            <td class="ct-tab__td">{{ formatDate(template.publishedAt) }}</td>
+            <td class="ct-tab__td ct-tab__td--action">
+              <button
+                class="ct-tab__issue-btn"
+                type="button"
+                (click)="openIssueModal(template.id)"
+                [attr.aria-label]="'Issue consent request for ' + template.title"
+              >Issue Request</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+@if (activeTemplateId(); as tid) {
+  <app-issue-request-modal
+    [templateId]="tid"
+    (submitted)="onRequestSubmitted()"
+    (cancelled)="closeIssueModal()"
+  />
+}
+
+@if (toast(); as activeToast) {
+  <div
+    class="ct-tab__toast"
+    [class.ct-tab__toast--error]="activeToast.kind === 'error'"
+    role="status"
+    aria-live="polite"
+  >{{ activeToast.message }}</div>
+}

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { retry } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError, of } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Note, CreateNoteDto, UpdateNoteDto } from './models/note.model';
 
@@ -48,5 +48,13 @@ export class NotesService {
 
   deleteNote(id: string): Observable<void> {
     return this.http.delete<void>(`${this.base}/${id}`);
+  }
+
+  getNoteByAppointmentId(appointmentId: string): Observable<Note | null> {
+    return this.http.get<Note>(`${this.base}/by-appointment/${appointmentId}`).pipe(
+      catchError((err: HttpErrorResponse) =>
+        err.status === 404 ? of(null) : throwError(() => err)
+      )
+    );
   }
 }

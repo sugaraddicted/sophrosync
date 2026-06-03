@@ -1,0 +1,97 @@
+<div class="cr-tab__lookup">
+  <label class="cr-tab__lookup-label" for="cr-client-id">Client ID</label>
+  <div class="cr-tab__lookup-row">
+    <input
+      id="cr-client-id"
+      class="cr-tab__lookup-input"
+      type="text"
+      placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+      [ngModel]="clientIdInput()"
+      (ngModelChange)="clientIdInput.set($event)"
+      (keydown.enter)="loadRequests()"
+      aria-label="Client ID"
+      autocomplete="off"
+    />
+    <button
+      class="cr-tab__load-btn"
+      type="button"
+      (click)="loadRequests()"
+      [disabled]="isLoading() || !clientIdInput().trim()"
+    >
+      {{ isLoading() ? 'Loading…' : 'Load' }}
+    </button>
+  </div>
+</div>
+
+@if (loadError()) {
+  <div class="cr-tab__error" role="alert">
+    <p>{{ loadError() }}</p>
+    <button class="cr-tab__retry-btn" type="button" (click)="loadRequests()">Retry</button>
+  </div>
+} @else if (isLoading()) {
+  <div class="cr-tab__skeleton-wrapper" aria-busy="true" aria-label="Loading requests">
+    @for (row of [1, 2, 3]; track row) {
+      <div class="cr-tab__skeleton" aria-hidden="true"></div>
+    }
+  </div>
+} @else if (hasLoaded() && requests().length === 0) {
+  <div class="cr-tab__empty" role="status">
+    <p>No pending requests for this client.</p>
+  </div>
+} @else if (hasLoaded()) {
+  <div class="cr-tab__table-wrap">
+    <table class="cr-tab__table" aria-label="Pending consent requests">
+      <thead>
+        <tr>
+          <th class="cr-tab__th">Template ID</th>
+          <th class="cr-tab__th">Status</th>
+          <th class="cr-tab__th">Expires At</th>
+          <th class="cr-tab__th">Created At</th>
+          @if (isAdmin()) {
+            <th class="cr-tab__th cr-tab__th--action">
+              <span class="sr-only">Actions</span>
+            </th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (req of requests(); track req.id) {
+          <tr class="cr-tab__row">
+            <td class="cr-tab__td cr-tab__td--mono" [title]="req.consentTemplateId">
+              {{ truncate(req.consentTemplateId) }}
+            </td>
+            <td class="cr-tab__td">
+              <span class="cr-tab__badge cr-tab__badge--{{ req.status.toLowerCase() }}">
+                {{ req.status }}
+              </span>
+            </td>
+            <td class="cr-tab__td">{{ formatDate(req.expiresAt) }}</td>
+            <td class="cr-tab__td">{{ formatDate(req.createdAt) }}</td>
+            @if (isAdmin()) {
+              <td class="cr-tab__td cr-tab__td--action">
+                <button
+                  class="cr-tab__revoke-btn"
+                  type="button"
+                  (click)="revokeRequest(req.id)"
+                  [disabled]="revokingId() === req.id"
+                  [attr.aria-label]="'Revoke consent request ' + req.id"
+                >
+                  {{ revokingId() === req.id ? 'Revoking…' : 'Revoke' }}
+                </button>
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+@if (toast(); as activeToast) {
+  <div
+    class="cr-tab__toast"
+    [class.cr-tab__toast--error]="activeToast.kind === 'error'"
+    role="status"
+    aria-live="polite"
+  >{{ activeToast.message }}</div>
+}

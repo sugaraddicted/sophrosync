@@ -25,6 +25,7 @@ interface JwtPayload {
   family_name: string;
   roles?: string[];
   realm_access?: { roles: string[] };
+  tenant_id?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -41,6 +42,7 @@ export class AuthService {
   readonly userProfile = signal<UserProfile | null>(null);
   readonly userRoles = signal<string[]>([]);
   readonly userId = signal<string>('');
+  readonly tenantId = signal<string>('');
 
   async login(username: string, password: string): Promise<void> {
     const body = new HttpParams()
@@ -65,6 +67,7 @@ export class AuthService {
     this.userProfile.set(null);
     this.userRoles.set([]);
     this.userId.set('');
+    this.tenantId.set('');
     await this.router.navigate(['/login']);
   }
 
@@ -118,6 +121,7 @@ export class AuthService {
     });
     this.userRoles.set(payload.roles ?? payload.realm_access?.roles ?? []);
     this.userId.set(payload.sub ?? '');
+    this.tenantId.set(payload.tenant_id ?? '');
     this.isAuthenticated.set(true);
   }
 

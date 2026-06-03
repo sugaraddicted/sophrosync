@@ -12,6 +12,8 @@ import { Appointment } from '../dashboard/appointments-calendar/appointments-cal
 import { AppointmentsService, AppointmentDto, CreateAppointmentDto } from '../dashboard/appointments.service';
 import { ClientsService, ClientDto } from '../clients/clients.service';
 import { AuthService } from '../../core/auth/auth.service';
+import { NotesService } from '../notes/notes.service';
+import { NoteStatus } from '../notes/models/note.model';
 import { ScheduleAppointmentModalComponent } from './schedule-appointment-modal/schedule-appointment-modal.component';
 import { AppointmentDetailModalComponent, AppointmentAction } from './appointment-detail-modal/appointment-detail-modal.component';
 
@@ -30,6 +32,7 @@ import { AppointmentDetailModalComponent, AppointmentAction } from './appointmen
 export class CalendarComponent implements OnInit {
   private readonly appointmentsService = inject(AppointmentsService);
   private readonly clientsService = inject(ClientsService);
+  private readonly notesService = inject(NotesService);
   private readonly auth = inject(AuthService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly today = new Date();
@@ -37,6 +40,7 @@ export class CalendarComponent implements OnInit {
   readonly windowOffset = signal(0);
   readonly appointments = signal<AppointmentDto[]>([]);
   readonly clients = signal<ClientDto[]>([]);
+  private noteStatusMap = new Map<string, NoteStatus>();
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
   readonly showScheduleModal = signal(false);
@@ -99,6 +103,17 @@ export class CalendarComponent implements OnInit {
     ]).finally(() => this.cdr.markForCheck());
   }
 
+  private loadNoteStatuses(): void {
+    this.notesService.getNotes().subscribe(notes => {
+      this.noteStatusMap = new Map(
+        notes
+          .filter(n => n.appointmentId)
+          .map(n => [n.appointmentId!, n.status])
+      );
+      this.cdr.markForCheck();
+    });
+  }
+
   prev(): void {
     this.windowOffset.update(v => v - 1);
     this.loadCurrentMonth();
@@ -120,7 +135,10 @@ export class CalendarComponent implements OnInit {
     this.loading.set(true);
     this.error.set(null);
     return this.appointmentsService.getByDateRange(from, to)
-      .then(dtos => { this.appointments.set(dtos); })
+      .then(dtos => {
+        this.appointments.set(dtos);
+        this.loadNoteStatuses();
+      })
       .catch(() => { this.error.set('Failed to load appointments'); })
       .finally(() => { this.loading.set(false); });
   }
@@ -132,11 +150,17 @@ export class CalendarComponent implements OnInit {
     const typeLabels: Record<string, string> = {
       InPerson: 'In Person', Video: 'Video Call', Phone: 'Phone Call',
     };
+    const rawStatus = this.noteStatusMap.get(dto.id);
+    const noteStatus: Appointment['noteStatus'] =
+      rawStatus === 'Draft' || rawStatus === 'Signed' || rawStatus === 'Locked'
+        ? rawStatus
+        : 'none';
     return {
       id: dto.id,
       day: d.getDate(),
       time: `${hours}:${minutes}`,
       client: typeLabels[dto.type] ?? dto.type,
+      noteStatus,
     };
   }
 

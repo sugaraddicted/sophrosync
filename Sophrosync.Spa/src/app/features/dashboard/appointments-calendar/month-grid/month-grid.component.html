@@ -20,6 +20,10 @@
         @for (appt of dayMap().get(day) ?? []; track $index) {
           <div
             class="month-card__bar"
+            [class.month-card__bar--no-note]="!appt.noteStatus || appt.noteStatus === 'none'"
+            [class.month-card__bar--draft]="appt.noteStatus === 'Draft'"
+            [class.month-card__bar--signed]="appt.noteStatus === 'Signed'"
+            [class.month-card__bar--locked]="appt.noteStatus === 'Locked'"
             (click)="onApptClick($event, appt)"
             (keydown.enter)="onApptClick($event, appt)"
             tabindex="0"

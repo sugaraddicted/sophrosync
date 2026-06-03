@@ -1,0 +1,217 @@
+﻿services:
+
+  # â”€â”€ Infrastructure (always up) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: sophrosync
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: postgres
+      CLIENTS_DB_PASSWORD: ${CLIENTS_DB_PASSWORD}
+      CONSENT_DB_PASSWORD: ${CONSENT_DB_PASSWORD}
+      IDENTITY_DB_PASSWORD: ${IDENTITY_DB_PASSWORD}
+      NOTES_DB_PASSWORD: ${NOTES_DB_PASSWORD}
+      NOTIFICATIONS_DB_PASSWORD: ${NOTIFICATIONS_DB_PASSWORD}
+      REPORTING_DB_PASSWORD: ${REPORTING_DB_PASSWORD}
+      SCHEDULE_DB_PASSWORD: ${SCHEDULE_DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init.sh:/docker-entrypoint-initdb.d/init.sh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sophrosync -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    command: start-dev --import-realm
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import
+      - ./keycloak/themes:/opt/keycloak/themes
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9000/health/ready || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  # â”€â”€ Application services (opt-in via profiles) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  #
+  # Usage:
+  #   docker compose --profile clients       up -d   # ClientService (5001)
+  #   docker compose --profile identity      up -d   # IdentityService (5005)
+  #   docker compose --profile schedule      up -d   # ScheduleService (5002)
+  #   docker compose --profile notes         up -d   # NotesService (5003)
+  #   docker compose --profile consent       up -d   # ConsentService (5006)
+  #   docker compose --profile notifications up -d   # NotificationService (5007)
+  #   docker compose --profile reporting     up -d   # ReportingService (5008)
+  #   docker compose --profile gateway       up -d   # YARP Gateway (5000)
+  #   docker compose --profile services      up -d   # all of the above
+  #
+  # When debugging a service in VS, simply omit its profile â€” it runs on the
+  # same host port so the SPA proxy and other services reach it identically.
+
+  clients-service:
+    profiles: ["clients", "services"]
+    build:
+      context: .
+      dockerfile: src/Services/ClientService/Sophrosync.Clients.API/Dockerfile
+    ports:
+      - "5001:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__ClientsDb: "Host=postgres;Port=5432;Database=sophrosync_clients;Username=svc_clients;Password=${CLIENTS_DB_PASSWORD}"
+      Encryption__ClientsKey: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      Keycloak__Authority: "http://keycloak:8080/realms/sophrosync"
+      Keycloak__Audience: "sophrosync-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  identity-service:
+    profiles: ["identity", "services"]
+    build:
+      context: .
+      dockerfile: src/Services/IdentityService/Sophrosync.Identity.API/Dockerfile
+    ports:
+      - "5005:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__IdentityDb: "Host=postgres;Port=5432;Database=sophrosync_identity;Username=svc_identity;Password=${IDENTITY_DB_PASSWORD}"
+      Keycloak__Authority: "http://keycloak:8080/realms/sophrosync"
+      Keycloak__Audience: "sophrosync-gateway"
+      Keycloak__BaseUrl: "http://keycloak:8080"
+      Keycloak__Realm: "sophrosync"
+      Keycloak__AdminClientId: "sophrosync-admin"
+      Keycloak__AdminClientSecret: "${KEYCLOAK_ADMIN_CLIENT_SECRET}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  schedule-service:
+    profiles: ["schedule", "services"]
+    build:
+      context: .
+      dockerfile: src/Services/ScheduleService/Sophrosync.Schedule.API/Dockerfile
+    ports:
+      - "5002:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__ScheduleDb: "Host=postgres;Port=5432;Database=sophrosync_schedule;Username=svc_schedule;Password=${SCHEDULE_DB_PASSWORD}"
+      Keycloak__Authority: "http://keycloak:8080/realms/sophrosync"
+      Keycloak__Audience: "sophrosync-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  notes-service:
+    profiles: ["notes", "services"]
+    build:
+      context: .
+      dockerfile: src/Services/NotesService/Sophrosync.Notes.API/Dockerfile
+    ports:
+      - "5003:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__NotesDb: "Host=postgres;Port=5432;Database=sophrosync_notes;Username=svc_notes;Password=${NOTES_DB_PASSWORD}"
+      Encryption__NotesKey: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      Keycloak__Authority: "http://keycloak:8080/realms/sophrosync"
+      Keycloak__Audience: "sophrosync-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  consent-service:
+    profiles: ["consent", "services"]
+    build:
+      context: .
+      dockerfile: src/Services/ConsentService/Sophrosync.Consent.API/Dockerfile
+    ports:
+      - "5006:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__ConsentDb: "Host=postgres;Port=5432;Database=sophrosync_consent;Username=svc_consent;Password=${CONSENT_DB_PASSWORD}"
+      Keycloak__Authority: "http://keycloak:8080/realms/sophrosync"
+      Keycloak__Audience: "sophrosync-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  notifications-service:
+    profiles: ["notifications", "services"]
+    build:
+      context: .
+      dockerfile: src/Services/NotificationService/Sophrosync.Notifications.API/Dockerfile
+    ports:
+      - "5007:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__NotificationsDb: "Host=postgres;Port=5432;Database=sophrosync_notifications;Username=svc_notifications;Password=${NOTIFICATIONS_DB_PASSWORD}"
+      Smtp__Host: mailhog
+      Smtp__Port: "1025"
+      Keycloak__Authority: "http://keycloak:8080/realms/sophrosync"
+      Keycloak__Audience: "sophrosync-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+
+  reporting-service:
+    profiles: ["reporting", "services"]
+    build:
+      context: .
+      dockerfile: src/Services/ReportingService/Sophrosync.Reporting.API/Dockerfile
+    ports:
+      - "5008:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__ReportingDb: "Host=postgres;Port=5432;Database=sophrosync_reporting;Username=svc_reporting;Password=${REPORTING_DB_PASSWORD}"
+      Keycloak__Authority: "http://keycloak:8080/realms/sophrosync"
+      Keycloak__Audience: "sophrosync-gateway"
+      ServiceUrls__ClientService: "http://clients-service:8080/"
+      ServiceUrls__ScheduleService: "http://schedule-service:8080/"
+      ServiceUrls__NotesService: "http://notes-service:8080/"
+      ServiceUrls__ConsentService: "http://consent-service:8080/"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  gateway:
+    profiles: ["gateway", "services"]
+    build:
+      context: .
+      dockerfile: src/Gateway/Sophrosync.Gateway/Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Keycloak__Authority: "http://keycloak:8080/realms/sophrosync"
+      Keycloak__Audience: "sophrosync-gateway"
+      # Point clusters at host machine services (VS debug or other containers via host port)
+      ReverseProxy__Clusters__clients-cluster__Destinations__clients-service__Address: "http://host.docker.internal:5001/"
+      ReverseProxy__Clusters__notes-cluster__Destinations__notes-service__Address: "http://host.docker.internal:5003/"
+    depends_on:
+      keycloak:
+        condition: service_started
+
+volumes:
+  postgres_data:

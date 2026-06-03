@@ -1,0 +1,103 @@
+@if (toast(); as t) {
+  <div class="ch-tab__toast ch-tab__toast--{{ t.kind }}" role="status">{{ t.message }}</div>
+}
+
+<div class="ch-tab__lookup">
+  <label class="ch-tab__lookup-label" for="ch-client-id">Client ID</label>
+  <div class="ch-tab__lookup-row">
+    <input
+      id="ch-client-id"
+      class="ch-tab__lookup-input"
+      type="text"
+      placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+      [ngModel]="clientIdInput()"
+      (ngModelChange)="clientIdInput.set($event)"
+      (keydown.enter)="loadHistory()"
+      aria-label="Client ID"
+      autocomplete="off"
+    />
+    <button
+      class="ch-tab__load-btn"
+      type="button"
+      (click)="loadHistory()"
+      [disabled]="isLoading() || !clientIdInput().trim()"
+    >
+      {{ isLoading() ? 'Loading…' : 'Load' }}
+    </button>
+  </div>
+</div>
+
+@if (loadError()) {
+  <div class="ch-tab__error" role="alert">
+    <p>{{ loadError() }}</p>
+    <button class="ch-tab__retry-btn" type="button" (click)="loadHistory()">Retry</button>
+  </div>
+} @else if (isLoading()) {
+  <div class="ch-tab__skeleton-wrapper" aria-busy="true" aria-label="Loading history">
+    @for (row of [1, 2, 3]; track row) {
+      <div class="ch-tab__skeleton" aria-hidden="true"></div>
+    }
+  </div>
+} @else if (hasLoaded() && records().length === 0) {
+  <div class="ch-tab__empty" role="status">
+    <p>No consent history found for this client.</p>
+  </div>
+} @else if (hasLoaded()) {
+  <div class="ch-tab__table-wrap">
+    <table class="ch-tab__table" aria-label="Consent history">
+      <thead>
+        <tr>
+          <th class="ch-tab__th">Purpose</th>
+          <th class="ch-tab__th">Action</th>
+          <th class="ch-tab__th">Version</th>
+          <th class="ch-tab__th">Date</th>
+          <th class="ch-tab__th">Document</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (record of records(); track record.id) {
+          <tr class="ch-tab__row">
+            <td class="ch-tab__td">{{ record.purpose }}</td>
+            <td class="ch-tab__td">
+              <span class="ch-tab__badge ch-tab__badge--{{ record.action.toLowerCase() }}">
+                {{ record.action }}
+              </span>
+            </td>
+            <td class="ch-tab__td">v{{ record.templateVersion }}</td>
+            <td class="ch-tab__td">{{ formatDate(record.createdAt) }}</td>
+            <td class="ch-tab__td ch-tab__td--doc">
+              @if (record.documentFileName) {
+                <a
+                  class="ch-tab__doc-link"
+                  [href]="documentUrl(record.id)"
+                  target="_blank"
+                  rel="noopener"
+                  [title]="record.documentFileName"
+                >
+                  <span class="material-symbols-outlined" aria-hidden="true">attach_file</span>
+                  {{ record.documentFileName }}
+                </a>
+              }
+              <label
+                class="ch-tab__attach-btn"
+                [class.ch-tab__attach-btn--loading]="uploadingFor() === record.id"
+                [title]="record.documentFileName ? 'Replace document' : 'Attach signed paper'"
+              >
+                <input
+                  type="file"
+                  class="ch-tab__file-input"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  (change)="onFileSelected($event, record.id)"
+                  [disabled]="uploadingFor() === record.id"
+                />
+                <span class="material-symbols-outlined" aria-hidden="true">
+                  {{ uploadingFor() === record.id ? 'hourglass_top' : 'upload_file' }}
+                </span>
+              </label>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

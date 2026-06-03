@@ -35,6 +35,36 @@
     "changeOrigin": true,
     "logLevel": "debug"
   },
+  "/api/consent-records": {
+    "target": "http://localhost:5006",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/api/consent-templates": {
+    "target": "http://localhost:5006",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/api/consent-requests": {
+    "target": "http://localhost:5006",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/api/reports": {
+    "target": "http://localhost:5008",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/api/availability": {
+    "target": "http://localhost:5002",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
   "/api": {
     "target": "http://localhost:60228",
     "secure": false,

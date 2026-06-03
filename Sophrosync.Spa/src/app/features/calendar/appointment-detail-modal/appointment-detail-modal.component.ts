@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AppointmentDto } from '../../dashboard/appointments.service';
+import { AppointmentNoteEditorComponent } from '../appointment-note-editor/appointment-note-editor.component';
 
 export type AppointmentAction =
   | { type: 'confirm' }
@@ -17,7 +18,7 @@ export type AppointmentAction =
 @Component({
   selector: 'app-appointment-detail-modal',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, AppointmentNoteEditorComponent],
   templateUrl: './appointment-detail-modal.component.html',
   styleUrl: './appointment-detail-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

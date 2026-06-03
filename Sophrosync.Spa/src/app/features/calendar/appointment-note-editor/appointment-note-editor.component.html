@@ -1,0 +1,74 @@
+<div class="note-editor">
+  @if (loading()) {
+    <p class="note-editor__loading">Loading note…</p>
+  } @else if (error()) {
+    <p class="note-editor__error">{{ error() }}</p>
+  } @else if (!hasNote) {
+    <!-- No note yet — create form -->
+    <div class="note-editor__create">
+      <h4 class="note-editor__heading">Session Note</h4>
+      <input
+        class="note-editor__title-input"
+        type="text"
+        placeholder="Title (optional)"
+        [(ngModel)]="title"
+      />
+      <textarea
+        class="note-editor__content"
+        placeholder="Write your session note…"
+        rows="6"
+        [(ngModel)]="content"
+      ></textarea>
+      <button
+        class="note-editor__btn note-editor__btn--primary"
+        [disabled]="saving() || !content.trim()"
+        (click)="onCreate()"
+      >
+        {{ saving() ? 'Saving…' : 'Create Note' }}
+      </button>
+    </div>
+  } @else {
+    <!-- Existing note -->
+    <div class="note-editor__header">
+      <h4 class="note-editor__heading">Session Note</h4>
+      <span class="note-editor__badge note-editor__badge--{{ status?.toLowerCase() }}">
+        {{ status }}
+      </span>
+      @if (saving()) {
+        <span class="note-editor__saving">Saving…</span>
+      }
+    </div>
+
+    @if (canEdit) {
+      <input
+        class="note-editor__title-input"
+        type="text"
+        placeholder="Title"
+        [(ngModel)]="title"
+        (ngModelChange)="onContentChange()"
+      />
+      <textarea
+        class="note-editor__content"
+        rows="6"
+        [(ngModel)]="content"
+        (ngModelChange)="onContentChange()"
+      ></textarea>
+      <div class="note-editor__actions">
+        <button class="note-editor__btn note-editor__btn--secondary" (click)="onSign()">
+          Sign
+        </button>
+      </div>
+    } @else {
+      <!-- Read-only: Signed or Locked -->
+      <p class="note-editor__title-ro">{{ note()?.title }}</p>
+      <pre class="note-editor__content-ro">{{ note()?.content }}</pre>
+      @if (isSigned) {
+        <div class="note-editor__actions">
+          <button class="note-editor__btn note-editor__btn--secondary" (click)="onLock()">
+            Lock
+          </button>
+        </div>
+      }
+    }
+  }
+</div>

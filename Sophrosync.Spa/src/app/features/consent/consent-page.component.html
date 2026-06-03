@@ -1,0 +1,54 @@
+<div class="consent-page">
+  <div class="consent-page__header">
+    <h2 class="consent-page__heading">Consent Management</h2>
+  </div>
+
+  <nav class="consent-page__tabs" role="tablist" aria-label="Consent management tabs">
+    @for (tab of tabs; track tab.id) {
+      <button
+        class="consent-page__tab-btn"
+        [class.consent-page__tab-btn--active]="activeTab() === tab.id"
+        role="tab"
+        type="button"
+        [attr.aria-selected]="activeTab() === tab.id"
+        [attr.aria-controls]="'tabpanel-' + tab.id"
+        [id]="'tab-' + tab.id"
+        (click)="setTab(tab.id)"
+      >{{ tab.label }}</button>
+    }
+  </nav>
+
+  <div class="consent-page__panel">
+    @if (activeTab() === 'templates') {
+      <div
+        id="tabpanel-templates"
+        role="tabpanel"
+        aria-labelledby="tab-templates"
+      >
+        <app-consent-templates-tab
+          (requestIssued)="onRequestIssued()"
+        />
+      </div>
+    }
+
+    @if (activeTab() === 'pending') {
+      <div
+        id="tabpanel-pending"
+        role="tabpanel"
+        aria-labelledby="tab-pending"
+      >
+        <app-consent-requests-tab />
+      </div>
+    }
+
+    @if (activeTab() === 'history') {
+      <div
+        id="tabpanel-history"
+        role="tabpanel"
+        aria-labelledby="tab-history"
+      >
+        <app-consent-history-tab />
+      </div>
+    }
+  </div>
+</div>

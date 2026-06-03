@@ -1,0 +1,51 @@
+<section class="breakdown-table" aria-label="Appointment breakdown">
+  <h3 class="breakdown-table__heading">Appointment Breakdown</h3>
+
+  @if (summary()) {
+    <table class="breakdown-table__table" aria-label="Appointment counts by metric">
+      <thead>
+        <tr>
+          <th scope="col" class="breakdown-table__th">Metric</th>
+          <th scope="col" class="breakdown-table__th breakdown-table__th--right">Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="breakdown-table__row">
+          <td class="breakdown-table__td">Total Scheduled</td>
+          <td class="breakdown-table__td breakdown-table__td--right breakdown-table__td--value">
+            {{ summary()!.totalScheduled }}
+          </td>
+        </tr>
+        <tr class="breakdown-table__row breakdown-table__row--alt">
+          <td class="breakdown-table__td">
+            <span class="breakdown-table__dot breakdown-table__dot--completed" aria-hidden="true"></span>
+            Completed
+          </td>
+          <td class="breakdown-table__td breakdown-table__td--right breakdown-table__td--value">
+            {{ summary()!.totalCompleted }}
+          </td>
+        </tr>
+        <tr class="breakdown-table__row">
+          <td class="breakdown-table__td">
+            <span class="breakdown-table__dot breakdown-table__dot--cancelled" aria-hidden="true"></span>
+            Cancelled
+          </td>
+          <td class="breakdown-table__td breakdown-table__td--right breakdown-table__td--value">
+            {{ summary()!.totalCancelled }}
+          </td>
+        </tr>
+        <tr class="breakdown-table__row breakdown-table__row--alt">
+          <td class="breakdown-table__td">
+            <span class="breakdown-table__dot breakdown-table__dot--noshow" aria-hidden="true"></span>
+            No-Show
+          </td>
+          <td class="breakdown-table__td breakdown-table__td--right breakdown-table__td--value">
+            {{ summary()!.totalNoShow }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  } @else {
+    <p class="breakdown-table__empty">No appointment data available for this period.</p>
+  }
+</section>

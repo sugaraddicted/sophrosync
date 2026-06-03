@@ -70,6 +70,20 @@ export const routes: Routes = [
             (m) => m.SettingsComponent
           ),
       },
+      {
+        path: 'consent',
+        loadComponent: () =>
+          import('./features/consent/consent-page.component').then(
+            (m) => m.ConsentPageComponent
+          ),
+      },
+      {
+        path: 'reports',
+        loadComponent: () =>
+          import('./features/reports/reports-page/reports-page.component').then(
+            (m) => m.ReportsPageComponent
+          ),
+      },
     ],
   },
   { path: '**', redirectTo: 'dashboard' },
