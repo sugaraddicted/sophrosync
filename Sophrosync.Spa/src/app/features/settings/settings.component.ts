@@ -8,6 +8,7 @@ import {
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { SettingsService } from './settings.service';
+import { AuthService } from '../../core/auth/auth.service';
 import { NotificationPreferenceDto, PracticeTargets, ProfileDto } from './settings.model';
 
 type Toast = { message: string; kind: 'success' | 'error' };
@@ -22,6 +23,7 @@ type Toast = { message: string; kind: 'success' | 'error' };
 })
 export class SettingsComponent implements OnInit {
   private readonly svc = inject(SettingsService);
+  private readonly auth = inject(AuthService);
 
   // Profile state
   protected readonly profile = signal<ProfileDto | null>(null);
@@ -87,7 +89,11 @@ export class SettingsComponent implements OnInit {
     this.svc.updateProfile(firstName, lastName).pipe(
       finalize(() => { this.isSavingProfile.set(false); this.profileForm.enable(); })
     ).subscribe({
-      next: (p) => { this.profile.set(p); this.showToast('Profile updated.', 'success'); },
+      next: (p) => {
+        this.profile.set(p);
+        this.auth.updateDisplayName(p.firstName, p.lastName);
+        this.showToast('Profile updated.', 'success');
+      },
       error: () => this.showToast('Failed to update profile.', 'error'),
     });
   }
