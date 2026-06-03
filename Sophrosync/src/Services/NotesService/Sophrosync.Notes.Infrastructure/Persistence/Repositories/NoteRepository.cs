@@ -21,6 +21,10 @@ public sealed class NoteRepository(NotesDbContext context) : INoteRepository
             .OrderByDescending(n => n.CreatedAt)
             .ToListAsync(ct);
 
+    public async Task<Note?> GetByAppointmentIdAsync(Guid appointmentId, CancellationToken ct = default)
+        => await context.Notes
+            .FirstOrDefaultAsync(n => n.AppointmentId == appointmentId, ct);
+
     public async Task<Note> AddAsync(Note note, CancellationToken ct = default)
     {
         await context.Notes.AddAsync(note, ct);

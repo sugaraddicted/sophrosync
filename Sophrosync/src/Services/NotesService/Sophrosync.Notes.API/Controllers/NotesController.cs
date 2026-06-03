@@ -10,6 +10,7 @@ using Sophrosync.Notes.Application.Commands.SignNote;
 using Sophrosync.Notes.Application.Commands.UpdateNote;
 using Sophrosync.Notes.Application.Queries.GetNoteById;
 using Sophrosync.Notes.Application.Queries.GetNotes;
+using Sophrosync.Notes.Application.Queries.GetNoteByAppointmentId;
 using Sophrosync.Notes.Application.Queries.GetNotesByClientId;
 
 namespace Sophrosync.Notes.API.Controllers;
@@ -36,6 +37,13 @@ public sealed class NotesController(IMediator mediator) : ControllerBase
     [HttpGet("client/{clientId:guid}")]
     public async Task<IActionResult> GetByClientId(Guid clientId, CancellationToken ct = default)
         => Ok(await mediator.Send(new GetNotesByClientIdQuery(clientId), ct));
+
+    [HttpGet("by-appointment/{appointmentId:guid}")]
+    public async Task<IActionResult> GetByAppointmentId(Guid appointmentId, CancellationToken ct = default)
+    {
+        var result = await mediator.Send(new GetNoteByAppointmentIdQuery(appointmentId), ct);
+        return result is null ? NotFound() : Ok(result);
+    }
 
     [HttpPost]
     [Authorize(Policy = "CanManageNotes")]

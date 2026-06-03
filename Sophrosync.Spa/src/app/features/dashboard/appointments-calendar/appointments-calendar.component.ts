@@ -15,6 +15,7 @@ export interface Appointment {
   day: number;
   time: string;   // "HH:MM"
   client: string;
+  noteStatus?: 'none' | 'Draft' | 'Signed' | 'Locked';
 }
 
 interface MonthDescriptor {

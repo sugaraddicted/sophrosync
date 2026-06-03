@@ -22,6 +22,9 @@ public interface INoteRepository
     /// </summary>
     Task<List<Note>> GetByClientIdAsync(Guid clientId, CancellationToken ct = default);
 
+    /// <summary>Returns the note linked to the given appointment, or null.</summary>
+    Task<Note?> GetByAppointmentIdAsync(Guid appointmentId, CancellationToken ct = default);
+
     /// <summary>
     /// Adds a new Note to the change tracker and returns it.
     /// Caller must invoke <see cref="SaveChangesAsync"/> to persist.

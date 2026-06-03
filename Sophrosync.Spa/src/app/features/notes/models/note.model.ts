@@ -4,6 +4,7 @@ export type NoteStatus = 'Draft' | 'PendingCoSign' | 'Signed' | 'Locked' | 'Amen
 export interface Note {
   id: string;
   clientId: string;
+  appointmentId?: string;
   therapistId: string;
   type: NoteType;
   title: string;
