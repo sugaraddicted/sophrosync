@@ -9,6 +9,7 @@ public sealed class IdentityDbContext(DbContextOptions<IdentityDbContext> option
 {
     public DbSet<Tenant> Tenants => Set<Tenant>();
     public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
+    public DbSet<PracticeSettings> PracticeSettings => Set<PracticeSettings>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -31,6 +32,15 @@ public sealed class IdentityDbContext(DbContextOptions<IdentityDbContext> option
             b.Property(p => p.LastName).IsRequired().HasMaxLength(100);
             b.Property(p => p.Role).IsRequired().HasMaxLength(50);
             b.HasQueryFilter(p => !p.IsDeleted);
+        });
+
+        modelBuilder.Entity<PracticeSettings>(b =>
+        {
+            b.ToTable("practice_settings");
+            b.HasKey(p => p.Id);
+            b.HasIndex(p => p.TenantId).IsUnique();
+            b.Property(p => p.WeeklySessionTarget).IsRequired();
+            b.Property(p => p.MonthlySessionTarget).IsRequired();
         });
 
         base.OnModelCreating(modelBuilder);

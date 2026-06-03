@@ -7,5 +7,6 @@ public interface IIdentityDbContext
 {
     DbSet<Tenant> Tenants { get; }
     DbSet<UserProfile> UserProfiles { get; }
+    DbSet<PracticeSettings> PracticeSettings { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

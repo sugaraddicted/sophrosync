@@ -1,6 +1,6 @@
-<div class="dashboard">
+﻿<div class="dashboard">
 
-  <!-- ── Editorial Hero ─────────────────────────────────────────────── -->
+  <!-- â”€â”€ Editorial Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="dashboard__hero">
     <div class="dashboard__hero-content">
       <p class="dashboard__date">{{ formattedDate }}</p>
@@ -23,14 +23,14 @@
       </div>
       <div class="dashboard__stat-sep" aria-hidden="true"></div>
       <div class="dashboard__stat">
-        <span class="dashboard__stat-value">{{ retentionPercent() ?? '—' }}</span>
+        <span class="dashboard__stat-value">{{ retentionPercent() ?? '-' }}</span>
         <span class="dashboard__stat-unit" [class.hidden]="retentionPercent() === null">%</span>
         <span class="dashboard__stat-label">Retention rate</span>
       </div>
     </div>
   </div>
 
-  <!-- ── Bento Grid ─────────────────────────────────────────────────── -->
+  <!-- â”€â”€ Bento Grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="dashboard__bento">
 
     <!-- LEFT: col-span-8 -->
@@ -43,7 +43,11 @@
         </div>
         <div class="week-strip__days">
           @for (day of weekDays(); track day.label) {
-            <div class="week-strip__day" [class.week-strip__day--today]="day.isToday">
+            <div class="week-strip__day" [class.week-strip__day--today]="day.isToday"
+            role="button" tabindex="0"
+            (click)="onWeekDayClick()"
+            (keydown.enter)="onWeekDayClick()"
+            aria-label="Go to calendar">
               <span class="week-strip__day-name">{{ day.label }}</span>
               <span class="week-strip__day-num">{{ day.date }}</span>
               @if (day.hasSessions) {
@@ -112,7 +116,7 @@
       <!-- Practice Velocity card -->
       <div class="dashboard__velocity">
         <h2 class="dashboard__velocity-title">Practice Velocity</h2>
-        <p class="dashboard__velocity-sub">March 2026</p>
+        <p class="dashboard__velocity-sub">{{ currentMonthLabel() }}</p>
 
         <div class="velocity-stat">
           <div class="velocity-stat__row">
@@ -145,7 +149,7 @@
         <h2 class="dashboard__section-title">Internal reflections</h2>
         <textarea
           class="reflections__textarea"
-          placeholder="Capture thoughts, clinical notes-to-self, or observations…"
+          placeholder="Capture thoughts, clinical notes-to-self, or observations..."
           rows="5"
           aria-label="Internal reflections"
           [value]="reflectionText()"
@@ -153,13 +157,34 @@
         ></textarea>
       </div>
 
+      <!-- Overdue Notes -->
+      @if (overdueNotes().length > 0) {
+        <div class="dashboard__overdue">
+          <h2 class="dashboard__section-title">
+            Overdue Notes
+            <span class="overdue-badge">{{ overdueNotes().length }}</span>
+          </h2>
+          <ul class="overdue-list">
+            @for (note of overdueNotes(); track note.id) {
+              <li class="overdue-item" [class.overdue-item--urgent]="isUrgentNote(note)">
+                <span class="overdue-item__title">{{ note.title || '(Untitled)' }}</span>
+                <span class="overdue-item__status">{{ note.status }}</span>
+                @if (isUrgentNote(note)) {
+                  <span class="overdue-item__urgent" aria-label="Urgent">!</span>
+                }
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
       <!-- Patient Retention -->
       <div class="dashboard__retention">
         <h2 class="dashboard__section-title">Patient retention</h2>
         <div class="retention-stats">
           <div class="retention-stat">
             <span class="retention-stat__num">
-              {{ retentionPercent() !== null ? retentionPercent() + '%' : '—' }}
+              {{ retentionPercent() !== null ? retentionPercent() + '%' : '-' }}
             </span>
             <span class="retention-stat__label">Retention rate</span>
           </div>

@@ -1,9 +1,9 @@
-@use 'styles/mixins' as *;
+﻿@use 'styles/mixins' as *;
 
 .dashboard {
   max-width: 1440px;
 
-  // ── Editorial hero ────────────────────────────────────────────────
+  // â”€â”€ Editorial hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   &__hero {
     display: flex;
     flex-direction: column;
@@ -41,7 +41,7 @@
     font-weight: 300;
   }
 
-  // ── Practice stats strip ──────────────────────────────────────────
+  // â”€â”€ Practice stats strip â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   &__stats {
     display: flex;
     align-items: center;
@@ -99,7 +99,7 @@
     flex-shrink: 0;
   }
 
-  // ── Bento grid ────────────────────────────────────────────────────
+  // â”€â”€ Bento grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   &__bento {
     display: grid;
     grid-template-columns: 1fr 320px;
@@ -121,7 +121,7 @@
     min-width: 0;
   }
 
-  // ── Week strip ───────────────────────────────────────────────────
+  // â”€â”€ Week strip â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   &__week-strip {
     background: var(--color-surface-container-lowest);
     border-radius: var(--radius-lg);
@@ -129,7 +129,7 @@
     padding: 1.5rem 2rem;
   }
 
-  // ── Section titles ───────────────────────────────────────────────
+  // â”€â”€ Section titles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   &__section-title {
     margin: 0 0 1rem;
     font-size: 0.6875rem;
@@ -139,7 +139,7 @@
     color: var(--color-on-surface-variant);
   }
 
-  // ── Upcoming sessions ────────────────────────────────────────────
+  // â”€â”€ Upcoming sessions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   &__upcoming {
     background: var(--color-surface-container-lowest);
     border-radius: var(--radius-lg);
@@ -178,7 +178,7 @@
     &:hover { opacity: 0.75; }
   }
 
-  // ── Practice Velocity ────────────────────────────────────────────
+  // â”€â”€ Practice Velocity â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   &__velocity {
     background: linear-gradient(135deg, var(--color-primary) 0%, #3d4e3f 100%);
     border-radius: var(--radius-lg);
@@ -216,7 +216,7 @@
     letter-spacing: 0.1em;
   }
 
-  // ── Reflections ──────────────────────────────────────────────────
+  // â”€â”€ Reflections â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   &__reflections {
     background: rgba(249, 249, 247, 0.7);
     backdrop-filter: blur(12px);
@@ -226,15 +226,89 @@
     padding: 1.5rem;
   }
 
-  // ── Retention ────────────────────────────────────────────────────
+  // â”€â”€ Retention â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   &__retention {
     background: var(--color-surface-container-low);
     border-radius: var(--radius-lg);
     padding: 1.5rem;
   }
+
+  &__overdue {
+    background: var(--color-surface-container-low);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+  }
+}
+// ── Overdue notes widget ──────────────────────────────────────────────
+
+.overdue-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.25rem;
+  border-radius: 999px;
+  background: var(--color-error, #dc2626);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  margin-left: 0.375rem;
+  vertical-align: middle;
 }
 
-// ── Week strip internals ──────────────────────────────────────────────
+.overdue-list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.overdue-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.5rem;
+  border-radius: 6px;
+  background: var(--color-surface-container);
+  font-size: 0.8125rem;
+
+  &--urgent {
+    border-left: 3px solid var(--color-error, #dc2626);
+  }
+
+  &__title {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--color-on-surface);
+  }
+
+  &__status {
+    font-size: 0.6875rem;
+    color: var(--color-on-surface-variant);
+    white-space: nowrap;
+  }
+
+  &__urgent {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: var(--color-error, #dc2626);
+    color: #fff;
+    font-size: 0.625rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+}
+
+// â”€â”€ Week strip internals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 .week-strip {
   &__header {
@@ -263,6 +337,8 @@
     padding: 0.625rem 0.25rem;
     border-radius: var(--radius-DEFAULT);
     transition: background 0.15s ease;
+    cursor: pointer;
+    &:hover { background: var(--color-surface-container); }
 
     &--today {
       background: var(--color-primary-fixed);
@@ -301,7 +377,7 @@
   }
 }
 
-// ── Sessions list ──────────────────────────────────────────────────────
+// â”€â”€ Sessions list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 .sessions-list {
   list-style: none;
@@ -312,7 +388,7 @@
   gap: 0.75rem;
 }
 
-// ── Session row ────────────────────────────────────────────────────────
+// â”€â”€ Session row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 .session-row {
   display: flex;
@@ -434,7 +510,7 @@
   50%       { opacity: 0.4; }
 }
 
-// ── Velocity card internals ──────────────────────────────────────────────
+// â”€â”€ Velocity card internals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 .velocity-stat {
   margin-bottom: 1rem;
@@ -493,7 +569,7 @@
   }
 }
 
-// ── Reflections textarea ────────────────────────────────────────────────
+// â”€â”€ Reflections textarea â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 .reflections__textarea {
   width: 100%;
@@ -511,7 +587,7 @@
   }
 }
 
-// ── Retention stats ──────────────────────────────────────────────────────
+// â”€â”€ Retention stats â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 .retention-stats {
   display: grid;

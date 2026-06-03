@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { NotificationPreferenceDto, ProfileDto } from './settings.model';
+import { NotificationPreferenceDto, PracticeTargets, ProfileDto } from './settings.model';
 
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
@@ -24,5 +24,13 @@ export class SettingsService {
 
   updatePreferences(prefs: NotificationPreferenceDto): Observable<void> {
     return this.http.put<void>(this.prefsBase, prefs);
+  }
+
+  getPracticeTargets(): Observable<PracticeTargets> {
+    return this.http.get<PracticeTargets>(`${this.identityBase}/practice-settings`);
+  }
+
+  savePracticeTargets(targets: PracticeTargets): Observable<void> {
+    return this.http.put<void>(`${this.identityBase}/practice-settings`, targets);
   }
 }
