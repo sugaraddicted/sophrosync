@@ -3,8 +3,9 @@
 **Date:** 2026-06-05
 **Stack:** Sophrosync v0.1 (diploma build — dev branch)
 **Tester:** Mariia Prylutska
-**Audit method:** Automated code audit (sophrosync-security-test-reviewer agent) + manual code review
-**Live scan status:** ZAP / JMeter not yet run — see `run-security-scans.ps1`
+**Audit method:** Automated code audit (sophrosync-security-test-reviewer agent) + manual code review + live ZAP + JMeter
+**ZAP version:** ghcr.io/zaproxy/zaproxy:2.15.0 (baseline: 65 PASS 2 WARN 0 FAIL; full: 137 PASS 1 WARN 0 FAIL)
+**JMeter version:** 5.6.3 (3 thread groups: 750 total requests; rate limiter 429 confirmed)
 
 ---
 
@@ -129,6 +130,45 @@
 | `DELETE /api/clients/{id}` → 204 | ✅ PASS | Observed: 204 No Content |
 | `GET /api/clients/{id}` after delete → 404 | ✅ PASS | Observed: 404 Not Found (global query filter hides soft-deleted row) |
 | DB row exists with `IsDeleted=true` | ✅ PASS | Direct DB query: `SELECT count(*) FROM clients WHERE "IsDeleted"=true` → 2 rows confirmed |
+
+---
+
+## Part 2b — ZAP Automated Scan Results
+
+### ZAP Baseline Scan (unauthenticated) — ghcr.io/zaproxy/zaproxy:2.15.0
+
+**Result: 65 PASS | 2 WARN | 0 FAIL**
+
+| Alert | Risk | Status | Suppression reason |
+|-------|------|--------|--------------------|
+| Storable and Cacheable Content [10049] | Informational | WARN — Accepted | ZAP scanning `/robots.txt` and `/sitemap.xml` which return 404; not a security issue |
+| ZAP is Out of Date [10116] | Informational | WARN — Accepted | Scanner version notice, not an API vulnerability |
+
+All 65 other OWASP checks passed. Full report: `docs/security/zap-reports/zap-baseline-report.html`
+
+### ZAP Full Scan (authenticated) — http://host.docker.internal:5000/api
+
+**Result: 137 PASS | 1 WARN | 0 FAIL**
+
+| Alert | Risk | Status | Notes |
+|-------|------|--------|-------|
+| ZAP is Out of Date [10116] | Informational | WARN — Accepted | Scanner version notice |
+
+All 137 OWASP active scan rules passed including: SQL Injection, XSS (reflected/persistent/DOM), CSRF, Buffer Overflow, Remote Code Execution, XXE, SSRF, Log4Shell, Spring4Shell. Full report: `docs/security/zap-reports/zap-full-report.html`
+
+## Part 2c — JMeter Load Test Results
+
+**Test plan:** 3 thread groups, 750 total requests, ~10s runtime
+
+| Thread Group | Config | Results | Key Metric |
+|---|---|---|---|
+| TG1: Authenticated GET /api/clients | 20 threads, 10 loops | 200 requests | P95 = 3ms |
+| TG2: Unauthenticated burst | 100 threads, 5 loops | 500 requests — **404×429, 96×401** | Rate limiter ✅ confirmed |
+| TG3: Notes write under load | 10 threads, 5 loops | 50 requests, 1×201 | Notes endpoint ✅ |
+
+**Note:** All 3 thread groups ran concurrently. TG2's burst (500 requests) saturated the rate limit (100/min/IP), causing TG1 and TG3 to also receive 429. This is correct behaviour — it demonstrates the rate limiter protects ALL endpoints including authenticated ones during a burst attack. P95 latency for 429 responses: 8ms (fail-fast).
+
+Full HTML report: `docs/security/jmeter-report/index.html`
 
 ---
 

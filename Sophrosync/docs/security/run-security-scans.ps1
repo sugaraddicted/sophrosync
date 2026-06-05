@@ -50,12 +50,15 @@ function Invoke-ZapBaseline {
     Write-Host "`n[ZAP] Running baseline scan (unauthenticated)..." -ForegroundColor Cyan
     New-Item -ItemType Directory -Force -Path "$OutDir\zap-reports" | Out-Null
 
-    docker run --rm --network host `
+    # Use host.docker.internal on Windows Docker Desktop (--network host not supported)
+    # Use 2.15.0 tag — :stable (2.17) has empty Python script stubs
+    docker run --rm --user 0 `
         -v "${OutDir}/zap-reports:/zap/wrk:rw" `
-        ghcr.io/zaproxy/zaproxy:stable `
+        ghcr.io/zaproxy/zaproxy:2.15.0 `
         zap-baseline.py `
-            -t http://localhost:5000 `
+            -t http://host.docker.internal:5000 `
             -r zap-baseline-report.html `
+            -J zap-baseline-alerts.json `
             -I
 
     Write-Host "[ZAP] Baseline report: $OutDir\zap-reports\zap-baseline-report.html" -ForegroundColor Green
@@ -72,13 +75,14 @@ function Invoke-ZapFull {
     $contextContent  = $contextContent -replace '<JWT_TOKEN>', $Jwt
     $contextContent | Out-File "$OutDir\zap-context-patched.yaml" -Encoding utf8
 
-    docker run --rm --network host `
+    docker run --rm --user 0 `
         -v "${OutDir}:/zap/wrk:rw" `
-        ghcr.io/zaproxy/zaproxy:stable `
+        ghcr.io/zaproxy/zaproxy:2.15.0 `
         zap-full-scan.py `
-            -t http://localhost:5000/api `
+            -t http://host.docker.internal:5000/api `
             -r zap-reports/zap-full-report.html `
-            -z "-configfile /zap/wrk/zap-context-patched.yaml" `
+            -J zap-reports/zap-full-alerts.json `
+            -z "-config replacer.full_list(0).description=Authorization -config replacer.full_list(0).enabled=true -config replacer.full_list(0).matchtype=REQ_HEADER -config replacer.full_list(0).matchstr=Authorization -config replacer.full_list(0).replacement=`"Bearer $Jwt`"" `
             -I
 
     Remove-Item "$OutDir\zap-context-patched.yaml" -ErrorAction SilentlyContinue
@@ -90,20 +94,33 @@ function Invoke-ZapFull {
 function Invoke-JmeterTests {
     param([string]$Jwt)
     Write-Host "`n[JMeter] Running load tests..." -ForegroundColor Cyan
-    New-Item -ItemType Directory -Force -Path "$OutDir\jmeter-report" | Out-Null
 
-    # Patch JWT into JMX (creates a temp copy)
+    # JMeter cannot handle paths with non-ASCII characters — use a temp dir
+    $TmpDir = "C:\sophrosync-jmeter"
+    New-Item -ItemType Directory -Force -Path "$TmpDir\report" | Out-Null
+
+    # Patch JWT into JMX
     $jmxContent = Get-Content "$OutDir\sophrosync-load-test.jmx" -Raw
     $jmxContent  = $jmxContent -replace '__JWT_TOKEN__', $Jwt
-    $jmxContent | Out-File "$OutDir\sophrosync-load-test-run.jmx" -Encoding utf8
+    $runJmx = "$TmpDir\run.jmx"
+    [System.IO.File]::WriteAllText($runJmx, $jmxContent, [System.Text.Encoding]::UTF8)
 
-    jmeter -n `
-        -t "$OutDir\sophrosync-load-test-run.jmx" `
-        -l "$OutDir\jmeter-results.jtl" `
-        -e -o "$OutDir\jmeter-report" `
-        -j "$OutDir\jmeter.log"
+    # Locate jmeter.bat (prefer ~/tools/jmeter, fall back to PATH)
+    $jmeterBin = if (Test-Path "$env:USERPROFILE\tools\jmeter\bin\jmeter.bat") {
+        "$env:USERPROFILE\tools\jmeter\bin\jmeter.bat"
+    } else { "jmeter" }
 
-    Remove-Item "$OutDir\sophrosync-load-test-run.jmx" -ErrorAction SilentlyContinue
+    & $jmeterBin -n `
+        -t "$runJmx" `
+        -l "$TmpDir\results.jtl" `
+        -e -o "$TmpDir\report" `
+        -j "$TmpDir\jmeter.log"
+
+    # Copy results back to docs/security
+    New-Item -ItemType Directory -Force -Path "$OutDir\jmeter-report" | Out-Null
+    Copy-Item "$TmpDir\results.jtl" "$OutDir\jmeter-results.jtl" -Force
+    Copy-Item "$TmpDir\report\*" "$OutDir\jmeter-report\" -Recurse -Force
+
     Write-Host "[JMeter] HTML report: $OutDir\jmeter-report\index.html" -ForegroundColor Green
     Write-Host "[JMeter] Results JTL: $OutDir\jmeter-results.jtl" -ForegroundColor Green
 }
