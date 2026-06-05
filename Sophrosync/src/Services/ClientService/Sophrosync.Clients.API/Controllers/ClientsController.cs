@@ -1,18 +1,18 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Sophrosync.Clients.Application.Commands.CreateClient;
 using Sophrosync.Clients.Application.Commands.DeleteClient;
 using Sophrosync.Clients.Application.Commands.UpdateClient;
 using Sophrosync.Clients.Application.Queries.GetClientById;
+using Microsoft.AspNetCore.Authorization;
 using Sophrosync.Clients.Application.Queries.GetClients;
 
 namespace Sophrosync.Clients.API.Controllers;
 
 /// <summary>
-/// Public CRUD endpoints for the Client resource.
-/// Authorization is intentionally omitted for local development / SPA integration.
-/// Re-enable [Authorize] once Keycloak is wired up.
+/// Public CRUD endpoints for the Client resource. Requires authenticated JWT (any role).
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("api/clients")]
 public sealed class ClientsController(IMediator mediator) : ControllerBase

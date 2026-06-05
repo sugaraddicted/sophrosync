@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Threading.RateLimiting;
 
@@ -16,6 +17,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.Authority = builder.Configuration["Keycloak:Authority"];
         options.Audience = builder.Configuration["Keycloak:Audience"];
         options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
+        // Pin to RS256 — explicitly reject symmetric ("HS256") and "none" algorithm tokens
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidAlgorithms = new[] { "RS256" }
+        };
     });
 
 builder.Services.AddAuthorization();
@@ -39,11 +45,8 @@ builder.Services.AddReverseProxy()
 var app = builder.Build();
 
 app.UseSerilogRequestLogging();
-app.UseRateLimiter();
-app.UseAuthentication();
-app.UseAuthorization();
 
-// Inject X-Correlation-Id on all forwarded requests
+// Inject X-Correlation-Id before auth so rejected requests are traceable in logs
 app.Use(async (context, next) =>
 {
     if (!context.Request.Headers.ContainsKey("X-Correlation-Id"))
@@ -51,7 +54,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-// Block all /internal/** paths - these routes are service-to-service only and must never be reachable from outside
+// Block all /internal/** paths — service-to-service only, never reachable from outside
 app.Use(async (context, next) =>
 {
     if (context.Request.Path.StartsWithSegments("/internal"))
@@ -70,6 +73,10 @@ app.Use(async (ctx, next) =>
     ctx.Response.Headers["Referrer-Policy"] = "no-referrer";
     await next();
 });
+
+app.UseRateLimiter();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapReverseProxy();
 
