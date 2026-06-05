@@ -1,0 +1,28 @@
+---
+# OWASP ZAP authenticated scan context for Sophrosync
+# Usage: see run-security-scans.ps1
+#
+# Before running: replace <JWT_TOKEN> with a fresh therapist JWT:
+#   $resp = Invoke-RestMethod -Uri "http://localhost:8080/realms/sophrosync/protocol/openid-connect/token" `
+#     -Method POST -Body "grant_type=password&client_id=sophrosync-spa&username=therapist@demo.com&password=<password>" `
+#     -ContentType "application/x-www-form-urlencoded"
+#   $resp.access_token   # paste below
+
+env:
+  contexts:
+    - name: sophrosync-auth
+      urls:
+        - http://localhost:5000/api
+      authentication:
+        method: header
+        parameters:
+          headerName: Authorization
+          headerValue: "Bearer <JWT_TOKEN>"
+      sessionManagement:
+        method: httpAuthSessionManagement
+      technology:
+        exclude: []
+  parameters:
+    failOnError: false
+    failOnWarning: false
+    progressToStdout: true
