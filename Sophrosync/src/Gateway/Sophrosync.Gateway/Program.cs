@@ -17,10 +17,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.Authority = builder.Configuration["Keycloak:Authority"];
         options.Audience = builder.Configuration["Keycloak:Audience"];
         options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
-        // Pin to RS256 — explicitly reject symmetric ("HS256") and "none" algorithm tokens
+        // Pin to RS256 — explicitly reject symmetric ("HS256") and "none" algorithm tokens.
+        // Accept both the Docker-internal issuer (keycloak:8080) and the host-facing issuer
+        // (localhost:8080): tokens obtained by external callers carry the localhost issuer,
+        // while the Gateway's OIDC discovery resolves via the Docker-internal hostname.
+        var realm = $"/realms/{builder.Configuration["Keycloak:Realm"] ?? "sophrosync"}";
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidAlgorithms = new[] { "RS256" }
+            ValidAlgorithms = new[] { "RS256" },
+            ValidIssuers = new[]
+            {
+                $"http://keycloak:8080{realm}",
+                $"http://localhost:8080{realm}"
+            }
         };
     });
 
@@ -46,11 +55,13 @@ var app = builder.Build();
 
 app.UseSerilogRequestLogging();
 
-// Inject X-Correlation-Id before auth so rejected requests are traceable in logs
+// Inject X-Correlation-Id before auth so all requests (including rejected ones) are traceable.
+// Echo the same ID in the response so callers can correlate client logs with server logs.
 app.Use(async (context, next) =>
 {
     if (!context.Request.Headers.ContainsKey("X-Correlation-Id"))
         context.Request.Headers["X-Correlation-Id"] = Guid.NewGuid().ToString();
+    context.Response.Headers["X-Correlation-Id"] = context.Request.Headers["X-Correlation-Id"].ToString();
     await next();
 });
 
