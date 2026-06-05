@@ -50,6 +50,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'clients/:id',
+        loadComponent: () =>
+          import('./features/clients/client-detail/client-detail-page.component').then(
+            (m) => m.ClientDetailPageComponent
+          ),
+      },
+      {
         path: 'calendar',
         loadComponent: () =>
           import('./features/calendar/calendar.component').then(

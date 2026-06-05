@@ -127,7 +127,11 @@
                         aria-hidden="true"
                       >{{ client.name.substring(0, 2).toUpperCase() }}</div>
                       <div>
-                        <div class="clients-page__client-name">{{ client.name }}</div>
+                        <a
+                          class="clients-page__client-name clients-page__client-name--link"
+                          [routerLink]="['/clients', client.id]"
+                          [attr.aria-label]="'View profile for ' + client.name"
+                        >{{ client.name }}</a>
                         <div class="clients-page__client-case">Case ID: #{{ client.id.substring(0, 4).toUpperCase() }}</div>
                       </div>
                     </div>

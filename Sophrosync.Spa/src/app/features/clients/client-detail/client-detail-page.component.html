@@ -1,0 +1,242 @@
+<div class="client-detail">
+
+  <!-- ── Back nav ────────────────────────────────────────────────────────── -->
+  <nav class="client-detail__back-nav" aria-label="Breadcrumb">
+    <button
+      class="client-detail__back-btn"
+      type="button"
+      (click)="goBack()"
+      aria-label="Back to client directory"
+    >
+      <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+      Back to Clients
+    </button>
+  </nav>
+
+  <!-- ── Loading ─────────────────────────────────────────────────────────── -->
+  @if (isLoading()) {
+    <div class="client-detail__skeleton-wrap" role="status" aria-label="Loading client profile">
+      <div class="client-detail__skeleton client-detail__skeleton--header"></div>
+      <div class="client-detail__skeleton-metrics">
+        @for (s of [1, 2, 3]; track s) {
+          <div class="client-detail__skeleton client-detail__skeleton--metric"></div>
+        }
+      </div>
+      <div class="client-detail__skeleton-grid">
+        <div class="client-detail__skeleton client-detail__skeleton--card"></div>
+        <div class="client-detail__skeleton client-detail__skeleton--card"></div>
+      </div>
+    </div>
+  }
+
+  <!-- ── Error ───────────────────────────────────────────────────────────── -->
+  @else if (loadError()) {
+    <div class="client-detail__error" role="alert">
+      <span class="material-symbols-outlined client-detail__error-icon" aria-hidden="true">error_outline</span>
+      <p>{{ loadError() }}</p>
+      <button class="client-detail__retry-btn" type="button" (click)="retry()">Retry</button>
+    </div>
+  }
+
+  <!-- ── Content ─────────────────────────────────────────────────────────── -->
+  @else if (data(); as profile) {
+
+    <!-- Header -->
+    <header class="client-detail__header">
+      <div class="client-detail__header-left">
+        <div
+          class="client-detail__avatar"
+          [class.client-detail__avatar--inactive]="profile.client.status === 'inactive'"
+          [class.client-detail__avatar--archived]="profile.client.status === 'archived'"
+          aria-hidden="true"
+        >{{ clientInitials(profile.client.name) }}</div>
+        <div class="client-detail__header-info">
+          <div class="client-detail__header-name-row">
+            <h1 class="client-detail__name">{{ profile.client.name }}</h1>
+            <span
+              class="client-detail__badge"
+              [class.client-detail__badge--active]="profile.client.status === 'active'"
+              [class.client-detail__badge--inactive]="profile.client.status === 'inactive'"
+              [class.client-detail__badge--archived]="profile.client.status === 'archived'"
+            >{{ profile.client.status }}</span>
+          </div>
+          <div class="client-detail__contact">
+            @if (profile.client.email) {
+              <span class="client-detail__contact-item">
+                <span class="material-symbols-outlined" aria-hidden="true">mail</span>
+                {{ profile.client.email }}
+              </span>
+            }
+            @if (profile.client.phone) {
+              <span class="client-detail__contact-item">
+                <span class="material-symbols-outlined" aria-hidden="true">call</span>
+                {{ profile.client.phone }}
+              </span>
+            }
+            <span class="client-detail__contact-item client-detail__contact-item--muted">
+              Case ID: #{{ profile.client.id.substring(0, 8).toUpperCase() }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stat strip -->
+    <section class="client-detail__metrics" aria-label="Client summary metrics">
+      <div class="client-detail__metric client-detail__metric--primary">
+        <span class="client-detail__metric-label">Total Sessions</span>
+        <div class="client-detail__metric-bottom">
+          <span class="client-detail__metric-value client-detail__metric-value--primary">{{ totalSessions() }}</span>
+        </div>
+      </div>
+      <div class="client-detail__metric client-detail__metric--tertiary">
+        <span class="client-detail__metric-label">Last Session</span>
+        <div class="client-detail__metric-bottom">
+          @if (lastSessionDate()) {
+            <span class="client-detail__metric-value client-detail__metric-value--tertiary client-detail__metric-value--sm">
+              {{ formatDate(lastSessionDate()!) }}
+            </span>
+          } @else {
+            <span class="client-detail__metric-value client-detail__metric-value--muted">—</span>
+          }
+        </div>
+      </div>
+      <div class="client-detail__metric client-detail__metric--outline">
+        <span class="client-detail__metric-label">Upcoming</span>
+        <div class="client-detail__metric-bottom">
+          <span class="client-detail__metric-value">{{ upcomingAppointments().length }}</span>
+          <span class="client-detail__metric-sub">appointments</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Two-column content grid -->
+    <div class="client-detail__grid">
+
+      <!-- Left: Recent Notes -->
+      <section class="client-detail__card" aria-labelledby="notes-heading">
+        <header class="client-detail__card-header">
+          <h2 class="client-detail__card-title" id="notes-heading">
+            <span class="material-symbols-outlined" aria-hidden="true">description</span>
+            Recent Notes
+          </h2>
+        </header>
+
+        @if (recentNotes().length === 0) {
+          <div class="client-detail__empty">
+            <span class="material-symbols-outlined client-detail__empty-icon" aria-hidden="true">note_add</span>
+            <p>No session notes yet.</p>
+          </div>
+        } @else {
+          <ul class="client-detail__note-list" aria-label="Recent session notes">
+            @for (note of recentNotes(); track note.id) {
+              <li class="client-detail__note-item">
+                <div class="client-detail__note-meta">
+                  <span class="client-detail__note-type">{{ note.type }}</span>
+                  <span
+                    class="client-detail__note-badge"
+                    [class.client-detail__note-badge--signed]="note.status === 'Signed'"
+                    [class.client-detail__note-badge--locked]="note.status === 'Locked'"
+                    [class.client-detail__note-badge--pending]="note.status === 'PendingCoSign'"
+                    [class.client-detail__note-badge--amended]="note.status === 'Amended'"
+                  >{{ note.status }}</span>
+                </div>
+                <div class="client-detail__note-title">{{ note.title }}</div>
+                <div class="client-detail__note-date">{{ formatDate(note.sessionDate) }}</div>
+              </li>
+            }
+          </ul>
+        }
+
+        <footer class="client-detail__card-footer">
+          <a [routerLink]="['/notes']" class="client-detail__link" aria-label="View all notes">
+            View All Notes
+            <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+          </a>
+        </footer>
+      </section>
+
+      <!-- Right: Upcoming Appointments + Consent -->
+      <div class="client-detail__right-col">
+
+        <!-- Upcoming Appointments -->
+        <section class="client-detail__card" aria-labelledby="appointments-heading">
+          <header class="client-detail__card-header">
+            <h2 class="client-detail__card-title" id="appointments-heading">
+              <span class="material-symbols-outlined" aria-hidden="true">event</span>
+              Upcoming Appointments
+            </h2>
+          </header>
+
+          @if (upcomingAppointments().length === 0) {
+            <div class="client-detail__empty">
+              <span class="material-symbols-outlined client-detail__empty-icon" aria-hidden="true">event_busy</span>
+              <p>No upcoming appointments.</p>
+            </div>
+          } @else {
+            <ul class="client-detail__appt-list" aria-label="Upcoming appointments">
+              @for (appt of upcomingAppointments(); track appt.id) {
+                <li class="client-detail__appt-item">
+                  <div class="client-detail__appt-date">
+                    {{ formatDateTime(appt.scheduledAt) }}
+                  </div>
+                  <div class="client-detail__appt-meta">
+                    <span class="client-detail__appt-type">{{ appt.type }}</span>
+                    <span
+                      class="client-detail__appt-badge"
+                      [class.client-detail__appt-badge--confirmed]="appt.status === 'Confirmed'"
+                      [class.client-detail__appt-badge--scheduled]="appt.status === 'Scheduled'"
+                      [class.client-detail__appt-badge--cancelled]="appt.status === 'Cancelled'"
+                    >{{ appt.status }}</span>
+                  </div>
+                  <div class="client-detail__appt-duration">
+                    {{ appt.durationMinutes }} min
+                  </div>
+                </li>
+              }
+            </ul>
+          }
+        </section>
+
+        <!-- Consent Status -->
+        <section class="client-detail__card" aria-labelledby="consent-heading">
+          <header class="client-detail__card-header">
+            <h2 class="client-detail__card-title" id="consent-heading">
+              <span class="material-symbols-outlined" aria-hidden="true">verified_user</span>
+              Consent Status
+            </h2>
+          </header>
+
+          @if (profile.pendingConsent.length === 0) {
+            <div class="client-detail__empty">
+              <span class="material-symbols-outlined client-detail__empty-icon" aria-hidden="true">check_circle</span>
+              <p>No pending consent requests.</p>
+            </div>
+          } @else {
+            <ul class="client-detail__consent-list" aria-label="Pending consent requests">
+              @for (req of profile.pendingConsent; track req.id) {
+                <li class="client-detail__consent-item">
+                  <div class="client-detail__consent-row">
+                    <span class="client-detail__consent-status client-detail__consent-status--pending">Pending</span>
+                    <span class="client-detail__consent-expiry">Expires {{ formatDate(req.expiresAt) }}</span>
+                  </div>
+                  <div class="client-detail__consent-id">Request #{{ req.id.substring(0, 8).toUpperCase() }}</div>
+                </li>
+              }
+            </ul>
+          }
+
+          <footer class="client-detail__card-footer">
+            <a [routerLink]="['/consent']" class="client-detail__link" aria-label="View all consent documents">
+              Manage Consent
+              <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+            </a>
+          </footer>
+        </section>
+
+      </div><!-- /.right-col -->
+    </div><!-- /.grid -->
+
+  }<!-- /@else if data -->
+
+</div><!-- /.client-detail -->

@@ -26,6 +26,10 @@ export class ClientsService {
     return this.http.get<Client[]>(this.base).pipe(retry(1));
   }
 
+  getClientById(id: string): Observable<Client> {
+    return this.http.get<Client>(`${this.base}/${id}`);
+  }
+
   createClient(dto: ClientWriteDto): Observable<Client> {
     return this.http.post<Client>(this.base, dto);
   }

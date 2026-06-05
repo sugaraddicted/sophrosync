@@ -400,6 +400,18 @@
     font-weight: 600;
     font-size: 0.9375rem;
     color: var(--color-on-surface);
+
+    &--link {
+      text-decoration: none;
+      color: var(--color-on-surface);
+      transition: color 0.15s ease;
+
+      &:hover {
+        color: var(--color-primary);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+    }
   }
 
   &__client-case {

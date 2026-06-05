@@ -30,6 +30,12 @@ export interface CreateAppointmentDto {
 export class AppointmentsService {
   private readonly http = inject(HttpClient);
 
+  getByClientId(clientId: string): Promise<AppointmentDto[]> {
+    return firstValueFrom(
+      this.http.get<AppointmentDto[]>(`${environment.apiUrl}/appointments/client/${clientId}`)
+    );
+  }
+
   getByDateRange(from: Date, to: Date): Promise<AppointmentDto[]> {
     const params = new HttpParams()
       .set('from', from.toISOString())

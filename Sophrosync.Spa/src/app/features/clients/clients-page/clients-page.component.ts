@@ -7,6 +7,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { ClientsService } from '../clients.service';
 import { Client, ClientDto } from '../models/client.model';
@@ -22,6 +23,7 @@ type FilterStatus = 'all' | 'active' | 'inactive' | 'archived';
   selector: 'app-clients-page',
   standalone: true,
   imports: [
+    RouterLink,
     AddClientModalComponent,
     EditClientModalComponent,
     ConfirmDeleteDialogComponent,
