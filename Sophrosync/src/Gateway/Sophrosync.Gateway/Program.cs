@@ -51,7 +51,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-// Block all /internal/** paths — these routes are service-to-service only and must never be reachable from outside
+// Block all /internal/** paths - these routes are service-to-service only and must never be reachable from outside
 app.Use(async (context, next) =>
 {
     if (context.Request.Path.StartsWithSegments("/internal"))
@@ -59,6 +59,15 @@ app.Use(async (context, next) =>
         context.Response.StatusCode = StatusCodes.Status404NotFound;
         return;
     }
+    await next();
+});
+
+// Security response headers
+app.Use(async (ctx, next) =>
+{
+    ctx.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    ctx.Response.Headers["X-Frame-Options"] = "DENY";
+    ctx.Response.Headers["Referrer-Policy"] = "no-referrer";
     await next();
 });
 
