@@ -22,6 +22,7 @@ public sealed class NotificationPreferenceRepository(NotificationsDbContext cont
 
     public async Task<NotificationPreference?> GetForUserAsync(Guid tenantId, Guid userId, CancellationToken ct = default)
         => await context.NotificationPreferences
+            .IgnoreQueryFilters()
             .FirstOrDefaultAsync(p => p.TenantId == tenantId && p.UserId == userId, ct);
 
     public async Task<NotificationPreference?> GetTenantDefaultAsync(Guid tenantId, CancellationToken ct = default)

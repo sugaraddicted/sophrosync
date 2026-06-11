@@ -37,12 +37,14 @@ public sealed class NotificationRepository(NotificationsDbContext context) : INo
 
     public async Task<IReadOnlyList<Notification>> GetPendingDueAsync(DateTime asOf, CancellationToken ct = default)
         => await context.Notifications
-            .Where(n => n.Status == NotificationStatus.Pending && n.ScheduledFor <= asOf)
+            .IgnoreQueryFilters()
+            .Where(n => n.Status == NotificationStatus.Pending && n.ScheduledFor <= asOf && n.DeletedAt == null)
             .ToListAsync(ct);
 
     public async Task<IReadOnlyList<Notification>> GetFailedForRetryAsync(CancellationToken ct = default)
         => await context.Notifications
-            .Where(n => n.Status == NotificationStatus.Failed && n.RetryCount < 3)
+            .IgnoreQueryFilters()
+            .Where(n => n.Status == NotificationStatus.Failed && n.RetryCount < 3 && n.DeletedAt == null)
             .ToListAsync(ct);
 
     public async Task<IReadOnlyList<Notification>> GetSentAsync(int page, int pageSize, CancellationToken ct = default)

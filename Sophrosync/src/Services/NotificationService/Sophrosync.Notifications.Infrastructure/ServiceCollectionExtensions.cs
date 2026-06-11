@@ -21,8 +21,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<INotificationPreferenceRepository, NotificationPreferenceRepository>();
 
-        services.AddSingleton<INotificationChannel, InAppNotificationChannel>();
-        services.AddSingleton<INotificationChannel, EmailNotificationChannel>();
+        services.AddScoped<INotificationChannel, InAppNotificationChannel>();
+        services.AddScoped<INotificationChannel, EmailNotificationChannel>();
 
         return services;
     }

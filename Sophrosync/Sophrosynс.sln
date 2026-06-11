@@ -101,6 +101,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.Consent.Tests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.Identity.Tests", "src\Services\IdentityService\Sophrosync.Identity.Tests\Sophrosync.Identity.Tests.csproj", "{C7696A2B-6C63-4300-8495-DA713EFB8736}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sophrosync.Notifications.Tests", "src\Services\NotificationService\Sophrosync.Notifications.Tests\Sophrosync.Notifications.Tests.csproj", "{C79AACA5-FAD3-424E-894E-BB6CF5C71118}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -554,6 +556,18 @@ Global
 		{C7696A2B-6C63-4300-8495-DA713EFB8736}.Release|x64.Build.0 = Release|Any CPU
 		{C7696A2B-6C63-4300-8495-DA713EFB8736}.Release|x86.ActiveCfg = Release|Any CPU
 		{C7696A2B-6C63-4300-8495-DA713EFB8736}.Release|x86.Build.0 = Release|Any CPU
+		{C79AACA5-FAD3-424E-894E-BB6CF5C71118}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C79AACA5-FAD3-424E-894E-BB6CF5C71118}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C79AACA5-FAD3-424E-894E-BB6CF5C71118}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C79AACA5-FAD3-424E-894E-BB6CF5C71118}.Debug|x64.Build.0 = Debug|Any CPU
+		{C79AACA5-FAD3-424E-894E-BB6CF5C71118}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C79AACA5-FAD3-424E-894E-BB6CF5C71118}.Debug|x86.Build.0 = Debug|Any CPU
+		{C79AACA5-FAD3-424E-894E-BB6CF5C71118}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C79AACA5-FAD3-424E-894E-BB6CF5C71118}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C79AACA5-FAD3-424E-894E-BB6CF5C71118}.Release|x64.ActiveCfg = Release|Any CPU
+		{C79AACA5-FAD3-424E-894E-BB6CF5C71118}.Release|x64.Build.0 = Release|Any CPU
+		{C79AACA5-FAD3-424E-894E-BB6CF5C71118}.Release|x86.ActiveCfg = Release|Any CPU
+		{C79AACA5-FAD3-424E-894E-BB6CF5C71118}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -607,6 +621,7 @@ Global
 		{70633792-735C-4CF7-BE59-F74FA16D6F41} = {10000000-0000-0000-0000-000000000008}
 		{A1791BBA-9588-4BBF-88DB-C1CDAE333830} = {10000000-0000-0000-0000-000000000006}
 		{C7696A2B-6C63-4300-8495-DA713EFB8736} = {03D86D05-D4E5-8762-0DD8-EACA6C05FFF7}
+		{C79AACA5-FAD3-424E-894E-BB6CF5C71118} = {10000000-0000-0000-0000-000000000005}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B9886C5-AF76-44E8-AD3E-547C0B15CC13}
